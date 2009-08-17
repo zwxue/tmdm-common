@@ -10,6 +10,7 @@ import java.util.Set;
 public enum EUUIDCustomType {
 	//two custom simple type (only used for concept id)
 	UUID("UUID"),
+	PICTURE("PICTURE"),
 	AUTO_INCREMENT("AUTO_INCREMENT");
 	String name;
 	EUUIDCustomType(String name){
