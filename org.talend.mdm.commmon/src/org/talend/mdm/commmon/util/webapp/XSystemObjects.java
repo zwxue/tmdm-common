@@ -40,6 +40,7 @@ public enum XSystemObjects {
 	M_LOGGING(XObjectType.MENU,"logging"),
 	M_ITEMSTRASH(XObjectType.MENU,"ItemsTrash"),
 	M_SMTP(XObjectType.MENU,"smtp"),
+	M_HIERARCHICAL_VIEW(XObjectType.MENU,"Hierarchical View"),
 	
 
 	// roles
