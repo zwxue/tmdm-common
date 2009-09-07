@@ -41,6 +41,7 @@ public enum XSystemObjects {
 	M_ITEMSTRASH(XObjectType.MENU,"ItemsTrash"),
 	M_SMTP(XObjectType.MENU,"smtp"),
 	M_HIERARCHICAL_VIEW(XObjectType.MENU,"Hierarchical View"),
+	M_UNIVERSEMANAGER(XObjectType.MENU,"Universe Manager"),
 	
 
 	// roles
