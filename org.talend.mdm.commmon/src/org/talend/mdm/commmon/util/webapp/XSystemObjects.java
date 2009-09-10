@@ -23,7 +23,7 @@ public enum XSystemObjects {
 	DM_PROVISIONING(XObjectType.DATA_MODEL, "PROVISIONING"), 
 	//DM_REPORTING(XObjectType.DATA_MODEL, "REPORTING"), 
 	DM_UPDATEREPORT(XObjectType.DATA_MODEL, "UpdateReport"), 
-	//DM_XTENTIS_COMMON_CONF(XObjectType.DATA_MODEL, "Xtentis Common Conf"), 
+	DM_XTENTIS_COMMON_CONF(XObjectType.DATA_MODEL, "XMLSCHEMA---"), 
 	DM_XTENTIS_COMMON_REPORTING(XObjectType.DATA_MODEL, "Reporting"),
 
 	// Menus
