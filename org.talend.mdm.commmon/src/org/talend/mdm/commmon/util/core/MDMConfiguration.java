@@ -18,6 +18,7 @@ public final class MDMConfiguration {
 		
 	}
 	private static Properties CONFIGURATION = null;
+	private static String serverLocation = null;
 	
 	protected MDMConfiguration() {}
 	
@@ -57,5 +58,21 @@ public final class MDMConfiguration {
 		}
 		
 	}
-
+	
+	/**
+	 * save jboss server path
+	 * @param location
+	 *     jboss server dir location
+	 */
+	public static void setJBossServerLocation(String location) {
+		serverLocation = location;
+	}
+	
+	/**
+	 * 
+	 * @return jboss server dir location
+	 */
+	public static String getJBossServerLocation() {
+		return serverLocation;
+	}
 }
