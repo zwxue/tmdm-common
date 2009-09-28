@@ -6,4 +6,9 @@ public interface ICoreConstants {
 	//static final String SCHEMATRON_TAG="<schema xmlns=\"http://www.ascc.net/xml/schematron\" ns=\"http://xml.apache.cocoon/xmlform\">";
 	static final String X_Schematron="X_Schematron";
 	
+	/**
+	 * the default svn name in VersionSystem
+	 */
+	static final String DEFAULT_SVN="DEFAULT_SVN";
+	
 }
