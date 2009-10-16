@@ -3,6 +3,8 @@ package org.talend.mdm.commmon.util.core;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class CommonUtil {
@@ -18,4 +20,13 @@ public class CommonUtil {
 		return defaultRevisionID;
 	}
 
+	public static String getErrMsgFromException(Throwable e){
+		Pattern p=Pattern.compile("(.*?):(.*?)");
+		Matcher m=p.matcher(e.getLocalizedMessage());
+		String msg=e.getLocalizedMessage();
+		if(m.matches()){
+			msg=m.group(2);
+		}
+		return msg;
+	}
 }
