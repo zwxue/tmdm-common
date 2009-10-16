@@ -155,5 +155,20 @@ public enum XSystemObjects {
 		}
 		return is;
 	}
-	
+	/**
+	 * chenk if the element is exist
+	 * 
+	 * @param name
+	 * @return boolean
+	 */
+	public static boolean isExist(String name) {
+		boolean is = false;
+		for (int i = 0; i < values().length; i++) {
+			if (name.equals(values()[i].name)) {
+				is = true;
+				break;
+			}
+		}
+		return is;
+	}	
 }
