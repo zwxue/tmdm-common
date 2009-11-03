@@ -3,6 +3,8 @@ package org.talend.mdm.commmon.util.webapp;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.talend.mdm.commmon.util.core.ICoreConstants;
+
 public enum XSystemObjects {
 
 	// Data Clusters
@@ -16,7 +18,8 @@ public enum XSystemObjects {
 	//DC_XTENTIS_COMMON_CONF(XObjectType.DATA_CLUSTER, "Xtentis Common Conf"), 
 	DC_XTENTIS_COMMON_REPORTING(XObjectType.DATA_CLUSTER, "Reporting"),
 	DC_MDMITEMSTRASH(XObjectType.DATA_CLUSTER,"MDMItemsTrash"),
-
+	DC_CROSSREFERENCING(XObjectType.DATA_CLUSTER,ICoreConstants.CrossReferencing_datacluster),
+	
 	// Data Models
 	//DM_BUG_TRACKING(XObjectType.DATA_MODEL, "Bug Tracking"), 
 	DM_CONF(XObjectType.DATA_MODEL, "CONF"), 
@@ -25,7 +28,7 @@ public enum XSystemObjects {
 	DM_UPDATEREPORT(XObjectType.DATA_MODEL, "UpdateReport"), 
 	DM_XTENTIS_COMMON_CONF(XObjectType.DATA_MODEL, "XMLSCHEMA---"), 
 	DM_XTENTIS_COMMON_REPORTING(XObjectType.DATA_MODEL, "Reporting"),
-
+	Dm_CROSSREFERENCING(XObjectType.DATA_MODEL,ICoreConstants.CrossReferencing_datamodel),
 	// Menus
 
 	M_BROWSE_ITEMS(XObjectType.MENU, "Browse items"), 

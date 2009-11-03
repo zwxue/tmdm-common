@@ -14,6 +14,6 @@ public interface ICoreConstants {
 	/**
 	 * cross referencing init datacluster & datamodel
 	 */
-	public static final String datacluster=".crossreferencing";
-	public static final String datamodel=".crossreferencing";	
+	public static final String CrossReferencing_datacluster="crossreferencing";
+	public static final String CrossReferencing_datamodel="crossreferencing";	
 }
