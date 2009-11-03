@@ -11,4 +11,9 @@ public interface ICoreConstants {
 	 */
 	static final String DEFAULT_SVN="DEFAULT_SVN";
 	
+	/**
+	 * cross referencing init datacluster & datamodel
+	 */
+	public static final String datacluster=".crossreferencing";
+	public static final String datamodel=".crossreferencing";	
 }
