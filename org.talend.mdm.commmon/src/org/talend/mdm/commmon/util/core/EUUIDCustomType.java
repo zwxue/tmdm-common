@@ -11,6 +11,7 @@ public enum EUUIDCustomType {
 	//two custom simple type (only used for concept id)
 	UUID("UUID"),
 	PICTURE("PICTURE"),
+	URL("URL"),
 	AUTO_INCREMENT("AUTO_INCREMENT");
 	String name;
 	EUUIDCustomType(String name){
