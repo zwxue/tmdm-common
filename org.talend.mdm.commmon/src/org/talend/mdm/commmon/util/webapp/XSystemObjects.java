@@ -46,6 +46,7 @@ public enum XSystemObjects {
 	M_HIERARCHICAL_VIEW(XObjectType.MENU,"Hierarchical View"),
 	M_UNIVERSEMANAGER(XObjectType.MENU,"Universe Manager"),
 	M_CROSSREFERENCING(XObjectType.MENU,"Cross Referencing"),
+	M_WORKFLOWTASKS(XObjectType.MENU,"WorkflowTasks"),
 	
 
 	// roles
