@@ -5,7 +5,11 @@ public interface ICoreConstants {
 	//static final String SCHEMATRON_RULE="schematron_rule";
 	//static final String SCHEMATRON_TAG="<schema xmlns=\"http://www.ascc.net/xml/schematron\" ns=\"http://xml.apache.cocoon/xmlform\">";
 	static final String X_Schematron="X_Schematron";
-	
+	static final String X_Workflow="X_Workflow";
+	/**
+	 * workflow access
+	 */
+	static final String[] WORKFLOW_ACCESSES={"Read-only","Hidden","Writable"};
 	/**
 	 * the default svn name in VersionSystem
 	 */
