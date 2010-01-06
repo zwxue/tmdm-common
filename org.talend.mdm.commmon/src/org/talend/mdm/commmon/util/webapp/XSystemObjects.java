@@ -46,18 +46,8 @@ public enum XSystemObjects {
 	M_HIERARCHICAL_VIEW(XObjectType.MENU,"Hierarchical View"),
 	M_UNIVERSEMANAGER(XObjectType.MENU,"Universe Manager"),
 	M_CROSSREFERENCING(XObjectType.MENU,"Cross Referencing"),
-	M_WORKFLOWTASKS(XObjectType.MENU,"WorkflowTasks"),
+	M_WORKFLOWTASKS(XObjectType.MENU,"WorkflowTasks");
 	
-
-	// roles
-	R_BOLLORE_CONTRIBUTOR(XObjectType.ROLE, "BOLLORE_Contributor");
-
-	// Views
-
-	//V_MDM_REPORTING_VIEW(XObjectType.VIEW, "MDM Reporting View"), 
-	//V_XTENTIS_MDM_REPORTING(XObjectType.VIEW, "Xtentis MDM Reporting"), 
-	//V_XTENTIS_PORTAL_ROLE_VIEW(XObjectType.VIEW, "XTENTIS PORTAL ROLE VIEW");
-
 	XSystemObjects(int type, String name) {
 		this.name = name;
 		this.type = type;
