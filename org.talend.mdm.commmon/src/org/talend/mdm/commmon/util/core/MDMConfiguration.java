@@ -12,11 +12,11 @@ import java.util.Properties;
  *
  */
 public final class MDMConfiguration {
-	static File file = new File("mdm.conf");
-	static{
-
-		
-	}
+	
+	static String MDM_CONF = "mdm.conf";
+	
+	static File file = new File(MDM_CONF);
+	
 	private static Properties CONFIGURATION = null;
 	
 	protected MDMConfiguration() {}
@@ -30,13 +30,20 @@ public final class MDMConfiguration {
 		
 		CONFIGURATION = new Properties();
 		
-		//first try Current path
+		// try the current dir
+		if (!file.exists()) {
+			// if not found, try appending "bin"
+			System.out.println("MDM Configuration: unable to find the configuration in '" + file.getAbsolutePath() + "'.");
+			file = new File("bin/" + MDM_CONF);
+			System.out.println("MDM Configuration: trying in '" + file.getAbsolutePath() + "'.");
+		}
 		
 		if (file.exists()) {
 			try {
 				CONFIGURATION.load(new FileInputStream(file));
-			} catch (Exception e) {
-				String err = "MDM Configuration: unable to load the configuration in '"+file.getAbsolutePath()+"' :"+e.getMessage()+". The default configurations will be used."; 
+			}
+			catch (Exception e) {
+				System.err.println("MDM Configuration: unable to load the configuration in '"+file.getAbsolutePath()+"' :"+e.getMessage()+". The default configurations will be used."); 
 			}
 		} 
 		
