@@ -15,6 +15,7 @@ public interface ICoreConstants {
 	 */
 	static final String DEFAULT_SVN="DEFAULT_SVN";
 	
+	static final String DEFAULT_CATEGORY_ROOT = "category";
 	/**
 	 * cross referencing init datacluster & datamodel
 	 */
