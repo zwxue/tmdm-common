@@ -34,6 +34,7 @@ public enum XSystemObjects {
 	M_BROWSE_ITEMS(XObjectType.MENU, "Browse items"), 
 	M_BROWSE_VIEWS(XObjectType.MENU, "Browse views"), 
 	M_MANAGER_USERS(XObjectType.MENU, "Manage users"), 
+	M_LICENSE(XObjectType.MENU, "License"),
 	M_REPORTING(XObjectType.MENU,"Reporting"), 
 	M_SYNCHRONIZATIONACTION(XObjectType.MENU,"SynchronizationAction"), 
 	M_SYNCHRONIZATIONPLAN(XObjectType.MENU,"SynchronizationItem"),
