@@ -29,4 +29,32 @@ public class CommonUtil {
 		}
 		return msg;
 	}
+
+    /**
+     * get the DB repository root path
+     */
+    public static String getDBRootPath(){
+    	EDBType dbtype=MDMConfiguration.getDBType();
+    	if(dbtype.getName().equals(EDBType.EXIST.getName())){
+    		return EDBType.EXIST.getRoot();
+    	}
+    	if(dbtype.getName().equals(EDBType.ORACLE.getName())){
+    		return EDBType.ORACLE.getRoot();
+    	}
+    	return "/";
+    }
+    /**
+     * 
+     * @param revisionID
+     * @param clusterName
+     * @return
+     */
+    public static String getPath(String revisionID, String clusterName){
+    	if(revisionID!=null) revisionID=revisionID.replaceAll("\\[HEAD\\]|HEAD", "");
+		String rootpath=getDBRootPath();
+		String collectionPath =
+       		(revisionID == null || "".equals(revisionID) ? rootpath+"/" : rootpath+"/R-"+revisionID+"/")
+       		+(clusterName == null ? "" : clusterName); 
+		return collectionPath;
+    }
 }

@@ -90,4 +90,19 @@ public final class MDMConfiguration {
 		}
 		
 	}
+	
+	public static EDBType getDBType(){
+    	Object dbtype=getConfiguration().get("xmldb.type");
+    	if(dbtype!=null && dbtype.toString().equals(EDBType.ORACLE.getName())){
+    		return EDBType.ORACLE;
+    	}		
+    	return EDBType.EXIST;
+	}
+	public static boolean isExistDb() {
+		Object dbtype=getConfiguration().get("xmldb.type");
+		if(dbtype!=null && !dbtype.toString().equals(EDBType.EXIST.getName())) {
+			return false;
+		}
+		return true;
+	}	
 }
