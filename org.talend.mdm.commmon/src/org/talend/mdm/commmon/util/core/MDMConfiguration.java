@@ -39,6 +39,7 @@ public final class MDMConfiguration {
 		}
 		
 		if (file.exists()) {
+			System.out.println("MDM Configuration: found in '" + file.getAbsolutePath() + "'.");
 			try {
 				CONFIGURATION.load(new FileInputStream(file));
 			}
