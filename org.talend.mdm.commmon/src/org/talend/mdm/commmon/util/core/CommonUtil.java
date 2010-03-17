@@ -41,7 +41,7 @@ public class CommonUtil {
     	if(dbtype.getName().equals(EDBType.ORACLE.getName())){
     		return EDBType.ORACLE.getRoot();
     	}
-    	return "/";
+    	return "";
     }
     /**
      * 

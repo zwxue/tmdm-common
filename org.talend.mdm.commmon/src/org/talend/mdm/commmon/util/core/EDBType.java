@@ -1,7 +1,7 @@
 package org.talend.mdm.commmon.util.core;
 
 public enum EDBType {
-	EXIST("exist","/"),
+	EXIST("exist",""),
 	ORACLE("oracle","/talendmdm");	
 	String name;
 	String root;
