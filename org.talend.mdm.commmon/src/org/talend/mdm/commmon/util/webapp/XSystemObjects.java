@@ -44,7 +44,9 @@ public enum XSystemObjects {
 	M_LOGGING(XObjectType.MENU,"logging"),
 	M_ITEMSTRASH(XObjectType.MENU,"ItemsTrash"),
 	M_SMTP(XObjectType.MENU,"smtp"),
-	M_HIERARCHICAL_VIEW(XObjectType.MENU,"Hierarchical View"),
+	//M_HIERARCHICAL_VIEW(XObjectType.MENU,"Hierarchical View"),
+	M_HIERARCHICAL_VIEW_GROUPING(XObjectType.MENU,"Grouping Hierarchy"),
+	M_HIERARCHICAL_VIEW_DERIVED(XObjectType.MENU,"Derived Hierarchy"),
 	M_UNIVERSEMANAGER(XObjectType.MENU,"Universe Manager"),
 	M_CROSSREFERENCING(XObjectType.MENU,"Cross Referencing"),
 	M_WORKFLOWTASKS(XObjectType.MENU,"WorkflowTasks");
