@@ -20,6 +20,9 @@ public enum XSystemObjects {
 	DC_MDMITEMSTRASH(XObjectType.DATA_CLUSTER,"MDMItemsTrash"),
 	DC_CROSSREFERENCING(XObjectType.DATA_CLUSTER,ICoreConstants.CrossReferencing_datacluster),
 	
+	//Role
+	ROLE_DEFAULT_ADMIN(XObjectType.ROLE,"Default_Admin"),
+	ROLE_DEFAULT_VIEWER(XObjectType.ROLE,"Default_Viewer"), //readonly for everything, can't be modified
 	// Data Models
 	//DM_BUG_TRACKING(XObjectType.DATA_MODEL, "Bug Tracking"), 
 	DM_CONF(XObjectType.DATA_MODEL, "CONF"), 
