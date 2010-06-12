@@ -55,6 +55,11 @@ public class CommonUtil {
 		String collectionPath =
        		(revisionID == null || "".equals(revisionID) ? rootpath+"/" : rootpath+"/R-"+revisionID+"/")
        		+(clusterName == null ? "" : clusterName); 
+		EDBType dbtype=MDMConfiguration.getDBType();
+		if(dbtype.getName().equals(EDBType.BERKELEY.getName())){
+			collectionPath=collectionPath.startsWith("/")?collectionPath.substring(1):collectionPath;
+			return collectionPath.replace("/", ".");
+		}
 		return collectionPath;
     }
 }
