@@ -52,7 +52,8 @@ public enum XSystemObjects {
 	M_HIERARCHICAL_VIEW_DERIVED(XObjectType.MENU,"Derived Hierarchy"),
 	M_UNIVERSEMANAGER(XObjectType.MENU,"Universe Manager"),
 	M_CROSSREFERENCING(XObjectType.MENU,"Cross Referencing"),
-	M_WORKFLOWTASKS(XObjectType.MENU,"WorkflowTasks");
+	M_WORKFLOWTASKS(XObjectType.MENU,"WorkflowTasks"),
+	M_DATASTEWARDSHIP(XObjectType.MENU,"Datastewardship");
 	
 	XSystemObjects(int type, String name) {
 		this.name = name;
