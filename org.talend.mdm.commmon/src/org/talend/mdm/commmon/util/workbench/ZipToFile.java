@@ -167,11 +167,30 @@ public class ZipToFile {
         }
         zfile.close();
     }
+	public static void removeTalendLibsFromBarFile(File barFile) {
+		String tmpfolder=System.getProperty("user.dir")+ "/tmpfolder";
+		
+		try {
+			ZipToFile.unZipFile(barFile.getAbsolutePath(), tmpfolder);
+			File talendFolder=new File(tmpfolder+"/provided-libs/talend");
+			if(talendFolder.exists())ZipToFile.deleteDirectory(talendFolder);
+			
+			ZipToFile.zipFile(tmpfolder, barFile.getAbsolutePath());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			File tmp=new File(tmpfolder);
+			if(tmp.exists())ZipToFile.deleteDirectory(tmp);
+		}
+	}
 
     public static void main(String[] args) {
         try {
-            zipFile("C:\\zipfile\\", "C:\\new.jar"); //$NON-NLS-1$ //$NON-NLS-2$
-            unZipFile("C:\\new.jar", "c:/unzipf/"); //$NON-NLS-1$ //$NON-NLS-2$
+            //zipFile("C:\\zipfile\\", "C:\\new.jar"); //$NON-NLS-1$ //$NON-NLS-2$
+            //unZipFile("C:\\new.jar", "c:/unzipf/"); //$NON-NLS-1$ //$NON-NLS-2$
+        	File barf=new File("/home/achen/MyCustomerProcess_2.3.bar");
+        	removeTalendLibsFromBarFile(barf);
         } catch (Exception e) {
             // TODO Auto-generated catch block
              e.printStackTrace();
