@@ -18,6 +18,9 @@ public enum XSystemObjects {
 	//DC_XTENTIS_COMMON_CONF(XObjectType.DATA_CLUSTER, "Xtentis Common Conf"), 
 	DC_XTENTIS_COMMON_REPORTING(XObjectType.DATA_CLUSTER, "Reporting"),
 	DC_MDMITEMSTRASH(XObjectType.DATA_CLUSTER,"MDMItemsTrash"),
+	
+	DC_SEARCHTEMPLATE(XObjectType.DATA_CLUSTER,"SearchTemplate"),
+	
 	DC_CROSSREFERENCING(XObjectType.DATA_CLUSTER,ICoreConstants.CrossReferencing_datacluster),
 	
 	//Role
@@ -31,6 +34,9 @@ public enum XSystemObjects {
 	DM_UPDATEREPORT(XObjectType.DATA_MODEL, "UpdateReport"), 
 	DM_XTENTIS_COMMON_CONF(XObjectType.DATA_MODEL, "XMLSCHEMA---"), 
 	DM_XTENTIS_COMMON_REPORTING(XObjectType.DATA_MODEL, "Reporting"),
+	
+	DM_SEARCHTEMPLATE(XObjectType.DATA_MODEL,"SearchTemplate"),
+	
 	Dm_CROSSREFERENCING(XObjectType.DATA_MODEL,ICoreConstants.CrossReferencing_datamodel),
 	// Menus
 
