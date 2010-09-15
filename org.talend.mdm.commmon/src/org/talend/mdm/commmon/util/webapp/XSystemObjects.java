@@ -6,64 +6,75 @@ import java.util.Map;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
 
 public enum XSystemObjects {
-
+//tom:datacluster/CONF;datacluster/Inbox;datacluster/Reporting;datacluster/UpdateReport;datacluster/SearchTemplate;datacluster/MDMItemsTrash
+//tem:datacluster/PROVISIONING;datacluster/crossreferencing;datacluster/JCAAdapters
 	// Data Clusters
-	DC_JCAADAPTERS(XObjectType.DATA_CLUSTER, "JCAAdapters"), 
-	DC_INBOX(XObjectType.DATA_CLUSTER, "Inbox"),
+	DC_JCAADAPTERS(XObjectType.DATA_CLUSTER, "JCAAdapters",true), 
+	DC_INBOX(XObjectType.DATA_CLUSTER, "Inbox",false),
 	//DC_BUG_TRACKING(XObjectType.DATA_CLUSTER, "Bug Tracking"), 
-	DC_CONF(XObjectType.DATA_CLUSTER, "CONF"), 
+	DC_CONF(XObjectType.DATA_CLUSTER, "CONF",false), 
 	//DC_MDMCONF(XObjectType.DATA_CLUSTER, "MDMCONF"), 
-	DC_PROVISIONING(XObjectType.DATA_CLUSTER, "PROVISIONING"), 
-	DC_UPDATE_PREPORT(XObjectType.DATA_CLUSTER, "UpdateReport"), 
+	DC_PROVISIONING(XObjectType.DATA_CLUSTER, "PROVISIONING",true), 
+	DC_UPDATE_PREPORT(XObjectType.DATA_CLUSTER, "UpdateReport",false), 
 	//DC_XTENTIS_COMMON_CONF(XObjectType.DATA_CLUSTER, "Xtentis Common Conf"), 
-	DC_XTENTIS_COMMON_REPORTING(XObjectType.DATA_CLUSTER, "Reporting"),
-	DC_MDMITEMSTRASH(XObjectType.DATA_CLUSTER,"MDMItemsTrash"),
+	DC_XTENTIS_COMMON_REPORTING(XObjectType.DATA_CLUSTER, "Reporting",false),
+	DC_MDMITEMSTRASH(XObjectType.DATA_CLUSTER,"MDMItemsTrash",false),
 	
-	DC_SEARCHTEMPLATE(XObjectType.DATA_CLUSTER,"SearchTemplate"),
+	DC_SEARCHTEMPLATE(XObjectType.DATA_CLUSTER,"SearchTemplate",false),
 	
-	DC_CROSSREFERENCING(XObjectType.DATA_CLUSTER,ICoreConstants.CrossReferencing_datacluster),
+	DC_CROSSREFERENCING(XObjectType.DATA_CLUSTER,ICoreConstants.CrossReferencing_datacluster,true),
 	
 	//Role
-	ROLE_DEFAULT_ADMIN(XObjectType.ROLE,"Default_Admin"),
-	ROLE_DEFAULT_VIEWER(XObjectType.ROLE,"Default_Viewer"), //readonly for everything, can't be modified
+	
+	//tom:role/Default_Admin;role/Default_User
+	//tem:role/Default_Viewer
+	ROLE_DEFAULT_ADMIN(XObjectType.ROLE,"Default_Admin",false),
+	ROLE_DEFAULT_USER(XObjectType.ROLE,"Default_User",false),
+	ROLE_DEFAULT_VIEWER(XObjectType.ROLE,"Default_Viewer",true), //readonly for everything, can't be modified
 	// Data Models
+	
+	//tom:datamodel/CONF;datamodel/Reporting;datamodel/UpdateReport;datamodel/SearchTemplate;datamodel/XMLSCHEMA---
+	//tem:datamodel/PROVISIONING;datamodel/crossreferencing
 	//DM_BUG_TRACKING(XObjectType.DATA_MODEL, "Bug Tracking"), 
-	DM_CONF(XObjectType.DATA_MODEL, "CONF"), 
-	DM_PROVISIONING(XObjectType.DATA_MODEL, "PROVISIONING"), 
+	DM_CONF(XObjectType.DATA_MODEL, "CONF",false), 
+	DM_PROVISIONING(XObjectType.DATA_MODEL, "PROVISIONING",true), 
 	//DM_REPORTING(XObjectType.DATA_MODEL, "REPORTING"), 
-	DM_UPDATEREPORT(XObjectType.DATA_MODEL, "UpdateReport"), 
-	DM_XTENTIS_COMMON_CONF(XObjectType.DATA_MODEL, "XMLSCHEMA---"), 
-	DM_XTENTIS_COMMON_REPORTING(XObjectType.DATA_MODEL, "Reporting"),
+	DM_UPDATEREPORT(XObjectType.DATA_MODEL, "UpdateReport",false), 
+	DM_XTENTIS_COMMON_CONF(XObjectType.DATA_MODEL, "XMLSCHEMA---",false), 
+	DM_XTENTIS_COMMON_REPORTING(XObjectType.DATA_MODEL, "Reporting",false),
 	
-	DM_SEARCHTEMPLATE(XObjectType.DATA_MODEL,"SearchTemplate"),
+	DM_SEARCHTEMPLATE(XObjectType.DATA_MODEL,"SearchTemplate",false),
 	
-	Dm_CROSSREFERENCING(XObjectType.DATA_MODEL,ICoreConstants.CrossReferencing_datamodel),
+	Dm_CROSSREFERENCING(XObjectType.DATA_MODEL,ICoreConstants.CrossReferencing_datamodel,true),
 	// Menus
-
-	M_BROWSE_ITEMS(XObjectType.MENU, "Browse items"), 
-	M_BROWSE_VIEWS(XObjectType.MENU, "Browse views"), 
-	M_MANAGER_USERS(XObjectType.MENU, "Manage users"), 
-	M_LICENSE(XObjectType.MENU, "License"),
-	M_REPORTING(XObjectType.MENU,"Reporting"), 
-	M_SYNCHRONIZATIONACTION(XObjectType.MENU,"SynchronizationAction"), 
-	M_SYNCHRONIZATIONPLAN(XObjectType.MENU,"SynchronizationItem"),
-	M_DATA_CHANGES(XObjectType.MENU,"Data changes"),
-	M_UPDATE_REPORT(XObjectType.MENU,"UpdateReport"),
-	M_SERVICE_SCHEDULE(XObjectType.MENU,"Service Schedule"),
-	M_LOGGING(XObjectType.MENU,"logging"),
-	M_ITEMSTRASH(XObjectType.MENU,"ItemsTrash"),
-	M_SMTP(XObjectType.MENU,"smtp"),
+	//tom:menu/Browse+items;menu/Browse+views;menu/ItemsTrash;menu/logging;menu/Reporting;menu/smtp;menu/UpdateReport;menu/Grouping+Hierarchy
+	//tem:menu/Cross+Referencing;menu/Derived+Hierarchy;menu/Manage+users;menu/Service+Schedule;menu/SynchronizationAction;
+	  //menu/SynchronizationItem;menu/Universe+Manager;menu/WorkflowTasks;menu/License;menu/Datastewardship
+	M_BROWSE_ITEMS(XObjectType.MENU, "Browse items",false), 
+	M_BROWSE_VIEWS(XObjectType.MENU, "Browse views",false), 
+	M_MANAGER_USERS(XObjectType.MENU, "Manage users",true), 
+	M_LICENSE(XObjectType.MENU, "License",true),
+	M_REPORTING(XObjectType.MENU,"Reporting",false), 
+	M_SYNCHRONIZATIONACTION(XObjectType.MENU,"SynchronizationAction",true), 
+	M_SYNCHRONIZATIONPLAN(XObjectType.MENU,"SynchronizationItem",true),
+	//M_DATA_CHANGES(XObjectType.MENU,"Data changes"),
+	M_UPDATE_REPORT(XObjectType.MENU,"UpdateReport",false),
+	M_SERVICE_SCHEDULE(XObjectType.MENU,"Service Schedule",true),
+	M_LOGGING(XObjectType.MENU,"logging",false),
+	M_ITEMSTRASH(XObjectType.MENU,"ItemsTrash",false),
+	M_SMTP(XObjectType.MENU,"smtp",false),
 	//M_HIERARCHICAL_VIEW(XObjectType.MENU,"Hierarchical View"),
-	M_HIERARCHICAL_VIEW_GROUPING(XObjectType.MENU,"Grouping Hierarchy"),
-	M_HIERARCHICAL_VIEW_DERIVED(XObjectType.MENU,"Derived Hierarchy"),
-	M_UNIVERSEMANAGER(XObjectType.MENU,"Universe Manager"),
-	M_CROSSREFERENCING(XObjectType.MENU,"Cross Referencing"),
-	M_WORKFLOWTASKS(XObjectType.MENU,"WorkflowTasks"),
-	M_DATASTEWARDSHIP(XObjectType.MENU,"Datastewardship");
+	M_HIERARCHICAL_VIEW_GROUPING(XObjectType.MENU,"Grouping Hierarchy",false),
+	M_HIERARCHICAL_VIEW_DERIVED(XObjectType.MENU,"Derived Hierarchy",true),
+	M_UNIVERSEMANAGER(XObjectType.MENU,"Universe Manager",true),
+	M_CROSSREFERENCING(XObjectType.MENU,"Cross Referencing",true),
+	M_WORKFLOWTASKS(XObjectType.MENU,"WorkflowTasks",true),
+	M_DATASTEWARDSHIP(XObjectType.MENU,"Datastewardship",true);
 	
-	XSystemObjects(int type, String name) {
+	XSystemObjects(int type, String name,boolean tem) {
 		this.name = name;
 		this.type = type;
+		this.tem = tem;
 	}
 
 	XSystemObjects() {
@@ -88,6 +99,16 @@ public enum XSystemObjects {
 	private String name;
 
 	private int type;
+	
+	private boolean tem;
+
+	public boolean isTem() {
+		return tem;
+	}
+
+	public void setTem(boolean tem) {
+		this.tem = tem;
+	}
 
 	// key is the type
 	/**
@@ -178,5 +199,17 @@ public enum XSystemObjects {
 			}
 		}
 		return is;
-	}	
+	}
+	
+	public static Map<String, XSystemObjects> getXSystemObjectsTOM(int type) {
+
+		Map<String, XSystemObjects> map = new HashMap<String, XSystemObjects>();
+		for (int i = 0; i < values().length; i++) {
+			if (type == values()[i].getType()&& !values()[i].isTem())
+				map.put(String.valueOf(values()[i].getName()), values()[i]);
+		}
+		return map;
+	}
+	
+	
 }
