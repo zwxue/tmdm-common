@@ -69,7 +69,9 @@ public enum XSystemObjects {
 	M_UNIVERSEMANAGER(XObjectType.MENU,"Universe Manager",true),
 	M_CROSSREFERENCING(XObjectType.MENU,"Cross Referencing",true),
 	M_WORKFLOWTASKS(XObjectType.MENU,"WorkflowTasks",true),
-	M_DATASTEWARDSHIP(XObjectType.MENU,"Datastewardship",true);
+	M_DATASTEWARDSHIP(XObjectType.MENU,"Datastewardship",true),
+	
+	M_WELCOME(XObjectType.MENU,"Welcome",false);
 	
 	XSystemObjects(int type, String name,boolean tem) {
 		this.name = name;
