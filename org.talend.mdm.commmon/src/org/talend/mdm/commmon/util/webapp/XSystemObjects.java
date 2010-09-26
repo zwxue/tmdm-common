@@ -20,7 +20,7 @@ public enum XSystemObjects {
 	DC_XTENTIS_COMMON_REPORTING(XObjectType.DATA_CLUSTER, "Reporting",false),
 	DC_MDMITEMSTRASH(XObjectType.DATA_CLUSTER,"MDMItemsTrash",false),
 	
-	DC_SEARCHTEMPLATE(XObjectType.DATA_CLUSTER,"SearchTemplate",false),
+	DC_SEARCHTEMPLATE(XObjectType.DATA_CLUSTER,"SearchTemplate",true),
 	
 	DC_CROSSREFERENCING(XObjectType.DATA_CLUSTER,ICoreConstants.CrossReferencing_datacluster,true),
 	
