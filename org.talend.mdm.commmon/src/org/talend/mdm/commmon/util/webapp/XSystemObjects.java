@@ -43,7 +43,7 @@ public enum XSystemObjects {
 	DM_XTENTIS_COMMON_CONF(XObjectType.DATA_MODEL, "XMLSCHEMA---",false), 
 	DM_XTENTIS_COMMON_REPORTING(XObjectType.DATA_MODEL, "Reporting",false),
 	
-	DM_SEARCHTEMPLATE(XObjectType.DATA_MODEL,"SearchTemplate",false),
+	DM_SEARCHTEMPLATE(XObjectType.DATA_MODEL,"SearchTemplate",true),
 	
 	Dm_CROSSREFERENCING(XObjectType.DATA_MODEL,ICoreConstants.CrossReferencing_datamodel,true),
 	// Menus
