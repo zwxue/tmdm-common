@@ -28,9 +28,10 @@ public enum XSystemObjects {
 	
 	//tom:role/Default_Admin;role/Default_User
 	//tem:role/Default_Viewer
-	ROLE_DEFAULT_ADMIN(XObjectType.ROLE,"Default_Admin",false),
-	ROLE_DEFAULT_USER(XObjectType.ROLE,"Default_User",false),
-	ROLE_DEFAULT_VIEWER(XObjectType.ROLE,"Default_Viewer",true), //readonly for everything, can't be modified
+	ROLE_DEFAULT_ADMIN(XObjectType.ROLE,ICoreConstants.SYSTEM_ADMIN_ROLE,false),
+	ROLE_DEFAULT_USER(XObjectType.ROLE,ICoreConstants.SYSTEM_INTERACTIVE_ROLE,false),
+	ROLE_DEFAULT_WEB(XObjectType.ROLE,ICoreConstants.SYSTEM_WEB_ROLE,false),
+	ROLE_DEFAULT_VIEWER(XObjectType.ROLE,ICoreConstants.SYSTEM_VIEW_ROLE,true), //readonly for everything, can't be modified
 	// Data Models
 	
 	//tom:datamodel/CONF;datamodel/Reporting;datamodel/UpdateReport;datamodel/SearchTemplate;datamodel/XMLSCHEMA---
