@@ -23,13 +23,6 @@ public interface ICoreConstants {
 	public static final String CrossReferencing_datamodel="crossreferencing";	
 	
 	/**
-	 * enum user access type of accessing MDM
-	 */
-	public static final String ACCESS_BYSTUDIO = "5A";
-	public static final String ACCESS_BYWEBUI = "5B";
-	public static final String ACCESS_BYCODE = "";
-	
-	/**
 	 * enum user roles
 	 */
 	public static final String SYSTEM_ADMIN_ROLE = "System_Admin";
