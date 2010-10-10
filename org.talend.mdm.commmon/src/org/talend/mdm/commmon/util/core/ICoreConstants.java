@@ -25,6 +25,9 @@ public interface ICoreConstants {
 	/**
 	 * enum user roles
 	 */
+	public static final String AUTHENTICATED_PERMISSION = "authenticated";
+	public static final String ADMIN_PERMISSION = "administration";
+	
 	public static final String SYSTEM_ADMIN_ROLE = "System_Admin";
 	public static final String SYSTEM_INTERACTIVE_ROLE = "System_Interactive";
 	public static final String SYSTEM_WEB_ROLE = "System_Web";
