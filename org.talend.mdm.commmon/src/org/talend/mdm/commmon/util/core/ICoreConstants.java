@@ -1,5 +1,7 @@
 package org.talend.mdm.commmon.util.core;
 
+import java.util.HashMap;
+
 public interface ICoreConstants {
 	//schematron_rule
 	//static final String SCHEMATRON_RULE="schematron_rule";
@@ -32,4 +34,16 @@ public interface ICoreConstants {
 	public static final String SYSTEM_INTERACTIVE_ROLE = "System_Interactive";
 	public static final String SYSTEM_WEB_ROLE = "System_Web";
 	public static final String SYSTEM_VIEW_ROLE = "System_View";
+	
+	
+	public static class rolesConvert {
+
+		public static final HashMap<String, String> oldRoleToNewRoleMap = new HashMap<String, String>(); 
+		static{
+			oldRoleToNewRoleMap.put("Default_Admin", ICoreConstants.SYSTEM_ADMIN_ROLE);
+			oldRoleToNewRoleMap.put("Default_User", ICoreConstants.SYSTEM_INTERACTIVE_ROLE);
+			oldRoleToNewRoleMap.put("Default_Viewer", ICoreConstants.SYSTEM_VIEW_ROLE);
+		};
+	}
+
 }
