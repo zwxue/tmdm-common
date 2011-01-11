@@ -116,6 +116,9 @@ public final class MDMConfiguration {
         if(dbtype!=null && dbtype.toString().equals(EDBType.BERKELEY.getName())){
             return EDBType.BERKELEY;
         }   
+        if(dbtype!=null && dbtype.toString().equals(EDBType.QIZX.getName())){
+            return EDBType.QIZX;
+        } 
         return EDBType.EXIST;
     }
     public static boolean isExistDb() {
