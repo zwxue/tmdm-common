@@ -26,6 +26,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
 
 
 /**
@@ -164,6 +166,78 @@ public class ZipToFile {
             }
             is.close();
             os.close();
+        }
+        zfile.close();
+    }
+    
+    /**
+     * DOC hbhong Comment method "unZipFile". same with unZipFile(String zipfile, String unzipdir) method except having a progressMonitor
+     * @param zipfile
+     * @param unzipdir
+     * @param totalProgress
+     * @param monitor
+     * @throws Exception
+     */
+    public static void unZipFile(String zipfile, String unzipdir,int totalProgress, IProgressMonitor monitor) throws Exception {
+        monitor.setTaskName("Extracting archive...");
+        File unzipF = new File(unzipdir);
+        if (!unzipF.exists()) {
+            unzipF.mkdirs();
+        }
+        ZipFile zfile = new ZipFile(zipfile);
+        int total=zfile.size();
+//        System.out.println("zip's entry size:"+total);
+        int interval,step;
+        if ( totalProgress /total > 0) {
+            interval = 1;
+            step = Math.round(totalProgress /total);
+        } else {
+            step = 1;
+            interval = Math.round(total /totalProgress  + 0.5f);
+        }
+        Enumeration zList = zfile.entries();
+        ZipEntry ze = null;
+        byte[] buf = new byte[1024];
+        int tmp=1;
+        while (zList.hasMoreElements()) {
+            ze = (ZipEntry) zList.nextElement();
+            monitor.subTask(ze.getName());
+            if (ze.isDirectory()) {
+                File f = new File(unzipdir + ze.getName());
+                f.mkdirs();
+                continue;
+            }
+            // OutputStream os = new BufferedOutputStream(new FileOutputStream(getRealFileName(unzipdir,
+            // ze.getName())));
+            unzipdir = unzipdir.replace('\\', '/');
+            if (!unzipdir.endsWith("/")) { //$NON-NLS-1$
+                unzipdir = unzipdir + "/"; //$NON-NLS-1$
+            }
+            String filename = unzipdir + ze.getName();
+            File zeF = new File(filename);
+            if (!zeF.getParentFile().exists()) {
+                zeF.getParentFile().mkdirs();
+            }
+
+            OutputStream os = new BufferedOutputStream(new FileOutputStream(zeF));
+            InputStream is = new BufferedInputStream(zfile.getInputStream(ze));
+            int readLen = 0;
+            while ((readLen = is.read(buf, 0, 1024)) != -1) {
+                os.write(buf, 0, readLen);
+            }
+            is.close();
+            os.close();
+            // update monitor
+            if (interval == 1) {
+                monitor.worked(step);
+            } else {
+                if (tmp >= interval) {
+                    monitor.worked(step);
+                    tmp = 1;
+                } else {
+                    tmp++;
+                }
+            }
         }
         zfile.close();
     }
