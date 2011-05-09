@@ -27,7 +27,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.internal.intro.impl.util.Log;
 
 /**
@@ -200,109 +199,7 @@ public class ZipToFile {
         }
     }
 
-    /**
-     * DOC hbhong Comment method "unZipFile". same with unZipFile(String zipfile, String unzipdir) method except having
-     * a progressMonitor
-     * 
-     * @param zipfile
-     * @param unzipdir
-     * @param totalProgress
-     * @param monitor
-     * @throws IOException
-     * @throws Exception
-     */
-    public static void unZipFile(String zipfile, String unzipdir, int totalProgress, IProgressMonitor monitor) throws IOException {
-        monitor.setTaskName("Extracting archive...");
-        File unzipF = new File(unzipdir);
-        if (!unzipF.exists()) {
-            unzipF.mkdirs();
-        }
-        ZipFile zfile = null;
-
-        try {
-            zfile = new ZipFile(zipfile);
-            int total = zfile.size();
-            // System.out.println("zip's entry size:"+total);
-            int interval, step;
-            if (totalProgress / total > 0) {
-                interval = 1;
-                step = Math.round(totalProgress / total);
-            } else {
-                step = 1;
-                interval = Math.round(total / totalProgress + 0.5f);
-            }
-            Enumeration zList = zfile.entries();
-            ZipEntry ze = null;
-            byte[] buf = new byte[1024];
-            int tmp = 1;
-            while (zList.hasMoreElements()) {
-                ze = (ZipEntry) zList.nextElement();
-                monitor.subTask(ze.getName());
-                if (ze.isDirectory()) {
-                    File f = new File(unzipdir + ze.getName());
-                    f.mkdirs();
-                    continue;
-                }
-                unzipdir = unzipdir.replace('\\', '/');
-                if (!unzipdir.endsWith("/")) { //$NON-NLS-1$
-                    unzipdir = unzipdir + "/"; //$NON-NLS-1$
-                }
-                String filename = unzipdir + ze.getName();
-                File zeF = new File(filename);
-                if (!zeF.getParentFile().exists()) {
-                    zeF.getParentFile().mkdirs();
-                }
-
-                OutputStream os = null;
-                InputStream is = null;
-                try {
-                    os = new BufferedOutputStream(new FileOutputStream(zeF));
-                    is = new BufferedInputStream(zfile.getInputStream(ze));
-                    int readLen = 0;
-                    while ((readLen = is.read(buf, 0, 1024)) != -1) {
-                        os.write(buf, 0, readLen);
-                    }
-                } catch (IOException e) {
-                    Log.error(e.getMessage(), e);
-                } finally {
-                    try {
-                        if (is != null) {
-                            is.close();
-                        }
-                    } catch (Exception e) {
-                    }
-                    try {
-                        if (os != null) {
-                            os.close();
-                        }
-                    } catch (Exception e) {
-                    }
-
-                }
-                // update monitor
-                if (interval == 1) {
-                    monitor.worked(step);
-                } else {
-                    if (tmp >= interval) {
-                        monitor.worked(step);
-                        tmp = 1;
-                    } else {
-                        tmp++;
-                    }
-                }
-            }
-        } catch (IOException e) {
-            Log.error(e.getMessage(), e);
-            throw e;
-        } finally {
-            if (zfile != null) {
-                try {
-                    zfile.close();
-                } catch (IOException e) {
-                }
-            }
-        }
-    }
+ 
 
     public static void removeTalendLibsFromBarFile(File barFile) {
         String tmpfolder = System.getProperty("user.dir") + "/tmpfolder";
