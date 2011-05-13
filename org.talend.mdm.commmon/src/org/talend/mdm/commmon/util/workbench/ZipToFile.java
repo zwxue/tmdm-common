@@ -37,6 +37,10 @@ public class ZipToFile {
     public static final int BUFFER = 1024;// buf size
 
     public static void deleteDirectory(File dir) {
+        //modified by honghb ,fix bug 21552
+        if(!dir.exists()||dir.isFile())
+            return;
+        //end
         File[] entries = dir.listFiles();
         int sz = entries.length;
         for (int i = 0; i < sz; i++) {
