@@ -21,13 +21,15 @@ public class CommonUtil {
 	}
 
 	public static String getErrMsgFromException(Throwable e){
-		Pattern p=Pattern.compile("(.*?):(.*?)");
-		Matcher m=p.matcher(e.getLocalizedMessage());
-		String msg=e.getLocalizedMessage();
-		if(m.matches()){
-			msg=m.group(2);
-		}
-		return msg;
+        String msg = e.getLocalizedMessage();
+        if (msg != null) {
+            Pattern p=Pattern.compile("(.*?):(.*?)"); //$NON-NLS-1$
+            Matcher m = p.matcher(msg);
+            if (m.matches()) {
+                msg = m.group(2);
+            }
+        }
+        return msg;
 	}
 
     /**
@@ -41,7 +43,7 @@ public class CommonUtil {
     	if(dbtype.getName().equals(EDBType.ORACLE.getName())){
     		return EDBType.ORACLE.getRoot();
     	}
-    	return "";
+    	return ""; //$NON-NLS-1$
     }
     /**
      * 
@@ -50,15 +52,15 @@ public class CommonUtil {
      * @return
      */
     public static String getPath(String revisionID, String clusterName){
-    	if(revisionID!=null) revisionID=revisionID.replaceAll("\\[HEAD\\]|HEAD", "");
+    	if(revisionID!=null) revisionID=revisionID.replaceAll("\\[HEAD\\]|HEAD", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		String rootpath=getDBRootPath();
 		String collectionPath =
-       		(revisionID == null || "".equals(revisionID) ? rootpath+"/" : rootpath+"/R-"+revisionID+"/")
-       		+(clusterName == null ? "" : clusterName); 
+       		(revisionID == null || "".equals(revisionID) ? rootpath+"/" : rootpath+"/R-"+revisionID+"/")//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+       		+(clusterName == null ? "" : clusterName); //$NON-NLS-1$
 		EDBType dbtype=MDMConfiguration.getDBType();
 		if(dbtype.getName().equals(EDBType.BERKELEY.getName())){
-			collectionPath=collectionPath.startsWith("/")?collectionPath.substring(1):collectionPath;
-			return collectionPath.replace("/", ".");
+			collectionPath=collectionPath.startsWith("/")?collectionPath.substring(1):collectionPath; //$NON-NLS-1$
+			return collectionPath.replace("/", "."); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return collectionPath;
     }
