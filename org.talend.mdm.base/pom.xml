@@ -20,6 +20,7 @@
         <mdm.build.version>MAIN-SNAPSHOT</mdm.build.version>
         <mdm.build.dir>${basedir}/target</mdm.build.dir>
         <tom.location>${basedir}/..</tom.location>
+        <jboss.instance.lib>${basedir}/target</jboss.instance.lib>
         <dev.mode.excluded.start></dev.mode.excluded.start>
         <dev.mode.excluded.end></dev.mode.excluded.end>
     </properties>
@@ -158,6 +159,7 @@
                 <groupId>com.google.gwt</groupId>
                 <artifactId>gwt-servlet</artifactId>
                 <version>${gwt.version}</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.google.gwt</groupId>
@@ -169,11 +171,13 @@
                 <groupId>com.google.code.gwt-log</groupId>
                 <artifactId>gwt-log</artifactId>
                 <version>3.0.1</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.extjs</groupId>
                 <artifactId>gxt</artifactId>
                 <version>2.1.1</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>log4j</groupId>
