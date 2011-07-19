@@ -27,9 +27,21 @@
 
     <repositories>
         <repository>
-            <id>JBoss Repo</id>
-            <name>JBoss Repo</name>
-            <url>http://repository.jboss.com/maven2</url>
+            <!--See http://community.jboss.org/wiki/MavenRepository -->
+            <id>JBoss Public Repositories</id>
+            <name>JBoss Public Repositories</name>
+            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+            <!--See http://community.jboss.org/wiki/MavenRepository -->
+            <id>JBoss Group Repository</id>
+            <name>JBoss Group Repository</name>
+            <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+        </repository>
+        <repository>
+            <id>Sonatype OSS Public Repositories</id>
+            <name>Sonatype OSS Public Repositories</name>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
     </repositories>
 
