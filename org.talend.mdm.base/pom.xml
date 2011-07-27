@@ -318,7 +318,12 @@
                 <version>2.0.M3</version>
                 <scope>system</scope>
                 <systemPath>${tom.location}/talend.mdm.libraries/lib/z.dwr.jar</systemPath>
-            </dependency>
+            </dependency>   
+            <dependency>
+	            <groupId>com.sun.xml</groupId>
+	            <artifactId>relaxngDatatype</artifactId>
+	            <version>1.0</version>
+            </dependency>        
         </dependencies>
     </dependencyManagement>
 
