@@ -66,7 +66,7 @@ public enum XSystemObjects {
 	M_ITEMSTRASH(XObjectType.MENU,"ItemsTrash",false),
 	M_SMTP(XObjectType.MENU,"smtp",false),
 	//M_HIERARCHICAL_VIEW(XObjectType.MENU,"Hierarchical View"),
-	M_HIERARCHICAL_VIEW_GROUPING(XObjectType.MENU,"Grouping Hierarchy",false),
+    // M_HIERARCHICAL_VIEW_GROUPING(XObjectType.MENU, "Grouping Hierarchy", false), // see TMDM-2386
 	M_HIERARCHICAL_VIEW_DERIVED(XObjectType.MENU,"Derived Hierarchy",true),
 	M_UNIVERSEMANAGER(XObjectType.MENU,"Universe Manager",true),
 	M_CROSSREFERENCING(XObjectType.MENU,"Cross Referencing",true),
