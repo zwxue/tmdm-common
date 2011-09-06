@@ -52,7 +52,8 @@ public enum XSystemObjects {
 	//tem:menu/Cross+Referencing;menu/Derived+Hierarchy;menu/Manage+users;menu/Service+Schedule;menu/SynchronizationAction;
 	  //menu/SynchronizationItem;menu/Universe+Manager;menu/WorkflowTasks;menu/License;menu/Datastewardship
 	//M_BROWSE_ITEMS(XObjectType.MENU, "Browse items",false), 
-	M_BROWSE_ITEMS2(XObjectType.MENU, "Browse items2",false), 
+    M_BROWSE_ITEMS2(XObjectType.MENU, "Browse items2", false),
+    M_BrowseRecords(XObjectType.MENU, "BrowseRecords", false),
 	M_BROWSE_VIEWS(XObjectType.MENU, "Browse views",false), 
 	M_MANAGER_USERS(XObjectType.MENU, "Manage users",true), 
 	M_LICENSE(XObjectType.MENU, "License",true),
