@@ -53,7 +53,15 @@ public enum XSystemObjects {
 	  //menu/SynchronizationItem;menu/Universe+Manager;menu/WorkflowTasks;menu/License;menu/Datastewardship
 	//M_BROWSE_ITEMS(XObjectType.MENU, "Browse items",false), 
     M_BROWSE_ITEMS2(XObjectType.MENU, "Browse items2", false),
+    // GXT refact menu
     M_BrowseRecords(XObjectType.MENU, "BrowseRecords", false),
+    M_Hierarchy(XObjectType.MENU, "Hierarchy", false),
+    M_WelcomePortal(XObjectType.MENU, "WelcomePortal", false),
+    M_LicenseManager(XObjectType.MENU, "LicenseManager", false),
+    M_UserManager(XObjectType.MENU, "UserManager", false),
+    M_RecycleBin(XObjectType.MENU, "RecycleBin", false),
+    M_CrossReference(XObjectType.MENU, "CrossReference", false),
+
 	M_BROWSE_VIEWS(XObjectType.MENU, "Browse views",false), 
 	M_MANAGER_USERS(XObjectType.MENU, "Manage users",true), 
 	M_LICENSE(XObjectType.MENU, "License",true),
