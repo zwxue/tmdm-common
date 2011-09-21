@@ -75,6 +75,7 @@
                     <artifactId>gwt-maven-plugin</artifactId>
                     <version>1.2</version>
                     <configuration>
+                        <localWorkers>3</localWorkers>
                         <warSourceDirectory>${basedir}/war</warSourceDirectory>
                         <webappDirectory>${project.build.directory}/war</webappDirectory>
                     </configuration>
