@@ -23,6 +23,10 @@ public enum XSystemObjects {
 	DC_SEARCHTEMPLATE(XObjectType.DATA_CLUSTER,"SearchTemplate",true),
 	
 	DC_CROSSREFERENCING(XObjectType.DATA_CLUSTER,ICoreConstants.CrossReferencing_datacluster,true),
+    // Revision
+    DC_REVISION(XObjectType.DATA_CLUSTER, "Revision", true),
+    DC_MDMItemImages(XObjectType.DATA_CLUSTER, "MDMItemImages", false),
+    DC_MDMMigration(XObjectType.DATA_CLUSTER, "MDMMigration", false),
 	
 	//Role
 	
@@ -161,8 +165,8 @@ public enum XSystemObjects {
 	 */
 	public static boolean isXSystemObject(int type,String objectPK) {
 
-		Map<String, XSystemObjects> map = getXSystemObjects(type);
-		
+        Map<String, XSystemObjects> map = getXSystemObjects(type);
+
 		return isXSystemObject(map,type,objectPK);
 	}
 	
