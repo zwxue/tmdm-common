@@ -66,6 +66,7 @@ public enum XSystemObjects {
     M_RecycleBin(XObjectType.MENU, "RecycleBin", false),
     M_CrossReference(XObjectType.MENU, "CrossReference", false),
 
+    M_SEARCH(XObjectType.MENU, "Search",true),
 	M_BROWSE_VIEWS(XObjectType.MENU, "Browse views",false), 
 	M_MANAGER_USERS(XObjectType.MENU, "Manage users",true), 
 	M_LICENSE(XObjectType.MENU, "License",true),
