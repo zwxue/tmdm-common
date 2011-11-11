@@ -9,24 +9,24 @@ public enum XSystemObjects {
 //tom:datacluster/CONF;datacluster/Inbox;datacluster/Reporting;datacluster/UpdateReport;datacluster/SearchTemplate;datacluster/MDMItemsTrash
 //tem:datacluster/PROVISIONING;datacluster/crossreferencing;datacluster/JCAAdapters
 	// Data Clusters
-	DC_JCAADAPTERS(XObjectType.DATA_CLUSTER, "JCAAdapters",true), 
-	DC_INBOX(XObjectType.DATA_CLUSTER, "Inbox",false),
+	DC_JCAADAPTERS(XObjectType.DATA_CLUSTER, "JCAAdapters",true), //$NON-NLS-1$
+	DC_INBOX(XObjectType.DATA_CLUSTER, "Inbox",false), //$NON-NLS-1$
 	//DC_BUG_TRACKING(XObjectType.DATA_CLUSTER, "Bug Tracking"), 
-	DC_CONF(XObjectType.DATA_CLUSTER, "CONF",false), 
-	//DC_MDMCONF(XObjectType.DATA_CLUSTER, "MDMCONF"), 
-	DC_PROVISIONING(XObjectType.DATA_CLUSTER, "PROVISIONING",true), 
-	DC_UPDATE_PREPORT(XObjectType.DATA_CLUSTER, "UpdateReport",false), 
+	DC_CONF(XObjectType.DATA_CLUSTER, "CONF",false),  //$NON-NLS-1$
+	//DC_MDMCONF(XObjectType.DATA_CLUSTER, "MDMCONF"),  //$NON-NLS-1$
+	DC_PROVISIONING(XObjectType.DATA_CLUSTER, "PROVISIONING",true),  //$NON-NLS-1$
+	DC_UPDATE_PREPORT(XObjectType.DATA_CLUSTER, "UpdateReport",false),  //$NON-NLS-1$
 	//DC_XTENTIS_COMMON_CONF(XObjectType.DATA_CLUSTER, "Xtentis Common Conf"), 
-	DC_XTENTIS_COMMON_REPORTING(XObjectType.DATA_CLUSTER, "Reporting",false),
-	DC_MDMITEMSTRASH(XObjectType.DATA_CLUSTER,"MDMItemsTrash",false),
+	DC_XTENTIS_COMMON_REPORTING(XObjectType.DATA_CLUSTER, "Reporting",false), //$NON-NLS-1$
+	DC_MDMITEMSTRASH(XObjectType.DATA_CLUSTER,"MDMItemsTrash",false), //$NON-NLS-1$
 	
-	DC_SEARCHTEMPLATE(XObjectType.DATA_CLUSTER,"SearchTemplate",true),
+	DC_SEARCHTEMPLATE(XObjectType.DATA_CLUSTER,"SearchTemplate",true), //$NON-NLS-1$
 	
 	DC_CROSSREFERENCING(XObjectType.DATA_CLUSTER,ICoreConstants.CrossReferencing_datacluster,true),
     // Revision
-    DC_REVISION(XObjectType.DATA_CLUSTER, "Revision", true),
-    DC_MDMItemImages(XObjectType.DATA_CLUSTER, "MDMItemImages", false),
-    DC_MDMMigration(XObjectType.DATA_CLUSTER, "MDMMigration", false),
+    DC_REVISION(XObjectType.DATA_CLUSTER, "Revision", true), //$NON-NLS-1$
+    DC_MDMItemImages(XObjectType.DATA_CLUSTER, "MDMItemImages", false), //$NON-NLS-1$
+    DC_MDMMigration(XObjectType.DATA_CLUSTER, "MDMMigration", false), //$NON-NLS-1$
 	
 	//Role
 	
@@ -41,14 +41,14 @@ public enum XSystemObjects {
 	//tom:datamodel/CONF;datamodel/Reporting;datamodel/UpdateReport;datamodel/SearchTemplate;datamodel/XMLSCHEMA---
 	//tem:datamodel/PROVISIONING;datamodel/crossreferencing
 	//DM_BUG_TRACKING(XObjectType.DATA_MODEL, "Bug Tracking"), 
-	DM_CONF(XObjectType.DATA_MODEL, "CONF",false), 
-	DM_PROVISIONING(XObjectType.DATA_MODEL, "PROVISIONING",true), 
-	//DM_REPORTING(XObjectType.DATA_MODEL, "REPORTING"), 
-	DM_UPDATEREPORT(XObjectType.DATA_MODEL, "UpdateReport",false), 
-	DM_XTENTIS_COMMON_CONF(XObjectType.DATA_MODEL, "XMLSCHEMA---",false), 
-	DM_XTENTIS_COMMON_REPORTING(XObjectType.DATA_MODEL, "Reporting",false),
+	DM_CONF(XObjectType.DATA_MODEL, "CONF",false),  //$NON-NLS-1$
+	DM_PROVISIONING(XObjectType.DATA_MODEL, "PROVISIONING",true),  //$NON-NLS-1$
+	//DM_REPORTING(XObjectType.DATA_MODEL, "REPORTING"),  //$NON-NLS-1$
+	DM_UPDATEREPORT(XObjectType.DATA_MODEL, "UpdateReport",false),  //$NON-NLS-1$
+	DM_XTENTIS_COMMON_CONF(XObjectType.DATA_MODEL, "XMLSCHEMA---",false),  //$NON-NLS-1$
+	DM_XTENTIS_COMMON_REPORTING(XObjectType.DATA_MODEL, "Reporting",false), //$NON-NLS-1$
 	
-	DM_SEARCHTEMPLATE(XObjectType.DATA_MODEL,"SearchTemplate",true),
+	DM_SEARCHTEMPLATE(XObjectType.DATA_MODEL,"SearchTemplate",true), //$NON-NLS-1$
 	
 	Dm_CROSSREFERENCING(XObjectType.DATA_MODEL,ICoreConstants.CrossReferencing_datamodel,true),
 	// Menus
@@ -56,38 +56,38 @@ public enum XSystemObjects {
 	//tem:menu/Cross+Referencing;menu/Derived+Hierarchy;menu/Manage+users;menu/Service+Schedule;menu/SynchronizationAction;
 	  //menu/SynchronizationItem;menu/Universe+Manager;menu/WorkflowTasks;menu/License;menu/Datastewardship
 	//M_BROWSE_ITEMS(XObjectType.MENU, "Browse items",false), 
-    M_BROWSE_ITEMS2(XObjectType.MENU, "Browse items2", false),
+    M_BROWSE_ITEMS2(XObjectType.MENU, "Browse items2", false), //$NON-NLS-1$
     // GXT refact menu
-    M_BrowseRecords(XObjectType.MENU, "BrowseRecords", false),
-    M_Hierarchy(XObjectType.MENU, "Hierarchy", false),
-    M_WelcomePortal(XObjectType.MENU, "WelcomePortal", false),
-    M_LicenseManager(XObjectType.MENU, "LicenseManager", false),
-    M_UserManager(XObjectType.MENU, "UserManager", false),
-    M_RecycleBin(XObjectType.MENU, "RecycleBin", false),
-    M_CrossReference(XObjectType.MENU, "CrossReference", false),
+    M_BrowseRecords(XObjectType.MENU, "BrowseRecords", false), //$NON-NLS-1$
+    M_Hierarchy(XObjectType.MENU, "Hierarchy", true), //$NON-NLS-1$
+    M_WelcomePortal(XObjectType.MENU, "WelcomePortal", false), //$NON-NLS-1$
+    M_LicenseManager(XObjectType.MENU, "LicenseManager", true), //$NON-NLS-1$
+    M_UserManager(XObjectType.MENU, "UserManager", true), //$NON-NLS-1$
+    M_RecycleBin(XObjectType.MENU, "RecycleBin", false), //$NON-NLS-1$
+    M_CrossReference(XObjectType.MENU, "CrossReference", true), //$NON-NLS-1$
 
-    M_SEARCH(XObjectType.MENU, "Search",true),
-	M_BROWSE_VIEWS(XObjectType.MENU, "Browse views",false), 
-	M_MANAGER_USERS(XObjectType.MENU, "Manage users",true), 
-	M_LICENSE(XObjectType.MENU, "License",true),
-	M_REPORTING(XObjectType.MENU,"Reporting",false), 
-	M_SYNCHRONIZATIONACTION(XObjectType.MENU,"SynchronizationAction",true), 
-	M_SYNCHRONIZATIONPLAN(XObjectType.MENU,"SynchronizationItem",true),
+    M_SEARCH(XObjectType.MENU, "Search",true), //$NON-NLS-1$
+	M_BROWSE_VIEWS(XObjectType.MENU, "Browse views",false), //$NON-NLS-1$
+	M_MANAGER_USERS(XObjectType.MENU, "Manage users",true), //$NON-NLS-1$
+	M_LICENSE(XObjectType.MENU, "License",true), //$NON-NLS-1$
+	M_REPORTING(XObjectType.MENU,"Reporting",false), //$NON-NLS-1$
+	M_SYNCHRONIZATIONACTION(XObjectType.MENU,"SynchronizationAction",true), //$NON-NLS-1$ 
+	M_SYNCHRONIZATIONPLAN(XObjectType.MENU,"SynchronizationItem",true), //$NON-NLS-1$
 	//M_DATA_CHANGES(XObjectType.MENU,"Data changes"),
-	M_UPDATE_REPORT(XObjectType.MENU,"UpdateReport",false),
-	M_SERVICE_SCHEDULE(XObjectType.MENU,"Service Schedule",true),
-	M_LOGGING(XObjectType.MENU,"logging",false),
-	M_ITEMSTRASH(XObjectType.MENU,"ItemsTrash",false),
-	M_SMTP(XObjectType.MENU,"smtp",false),
+	M_UPDATE_REPORT(XObjectType.MENU,"UpdateReport",false), //$NON-NLS-1$
+	M_SERVICE_SCHEDULE(XObjectType.MENU,"Service Schedule",true), //$NON-NLS-1$
+	M_LOGGING(XObjectType.MENU,"logging",false), //$NON-NLS-1$
+	M_ITEMSTRASH(XObjectType.MENU,"ItemsTrash",false), //$NON-NLS-1$
+	M_SMTP(XObjectType.MENU,"smtp",false), //$NON-NLS-1$
 	//M_HIERARCHICAL_VIEW(XObjectType.MENU,"Hierarchical View"),
     // M_HIERARCHICAL_VIEW_GROUPING(XObjectType.MENU, "Grouping Hierarchy", false), // see TMDM-2386
-	M_HIERARCHICAL_VIEW_DERIVED(XObjectType.MENU,"Derived Hierarchy",true),
-	M_UNIVERSEMANAGER(XObjectType.MENU,"Universe Manager",true),
-	M_CROSSREFERENCING(XObjectType.MENU,"Cross Referencing",true),
-	M_WORKFLOWTASKS(XObjectType.MENU,"WorkflowTasks",true),
-	M_DATASTEWARDSHIP(XObjectType.MENU,"Datastewardship",true),
+	M_HIERARCHICAL_VIEW_DERIVED(XObjectType.MENU,"Derived Hierarchy",true), //$NON-NLS-1$
+	M_UNIVERSEMANAGER(XObjectType.MENU,"Universe Manager",true), //$NON-NLS-1$
+	M_CROSSREFERENCING(XObjectType.MENU,"Cross Referencing",true), //$NON-NLS-1$
+	M_WORKFLOWTASKS(XObjectType.MENU,"WorkflowTasks",true), //$NON-NLS-1$
+	M_DATASTEWARDSHIP(XObjectType.MENU,"Datastewardship",true), //$NON-NLS-1$
 	
-	M_WELCOME(XObjectType.MENU,"Welcome",false);
+	M_WELCOME(XObjectType.MENU,"Welcome",false); //$NON-NLS-1$
 	
 	XSystemObjects(int type, String name,boolean tem) {
 		this.name = name;
@@ -138,7 +138,7 @@ public enum XSystemObjects {
 
 		Map<String, XSystemObjects> map = new HashMap<String, XSystemObjects>();
 		for (int i = 0; i < values().length; i++) {
-			map.put(values()[i].getType()+"_"+String.valueOf(values()[i].getName()), values()[i]);
+			map.put(values()[i].getType()+"_"+String.valueOf(values()[i].getName()), values()[i]); //$NON-NLS-1$
 		}
 		return map;
 	}
