@@ -70,7 +70,7 @@ public final class MDMConfiguration {
         if (CONFIGURATION.getProperty("xmldb.server.name") == null)
             CONFIGURATION.setProperty("xmldb.server.name", "localhost");
         if (CONFIGURATION.getProperty("xmldb.server.port") == null)
-            CONFIGURATION.setProperty("xmldb.server.port", "8080");
+            CONFIGURATION.setProperty("xmldb.server.port", "8180");
         if (CONFIGURATION.getProperty("xmldb.administrator.username") == null)
             CONFIGURATION.setProperty("xmldb.administrator.username", "admin");
         if (CONFIGURATION.getProperty("xmldb.administrator.password") == null)
