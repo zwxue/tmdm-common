@@ -128,4 +128,10 @@ public final class MDMConfiguration {
         }
         return true;
     }   
+    
+    public static String getHttpPort() {
+        String port = getConfiguration().getProperty("http.server.port"); //$NON-NLS-1$
+        port = port == null ? "8180" : port; //$NON-NLS-1$
+        return port;
+    }
 }
