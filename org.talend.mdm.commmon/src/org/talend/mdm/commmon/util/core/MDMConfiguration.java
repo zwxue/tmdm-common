@@ -137,7 +137,7 @@ public final class MDMConfiguration {
 
     public static String getAdminPassword() {
         String passwd = getConfiguration().getProperty("admin.password"); //$NON-NLS-1$
-        passwd = passwd == null ? "1a254116eb5e70714b0680dfd4d8f7d4" : passwd; //$NON-NLS-1$
+        passwd = passwd == null ? "talend" : passwd; //$NON-NLS-1$
         return passwd;
     }
 
