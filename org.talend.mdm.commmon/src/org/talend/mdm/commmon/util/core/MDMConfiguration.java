@@ -134,4 +134,16 @@ public final class MDMConfiguration {
         port = port == null ? "8180" : port; //$NON-NLS-1$
         return port;
     }
+
+    public static String getAdminPassword() {
+        String passwd = getConfiguration().getProperty("admin.password"); //$NON-NLS-1$
+        passwd = passwd == null ? "1a254116eb5e70714b0680dfd4d8f7d4" : passwd; //$NON-NLS-1$
+        return passwd;
+    }
+
+    public static String getAdminUser() {
+        String user = getConfiguration().getProperty("admin.user"); //$NON-NLS-1$
+        user = user == null ? "admin" : user; //$NON-NLS-1$
+        return user;
+    }
 }
