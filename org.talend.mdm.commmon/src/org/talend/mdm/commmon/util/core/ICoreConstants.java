@@ -35,7 +35,11 @@ public interface ICoreConstants {
 	public static final String SYSTEM_WEB_ROLE = "System_Web";
 	public static final String SYSTEM_VIEW_ROLE = "System_View";
 	
-	
+    /**
+     * Item pk split
+     */
+    public static final String ITEM_PK_SPLIT = ".."; //$NON-NLS-1$
+
 	public static class rolesConvert {
 
 		public static final HashMap<String, String> oldRoleToNewRoleMap = new HashMap<String, String>(); 
