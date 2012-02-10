@@ -182,6 +182,11 @@ public enum XSystemObjects {
 		if(map.get(objectPK)!=null){
 			return true;
 		}
+        // if objectPK is like MDMMigration/completed
+        if (objectPK.indexOf('/') != -1) {
+            String key = objectPK.split("/")[0]; //$NON-NLS-1$
+            return map.get(key) != null;
+        }
 		return false;
 	}
 
