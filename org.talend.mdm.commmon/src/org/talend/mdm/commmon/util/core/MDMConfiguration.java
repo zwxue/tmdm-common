@@ -2,7 +2,6 @@ package org.talend.mdm.commmon.util.core;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.util.Properties;
 
 /**
@@ -88,24 +87,7 @@ public final class MDMConfiguration {
      * save configure file
      */
     public static void save(){
-        if(file == null)
-            throw new IllegalStateException();
-        
-        FileOutputStream out = null;
-        try {
-            out = new FileOutputStream(file);
-            CONFIGURATION.store(out, "MDM configuration file"); //$NON-NLS-1$
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (Exception e2) {
-                }
-            }
-        }
+        // do nothing see TMDM-3191
     }
     
     public static EDBType getDBType(){
