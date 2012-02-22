@@ -1,7 +1,20 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2012 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
 package org.talend.mdm.commmon.util.core;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Properties;
 
 /**
@@ -87,7 +100,24 @@ public final class MDMConfiguration {
      * save configure file
      */
     public static void save(){
-        // do nothing see TMDM-3191
+        if(file == null)
+            throw new IllegalStateException();
+        
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(file);
+            CONFIGURATION.store(out, "MDM configuration file"); //$NON-NLS-1$
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (Exception e2) {
+                }
+            }
+        }
     }
     
     public static EDBType getDBType(){
