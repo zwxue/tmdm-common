@@ -17,13 +17,17 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 /**
  * Handles the mdm.conf file
  * @author bgrieder
  *
  */
 public final class MDMConfiguration {
-     
+    
+	private static Logger logger= Logger.getLogger(MDMConfiguration.class);
+	
     private static String MDM_CONF = "mdm.conf"; //$NON-NLS-1$
     
     private static File file;
@@ -48,22 +52,22 @@ public final class MDMConfiguration {
         // try the current dir
         if (!file.exists()) {
             // if not found, try appending "bin"
-            System.out.println("MDM Configuration: unable to find the configuration in '" + file.getAbsolutePath() + "'.");
+        	logger.info("MDM Configuration: unable to find the configuration in '" + file.getAbsolutePath() + "'.");
             file = new File(currentDir, "bin/" + MDM_CONF);
-            System.out.println("MDM Configuration: trying in '" + file.getAbsolutePath() + "'.");
+            logger.info("MDM Configuration: trying in '" + file.getAbsolutePath() + "'.");
         }
         
         if (file.exists()) {
-            System.out.println("MDM Configuration: found in '" + file.getAbsolutePath() + "'.");
+        	logger.info("MDM Configuration: found in '" + file.getAbsolutePath() + "'.");
             try {
                 CONFIGURATION.load(new FileInputStream(file));
             }
             catch (Exception e) {
-                System.err.println("MDM Configuration: unable to load the configuration in '"+file.getAbsolutePath()+"' :"+e.getMessage()+". The default configurations will be used."); 
+                logger.error("MDM Configuration: unable to load the configuration in '"+file.getAbsolutePath()+"' :"+e.getMessage()+". The default configurations will be used."); 
             }
         }
         else
-            System.err.println("MDM Configuration: unable to load the configuration in '"+file.getAbsolutePath() +". The default configurations will be used.");
+        	logger.error("MDM Configuration: unable to load the configuration in '"+file.getAbsolutePath() +". The default configurations will be used.");
         
         checkupPropertiesForXDBConf();
         
@@ -108,7 +112,7 @@ public final class MDMConfiguration {
             out = new FileOutputStream(file);
             CONFIGURATION.store(out, "MDM configuration file"); //$NON-NLS-1$
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error(e.getMessage(), e);
         }
         finally {
             if (out != null) {
