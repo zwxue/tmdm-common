@@ -12,10 +12,22 @@
 // ============================================================================
 package org.talend.mdm.commmon.util.core;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
@@ -106,24 +118,93 @@ public final class MDMConfiguration {
     public static void save(){
         if(file == null)
             throw new IllegalStateException();
-        
-        FileOutputStream out = null;
         try {
-            out = new FileOutputStream(file);
-            CONFIGURATION.store(out, "MDM configuration file"); //$NON-NLS-1$
+            Properties originalProp = new Properties();
+            originalProp.load(new FileInputStream(file));
+
+            Map<String, String> changes = mergeProps(originalProp);
+            writePropertiesFile(changes);
         } catch (Exception e) {
         	logger.error(e.getMessage(), e);
         }
-        finally {
-            if (out != null) {
+
+    }
+    
+    private static Map<String, String> mergeProps(Properties prop) {
+        Enumeration<?> enumeration = CONFIGURATION.propertyNames();
+        Map<String, String> changes = new HashMap<String, String>();
+        while (enumeration.hasMoreElements()) {
+            String key = (String) enumeration.nextElement();
+            String v = CONFIGURATION.getProperty(key);
+            String originalValue = prop.getProperty(key);
+            if (!isEquals(v, originalValue)) {
+                changes.put(key, v);
+            }
+        }
+        return changes;
+    }
+
+    private static void writePropertiesFile(Map<String, String> changes) {
+        List<String> lines = new ArrayList<String>();
+        BufferedReader br = null;
+        BufferedWriter bw = null;
+        try {
+            br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("#") || line.trim().length() == 0) { //$NON-NLS-1$
+                    lines.add(line);
+                } else {
+                    String key = line.substring(0, line.indexOf('='));
+                    String v = changes.get(key);
+                    if (v != null) {
+                        lines.add(key + "=" + v); //$NON-NLS-1$
+                        changes.remove(key);
+                    } else {
+                        lines.add(line);
+                    }
+                }
+            }
+            Set<Entry<String, String>> entrys = changes.entrySet();
+            for (Entry<String, String> entry : entrys) {
+                lines.add(entry.getKey() + "=" + entry.getValue()); //$NON-NLS-1$
+            }
+
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+        } finally {
+            if (br != null) {
                 try {
-                    out.close();
-                } catch (Exception e2) {
+                    br.close();
+                } catch (IOException e) {
                 }
             }
         }
+        try {
+            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
+            for (String l : lines){
+                bw.write(l + "\r\n"); //$NON-NLS-1$
+            }
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+        } finally {
+            if (bw != null) {
+                try {
+                    bw.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+
     }
-    
+
+    private static boolean isEquals(String s1, String s2) {
+        if (s1 != null) {
+            return s1.equals(s2);
+        }
+        return s1 == s2;
+    }
+
     public static EDBType getDBType(){
         Object dbtype=getConfiguration().get("xmldb.type");
         if(dbtype!=null && dbtype.toString().equals(EDBType.ORACLE.getName())){
