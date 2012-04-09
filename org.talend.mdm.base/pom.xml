@@ -90,6 +90,7 @@
 					      <additionalClasspathElement>${project.build.sourceDirectory}</additionalClasspathElement>
 					      <additionalClasspathElement>${project.build.testSourceDirectory}</additionalClasspathElement>
 				      </additionalClasspathElements>
+				      <forkMode>always</forkMode>
 				      <useManifestOnlyJar>false</useManifestOnlyJar>
 			          <!-- 
 			          <excludes>
