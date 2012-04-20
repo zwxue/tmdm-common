@@ -365,6 +365,13 @@
                 <scope>system</scope>
                 <systemPath>${tom.location}/talend.mdm.libraries/lib/bonita-server-5.3.1.jar</systemPath>
             </dependency>
+            <dependency>
+			  <groupId>net.sf.saxon</groupId>
+			  <artifactId>saxon</artifactId>
+			  <version>9</version>
+			  <scope>system</scope>
+              <systemPath>${tom.location}/org.talend.mdm.core.plugin.base/lib/z.saxon9.jar</systemPath>
+			</dependency>
         </dependencies>
     </dependencyManagement>
 
