@@ -79,6 +79,8 @@
                         <localWorkers>3</localWorkers>
                         <warSourceDirectory>${basedir}/war</warSourceDirectory>
                         <webappDirectory>${project.build.directory}/war</webappDirectory>
+                        <!-- Exclude from packaged war file GWT 2.2 and onwards generated stuff -->
+                        <deploy>${project.build.directory}/gwt-deploy</deploy>
                     </configuration>
                 </plugin>
 
