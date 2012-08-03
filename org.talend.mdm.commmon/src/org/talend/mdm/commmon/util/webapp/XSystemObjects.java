@@ -87,7 +87,8 @@ public enum XSystemObjects {
 	M_WORKFLOWTASKS(XObjectType.MENU,"WorkflowTasks",true), //$NON-NLS-1$
 	M_DATASTEWARDSHIP(XObjectType.MENU,"Datastewardship",true), //$NON-NLS-1$
 	
-	M_WELCOME(XObjectType.MENU,"Welcome",false); //$NON-NLS-1$
+    M_WELCOME(XObjectType.MENU, "Welcome", false), //$NON-NLS-1$
+    M_STAGINGAREA(XObjectType.MENU, "StagingArea", false); //$NON-NLS-1$
 	
 	XSystemObjects(int type, String name,boolean tem) {
 		this.name = name;
