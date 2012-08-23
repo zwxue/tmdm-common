@@ -12,7 +12,8 @@ public enum EUUIDCustomType {
 	UUID("UUID"),
 	PICTURE("PICTURE"),
 	URL("URL"),
-	AUTO_INCREMENT("AUTO_INCREMENT");
+	AUTO_INCREMENT("AUTO_INCREMENT"),
+	MULTI_LINGUAL("MULTI_LINGUAL");
 	String name;
 	EUUIDCustomType(String name){
 		this.name=name;
