@@ -63,11 +63,11 @@ public final class MDMConfiguration {
                 CONFIGURATION.load(new FileInputStream(file));
             }
             catch (Exception e) {
-                logger.error("MDM Configuration: unable to load the configuration in '"+file.getAbsolutePath()+"' :"+e.getMessage()+". The default configurations will be used."); 
+                logger.warn("MDM Configuration: unable to load the configuration in '"+file.getAbsolutePath()+"' :"+e.getMessage()+". The default configurations will be used.");
             }
         }
         else
-            logger.error("MDM Configuration: unable to load the configuration in '" + file.getAbsolutePath()
+            logger.warn("MDM Configuration: unable to load the configuration in '" + file.getAbsolutePath()
                     + ". The default configurations will be used.");
         
         checkupPropertiesForXDBConf();
