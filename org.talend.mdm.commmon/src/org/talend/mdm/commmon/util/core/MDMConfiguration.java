@@ -163,4 +163,13 @@ public final class MDMConfiguration {
         user = user == null ? "admin" : user; //$NON-NLS-1$
         return user;
     }
+    
+    public static int getAutoEntityFindThreshold() {
+        String value = getConfiguration().getProperty("autoentityfind.item.max"); //$NON-NLS-1$
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return Integer.MAX_VALUE;
+        }
+    }
 }
