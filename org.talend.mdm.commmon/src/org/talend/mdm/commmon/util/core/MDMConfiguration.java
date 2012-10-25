@@ -172,4 +172,9 @@ public final class MDMConfiguration {
             return Integer.MAX_VALUE;
         }
     }
+    
+    public static boolean isExistDefaultDataSource() {
+        String defaultDataSource = getConfiguration().getProperty("db.default.datasource"); //$NON-NLS-1$
+        return defaultDataSource != null && defaultDataSource.trim().length() > 0 ? true : false;
+    }
 }
