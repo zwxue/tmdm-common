@@ -262,12 +262,6 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>com.google.gwt.google-apis</groupId>
-                <artifactId>gwt-visualization</artifactId>
-                <version>1.0.2</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
                 <groupId>com.allen-sauer.gwt.log</groupId>
                 <artifactId>gwt-log</artifactId>
                 <version>3.1.8</version>
@@ -398,6 +392,13 @@
             </dependency>
 
             <!-- MDM 3rd party dependencies -->
+            <dependency>
+                <groupId>org.moxieapps</groupId>
+                <artifactId>org.moxieapps.gwt.highcharts</artifactId>
+                <version>1.4.0</version>
+                <scope>system</scope>
+                <systemPath>${tom.location}/talend.mdm.libraries/lib/org.moxieapps.gwt.highcharts-1.4.0.jar</systemPath>
+            </dependency>
             <dependency>
                 <groupId>xsom</groupId>
                 <artifactId>xsom</artifactId>
