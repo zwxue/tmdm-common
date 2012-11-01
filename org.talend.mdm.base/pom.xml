@@ -393,13 +393,6 @@
 
             <!-- MDM 3rd party dependencies -->
             <dependency>
-                <groupId>org.moxieapps</groupId>
-                <artifactId>org.moxieapps.gwt.highcharts</artifactId>
-                <version>1.4.0</version>
-                <scope>system</scope>
-                <systemPath>${tom.location}/talend.mdm.libraries/lib/org.moxieapps.gwt.highcharts-1.4.0.jar</systemPath>
-            </dependency>
-            <dependency>
                 <groupId>xsom</groupId>
                 <artifactId>xsom</artifactId>
                 <version>20060306</version>
