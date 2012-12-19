@@ -380,8 +380,8 @@
                 <groupId>org.talend.mdm</groupId>
                 <artifactId>org.talend.mdm.core</artifactId>
                 <version>${project.version}</version>
-                <scope>system</scope>        
-                <systemPath>${tom.location}/org.talend.mdm.core/target/zz.20.core.jar</systemPath> 
+                <scope>system</scope>
+                <systemPath>${tom.location}/org.talend.mdm.core/zz.20.core.jar</systemPath>
             </dependency>
             <dependency>
                 <groupId>org.talend.mdm</groupId>
