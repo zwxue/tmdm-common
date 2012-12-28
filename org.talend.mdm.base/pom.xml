@@ -102,16 +102,10 @@
                         <forkMode>always</forkMode>
                         <useManifestOnlyJar>false</useManifestOnlyJar>
                         <!-- For GWT testing stuff -->
-                        <systemProperties>
-                            <property>
-                                <name>gwt.args</name>
-                                <value>-out ${project.build.directory}</value>
-                            </property>
-                            <property>
-                                <name>gwt.persistentunitcachedir</name>
-                                <value>${project.build.directory}</value>
-                            </property>
-                        </systemProperties>
+                        <systemPropertyVariables>
+                            <gwt.args>-out ${project.build.directory}</gwt.args>
+                            <gwt.persistentunitcachedir>${project.build.directory}</gwt.persistentunitcachedir>
+                        </systemPropertyVariables>
                     </configuration>
                 </plugin>
 
