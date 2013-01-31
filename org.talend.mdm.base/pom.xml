@@ -384,6 +384,13 @@
                 <scope>system</scope>
                 <systemPath>${tom.location}/org.talend.mdm.xmlserver.interfaces/z.mdm.xmlserver.jar</systemPath>
             </dependency>
+	        <dependency>
+	            <groupId>org.talend.mdm</groupId>
+	            <artifactId>org.talend.mdm.xmldb</artifactId>
+	            <version>${project.version}</version>
+	            <scope>system</scope>
+	            <systemPath>${tom.location}/org.talend.mdm.xmldb/z.mdm.xmldb.jar</systemPath>
+	        </dependency>
 
             <!-- MDM 3rd party dependencies -->
             <dependency>
