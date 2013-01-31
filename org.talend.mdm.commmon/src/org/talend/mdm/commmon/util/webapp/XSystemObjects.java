@@ -6,56 +6,34 @@ import java.util.Map;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
 
 public enum XSystemObjects {
-//tom:datacluster/CONF;datacluster/Inbox;datacluster/Reporting;datacluster/UpdateReport;datacluster/SearchTemplate;datacluster/MDMItemsTrash
-//tem:datacluster/PROVISIONING;datacluster/crossreferencing;datacluster/JCAAdapters
 	// Data Clusters
 	DC_JCAADAPTERS(XObjectType.DATA_CLUSTER, "JCAAdapters",true), //$NON-NLS-1$
 	DC_INBOX(XObjectType.DATA_CLUSTER, "Inbox",false), //$NON-NLS-1$
-	//DC_BUG_TRACKING(XObjectType.DATA_CLUSTER, "Bug Tracking"), 
 	DC_CONF(XObjectType.DATA_CLUSTER, "CONF",false),  //$NON-NLS-1$
-	//DC_MDMCONF(XObjectType.DATA_CLUSTER, "MDMCONF"),  //$NON-NLS-1$
 	DC_PROVISIONING(XObjectType.DATA_CLUSTER, "PROVISIONING",true),  //$NON-NLS-1$
 	DC_UPDATE_PREPORT(XObjectType.DATA_CLUSTER, "UpdateReport",false),  //$NON-NLS-1$
-	//DC_XTENTIS_COMMON_CONF(XObjectType.DATA_CLUSTER, "Xtentis Common Conf"), 
 	DC_XTENTIS_COMMON_REPORTING(XObjectType.DATA_CLUSTER, "Reporting",false), //$NON-NLS-1$
 	DC_MDMITEMSTRASH(XObjectType.DATA_CLUSTER,"MDMItemsTrash",false), //$NON-NLS-1$
-	
 	DC_SEARCHTEMPLATE(XObjectType.DATA_CLUSTER,"SearchTemplate",true), //$NON-NLS-1$
-	
 	DC_CROSSREFERENCING(XObjectType.DATA_CLUSTER,ICoreConstants.CrossReferencing_datacluster,true),
     // Revision
     DC_REVISION(XObjectType.DATA_CLUSTER, "Revision", true), //$NON-NLS-1$
     DC_MDMItemImages(XObjectType.DATA_CLUSTER, "MDMItemImages", false), //$NON-NLS-1$
     DC_MDMMigration(XObjectType.DATA_CLUSTER, "MDMMigration", false), //$NON-NLS-1$
-	
 	//Role
-	
-	//tom:role/Default_Admin;role/Default_User
-	//tem:role/Default_Viewer
 	ROLE_DEFAULT_ADMIN(XObjectType.ROLE,ICoreConstants.SYSTEM_ADMIN_ROLE,false),
 	ROLE_DEFAULT_USER(XObjectType.ROLE,ICoreConstants.SYSTEM_INTERACTIVE_ROLE,false),
 	ROLE_DEFAULT_WEB(XObjectType.ROLE,ICoreConstants.SYSTEM_WEB_ROLE,false),
 	ROLE_DEFAULT_VIEWER(XObjectType.ROLE,ICoreConstants.SYSTEM_VIEW_ROLE,true), //readonly for everything, can't be modified
 	// Data Models
-	
-	//tom:datamodel/CONF;datamodel/Reporting;datamodel/UpdateReport;datamodel/SearchTemplate;datamodel/XMLSCHEMA---
-	//tem:datamodel/PROVISIONING;datamodel/crossreferencing
-	//DM_BUG_TRACKING(XObjectType.DATA_MODEL, "Bug Tracking"), 
 	DM_CONF(XObjectType.DATA_MODEL, "CONF",false),  //$NON-NLS-1$
 	DM_PROVISIONING(XObjectType.DATA_MODEL, "PROVISIONING",true),  //$NON-NLS-1$
 	//DM_REPORTING(XObjectType.DATA_MODEL, "REPORTING"),  //$NON-NLS-1$
 	DM_UPDATEREPORT(XObjectType.DATA_MODEL, "UpdateReport",false),  //$NON-NLS-1$
-	DM_XTENTIS_COMMON_CONF(XObjectType.DATA_MODEL, "XMLSCHEMA---",false),  //$NON-NLS-1$
 	DM_XTENTIS_COMMON_REPORTING(XObjectType.DATA_MODEL, "Reporting",false), //$NON-NLS-1$
-	
 	DM_SEARCHTEMPLATE(XObjectType.DATA_MODEL,"SearchTemplate",true), //$NON-NLS-1$
-	
 	Dm_CROSSREFERENCING(XObjectType.DATA_MODEL,ICoreConstants.CrossReferencing_datamodel,true),
 	// Menus
-	//tom:menu/Browse+items;menu/Browse+views;menu/ItemsTrash;menu/logging;menu/Reporting;menu/smtp;menu/UpdateReport;menu/Grouping+Hierarchy
-	//tem:menu/Cross+Referencing;menu/Derived+Hierarchy;menu/Manage+users;menu/Service+Schedule;menu/SynchronizationAction;
-	  //menu/SynchronizationItem;menu/Universe+Manager;menu/WorkflowTasks;menu/License;menu/Datastewardship
-	//M_BROWSE_ITEMS(XObjectType.MENU, "Browse items",false), 
     M_BROWSE_ITEMS2(XObjectType.MENU, "Browse items2", false), //$NON-NLS-1$
     // GXT refact menu
     M_BrowseRecords(XObjectType.MENU, "BrowseRecords", false), //$NON-NLS-1$
@@ -65,7 +43,6 @@ public enum XSystemObjects {
     M_UserManager(XObjectType.MENU, "UserManager", true), //$NON-NLS-1$
     M_RecycleBin(XObjectType.MENU, "RecycleBin", false), //$NON-NLS-1$
     M_CrossReference(XObjectType.MENU, "CrossReference", true), //$NON-NLS-1$
-
     M_SEARCH(XObjectType.MENU, "Search",true), //$NON-NLS-1$
 	M_BROWSE_VIEWS(XObjectType.MENU, "Browse views",false), //$NON-NLS-1$
 	M_MANAGER_USERS(XObjectType.MENU, "Manage users",true), //$NON-NLS-1$
@@ -73,31 +50,30 @@ public enum XSystemObjects {
 	M_REPORTING(XObjectType.MENU,"Reporting",false), //$NON-NLS-1$
 	M_SYNCHRONIZATIONACTION(XObjectType.MENU,"SynchronizationAction",true), //$NON-NLS-1$ 
 	M_SYNCHRONIZATIONPLAN(XObjectType.MENU,"SynchronizationItem",true), //$NON-NLS-1$
-	//M_DATA_CHANGES(XObjectType.MENU,"Data changes"),
 	M_UPDATE_REPORT(XObjectType.MENU,"UpdateReport",false), //$NON-NLS-1$
 	M_SERVICE_SCHEDULE(XObjectType.MENU,"Service Schedule",true), //$NON-NLS-1$
 	M_LOGGING(XObjectType.MENU,"logging",false), //$NON-NLS-1$
 	M_ITEMSTRASH(XObjectType.MENU,"ItemsTrash",false), //$NON-NLS-1$
 	M_SMTP(XObjectType.MENU,"smtp",false), //$NON-NLS-1$
-	//M_HIERARCHICAL_VIEW(XObjectType.MENU,"Hierarchical View"),
-    // M_HIERARCHICAL_VIEW_GROUPING(XObjectType.MENU, "Grouping Hierarchy", false), // see TMDM-2386
 	M_HIERARCHICAL_VIEW_DERIVED(XObjectType.MENU,"Derived Hierarchy",true), //$NON-NLS-1$
 	M_UNIVERSEMANAGER(XObjectType.MENU,"Universe Manager",true), //$NON-NLS-1$
 	M_CROSSREFERENCING(XObjectType.MENU,"Cross Referencing",true), //$NON-NLS-1$
 	M_WORKFLOWTASKS(XObjectType.MENU,"WorkflowTasks",true), //$NON-NLS-1$
 	M_DATASTEWARDSHIP(XObjectType.MENU,"Datastewardship",true), //$NON-NLS-1$
-	
     M_WELCOME(XObjectType.MENU, "Welcome", false), //$NON-NLS-1$
     M_STAGINGAREA(XObjectType.MENU, "StagingArea", false); //$NON-NLS-1$
-	
+
+    private String name;
+
+   	private int type;
+
+   	private boolean tem;
+
 	XSystemObjects(int type, String name,boolean tem) {
 		this.name = name;
 		this.type = type;
 		this.tem = tem;
 	}
-
-	XSystemObjects() {
-	};
 
 	public String getName() {
 		return name;
@@ -115,28 +91,16 @@ public enum XSystemObjects {
 		this.type = type;
 	}
 
-	private String name;
-
-	private int type;
-	
-	private boolean tem;
-
 	public boolean isTem() {
 		return tem;
 	}
 
-	public void setTem(boolean tem) {
-		this.tem = tem;
-	}
-
-	// key is the type
-	/**
+    /**
 	 * get all the elements
 	 * 
 	 * @return map
 	 */
 	public static Map<String, XSystemObjects> getXSystemObjects() {
-
 		Map<String, XSystemObjects> map = new HashMap<String, XSystemObjects>();
 		for (int i = 0; i < values().length; i++) {
 			map.put(values()[i].getType()+"_"+String.valueOf(values()[i].getName()), values()[i]); //$NON-NLS-1$
@@ -146,12 +110,8 @@ public enum XSystemObjects {
 
 	/**
 	 * get the "type" elements
-	 * 
-	 * @param type
-	 * @return map
 	 */
 	public static Map<String, XSystemObjects> getXSystemObjects(int type) {
-
 		Map<String, XSystemObjects> map = new HashMap<String, XSystemObjects>();
 		for (int i = 0; i < values().length; i++) {
 			if (type == values()[i].getType())
@@ -160,26 +120,12 @@ public enum XSystemObjects {
 		return map;
 	}
 	
-	/**
-	 * @param type
-	 * @param objectPK
-	 * @return
-	 */
 	public static boolean isXSystemObject(int type,String objectPK) {
-
         Map<String, XSystemObjects> map = getXSystemObjects(type);
-
-		return isXSystemObject(map,type,objectPK);
+		return isXSystemObject(map, objectPK);
 	}
 	
-	/**
-	 * @param map
-	 * @param type
-	 * @param objectPK
-	 * @return
-	 */
-	public static boolean isXSystemObject(Map<String, XSystemObjects> map,int type,String objectPK) {
-
+	public static boolean isXSystemObject(Map<String, XSystemObjects> map, String objectPK) {
 		if(map.get(objectPK)!=null){
 			return true;
 		}
@@ -192,11 +138,7 @@ public enum XSystemObjects {
 	}
 
 	/**
-	 * chenk if the element is exist
-	 * 
-	 * @param type
-	 * @param name
-	 * @return boolean
+	 * check if the element is exist
 	 */
 	public static boolean isExist(int type, String name) {
 		boolean is = false;
@@ -209,10 +151,7 @@ public enum XSystemObjects {
 		return is;
 	}
 	/**
-	 * chenk if the element is exist
-	 * 
-	 * @param name
-	 * @return boolean
+	 * check if the element is exist
 	 */
 	public static boolean isExist(String name) {
 		boolean is = false;
@@ -226,7 +165,6 @@ public enum XSystemObjects {
 	}
 	
 	public static Map<String, XSystemObjects> getXSystemObjectsTOM(int type) {
-
 		Map<String, XSystemObjects> map = new HashMap<String, XSystemObjects>();
 		for (int i = 0; i < values().length; i++) {
 			if (type == values()[i].getType()&& !values()[i].isTem())
@@ -234,6 +172,4 @@ public enum XSystemObjects {
 		}
 		return map;
 	}
-	
-	
 }
