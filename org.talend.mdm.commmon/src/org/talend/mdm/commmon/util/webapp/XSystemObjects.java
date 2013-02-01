@@ -50,7 +50,7 @@ public enum XSystemObjects {
 	M_REPORTING(XObjectType.MENU,"Reporting",false), //$NON-NLS-1$
 	M_SYNCHRONIZATIONACTION(XObjectType.MENU,"SynchronizationAction",true), //$NON-NLS-1$ 
 	M_SYNCHRONIZATIONPLAN(XObjectType.MENU,"SynchronizationItem",true), //$NON-NLS-1$
-	M_UPDATE_REPORT(XObjectType.MENU,"UpdateReport",false), //$NON-NLS-1$
+	M_UPDATE_REPORT(XObjectType.MENU,"Journal",false), //$NON-NLS-1$
 	M_SERVICE_SCHEDULE(XObjectType.MENU,"Service Schedule",true), //$NON-NLS-1$
 	M_LOGGING(XObjectType.MENU,"logging",false), //$NON-NLS-1$
 	M_ITEMSTRASH(XObjectType.MENU,"ItemsTrash",false), //$NON-NLS-1$
