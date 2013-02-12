@@ -214,6 +214,9 @@
                             <include>**/*Test.java</include>
                             <include>**/*TestCase.java</include>
                         </includes>
+                        <excludes>
+                            <exclude>**/*GWTTest.java</exclude>
+                        </excludes>
                         <reportsDirectory>${mdm.reports.dir}</reportsDirectory>
                         <!-- For GWT testing stuff -->
                         <!-- See http://mojo.codehaus.org/gwt-maven-plugin/user-guide/testing.html -->
