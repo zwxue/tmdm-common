@@ -919,6 +919,16 @@
                 <artifactId>postgresql</artifactId>
                 <version>9.1-902.jdbc4</version>
             </dependency>
+            <dependency>
+                <groupId>opensymphony</groupId>
+                <artifactId>quartz</artifactId>
+                <version>1.6.0</version>
+            </dependency>
+            <dependency>
+                <groupId>opensymphony</groupId>
+                <artifactId>quartz-jboss</artifactId>
+                <version>1.6.0</version>
+            </dependency>
 
             <!-- 3rd party dependencies (see deploy-jboss-other-libs execution) -->
             <dependency>
@@ -1025,20 +1035,6 @@
                 <version>9</version>
                 <scope>system</scope>
                 <systemPath>${tom.location}/org.talend.mdm.core.plugin.base/lib/z.saxon9.jar</systemPath>
-            </dependency>
-            <dependency>
-                <groupId>opensymphony</groupId>
-                <artifactId>quartz</artifactId>
-                <version>1.6.0</version>
-                <scope>system</scope>
-                <systemPath>${tem.location}/org.talend.mdm.ext.service.schedule/libs/quartz-1.6.0.jar</systemPath>
-            </dependency>
-            <dependency>
-                <groupId>opensymphony</groupId>
-                <artifactId>quartz-jboss</artifactId>
-                <version>1.6.0</version>
-                <scope>system</scope>
-                <systemPath>${tem.location}/org.talend.mdm.ext.service.schedule/libs/quartz-jboss-1.6.0.jar</systemPath>
             </dependency>
 
             <!-- 3rd party dependencies (shared, see talend.mdm.libraries/deploy/lib ) -->
