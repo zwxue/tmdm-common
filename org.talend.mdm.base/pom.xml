@@ -95,6 +95,14 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.5</version>
                     <configuration>
+                        <includes>
+                            <include>**/*Test.java</include>
+                            <include>**/*TestCase.java</include>
+                            <include>**/*GWTTestSuite.java</include>
+                        </includes>
+                        <excludes>
+                            <exclude>**/*GWTTest.java</exclude>
+                        </excludes>
                         <additionalClasspathElements>
                             <additionalClasspathElement>${project.build.sourceDirectory}</additionalClasspathElement>
                             <additionalClasspathElement>${project.build.testSourceDirectory}</additionalClasspathElement>
