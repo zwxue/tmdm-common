@@ -238,6 +238,7 @@
                         <systemPropertyVariables>
                             <gwt.args>-out ${project.build.directory} -logLevel ERROR</gwt.args>
                             <gwt.persistentunitcachedir>${project.build.directory}</gwt.persistentunitcachedir>
+                            <file.encoding>utf-8</file.encoding>
                         </systemPropertyVariables>
                     </configuration>
                 </plugin>
