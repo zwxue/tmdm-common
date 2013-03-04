@@ -113,8 +113,9 @@ public enum XSystemObjects {
     public static Map<String, XSystemObjects> getXSystemObjects(int type) {
         Map<String, XSystemObjects> map = new HashMap<String, XSystemObjects>();
         for (int i = 0; i < values().length; i++) {
-            if (type == values()[i].getType())
+            if (type == values()[i].getType()) {
                 map.put(String.valueOf(values()[i].getName()), values()[i]);
+            }
         }
         return map;
     }
@@ -140,35 +141,32 @@ public enum XSystemObjects {
      * check if the element is exist
      */
     public static boolean isExist(int type, String name) {
-        boolean is = false;
         for (int i = 0; i < values().length; i++) {
-            if (type == values()[i].getType() && name.equals(values()[i].name)) {
-                is = true;
-                break;
+            if (values()[i].type == type && values()[i].name.equals(name)) {
+                return true;
             }
         }
-        return is;
+        return false;
     }
 
     /**
      * check if the element is exist
      */
     public static boolean isExist(String name) {
-        boolean is = false;
         for (int i = 0; i < values().length; i++) {
-            if (name.equals(values()[i].name)) {
-                is = true;
-                break;
+            if (values()[i].name.equals(name)) {
+                return true;
             }
         }
-        return is;
+        return false;
     }
 
     public static Map<String, XSystemObjects> getXSystemObjectsTOM(int type) {
         Map<String, XSystemObjects> map = new HashMap<String, XSystemObjects>();
         for (int i = 0; i < values().length; i++) {
-            if (type == values()[i].getType() && !values()[i].isTem())
+            if (type == values()[i].getType() && !values()[i].isTem()) {
                 map.put(String.valueOf(values()[i].getName()), values()[i]);
+            }
         }
         return map;
     }
