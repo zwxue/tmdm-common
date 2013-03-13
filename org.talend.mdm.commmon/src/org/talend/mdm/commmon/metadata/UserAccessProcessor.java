@@ -11,38 +11,11 @@
 
 package org.talend.mdm.commmon.metadata;
 
-import org.apache.ws.commons.schema.XmlSchemaAnnotation;
-import org.apache.ws.commons.schema.XmlSchemaAppInfo;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.xsd.XSDAnnotation;
 import org.w3c.dom.Element;
 
-import java.util.Iterator;
-
 class UserAccessProcessor implements XmlSchemaAnnotationProcessor {
-
-    public void process(MetadataRepository repository, ComplexTypeMetadata containingType, XmlSchemaAnnotation annotation, XmlSchemaAnnotationProcessorState state) {
-        if (annotation != null) {
-            Iterator annotations = annotation.getItems().getIterator();
-            while (annotations.hasNext()) {
-                Object next = annotations.next();
-                if (next instanceof XmlSchemaAppInfo) {
-                    XmlSchemaAppInfo appInfo = (XmlSchemaAppInfo) next;
-                    if ("X_Hide".equals(appInfo.getSource())) { //$NON-NLS-1$
-                        state.getHide().add(appInfo.getMarkup().item(0).getNodeValue());
-                    } else if ("X_Write".equals(appInfo.getSource())) { //$NON-NLS-1$
-                        state.getAllowWrite().add(appInfo.getMarkup().item(0).getNodeValue());
-                    } else if ("X_Deny_Create".equals(appInfo.getSource())) { //$NON-NLS-1$
-                        state.getDenyCreate().add(appInfo.getMarkup().item(0).getNodeValue());
-                    } else if ("X_Deny_LogicalDelete".equals(appInfo.getSource())) { //$NON-NLS-1$
-                        state.getDenyLogicalDelete().add(appInfo.getMarkup().item(0).getNodeValue());
-                    } else if ("X_Deny_PhysicalDelete".equals(appInfo.getSource())) { //$NON-NLS-1$
-                        state.getDenyPhysicalDelete().add(appInfo.getMarkup().item(0).getNodeValue());
-                    }
-                }
-            }
-        }
-    }
 
     @Override
     public void process(MetadataRepository repository, ComplexTypeMetadata type, XSDAnnotation annotation, XmlSchemaAnnotationProcessorState state) {

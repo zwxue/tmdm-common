@@ -11,17 +11,16 @@
 
 package org.talend.mdm.commmon.metadata;
 
-import org.apache.ws.commons.schema.XmlSchemaAnnotation;
 import org.eclipse.xsd.XSDAnnotation;
 
 /**
  * Enrich a {@link ComplexTypeMetadata} being built with information contained in XML Schema information.
- * @see MetadataRepository#createFieldMetadata(org.apache.ws.commons.schema.XmlSchemaElement, ComplexTypeMetadata)
+ * @see MetadataRepository#createFieldMetadata(org.eclipse.xsd.XSDElementDeclaration, ComplexTypeMetadata)
  */
 interface XmlSchemaAnnotationProcessor {
 
     /**
-     * Process additional type information contained in {@link XmlSchemaAnnotation}.
+     * Process additional type information contained in {@link XSDAnnotation}.
      *
      * @param repository The repository that contains the <code>type</code>.
      * @param type       The {@link ComplexTypeMetadata} being enriched by the <code>annotation</code>.
@@ -29,7 +28,5 @@ interface XmlSchemaAnnotationProcessor {
      * @param state      A {@link XmlSchemaAnnotationProcessorState} that keeps track of information parsed by
      *                   {@link XmlSchemaAnnotationProcessor}.
      */
-    void process(MetadataRepository repository, ComplexTypeMetadata type, XmlSchemaAnnotation annotation, XmlSchemaAnnotationProcessorState state);
-
     void process(MetadataRepository repository, ComplexTypeMetadata type, XSDAnnotation annotation, XmlSchemaAnnotationProcessorState state);
 }

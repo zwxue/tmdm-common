@@ -24,11 +24,14 @@ public class DefaultMetadataVisitor<T> implements MetadataVisitor<T> {
      * @return Result typed as T.
      */
     public T visit(MetadataRepository repository) {
-        Collection<TypeMetadata> types = repository.getTypes();
+        Collection<ComplexTypeMetadata> types = repository.getUserComplexTypes();
         for (TypeMetadata type : types) {
             type.accept(this);
         }
-
+        types = repository.getNonInstantiableTypes();
+        for (TypeMetadata type : types) {
+            type.accept(this);
+        }
         return null;
     }
 

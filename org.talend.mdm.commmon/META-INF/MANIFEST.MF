@@ -9,8 +9,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.xsd,
  org.eclipse.ui.intro,
  org.talend.libraries.apache,
- org.apache.commons.lang,
- org.apache.ws.commons.schema
+ org.apache.commons.lang
 Import-Package: org.apache.log4j
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

@@ -12,8 +12,6 @@
 package org.talend.mdm.commmon.metadata;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.ws.commons.schema.XmlSchemaAnnotation;
-import org.apache.ws.commons.schema.XmlSchemaAppInfo;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.xsd.XSDAnnotation;
 import org.w3c.dom.Element;
@@ -21,27 +19,6 @@ import org.w3c.dom.Element;
 import java.util.*;
 
 class ForeignKeyProcessor implements XmlSchemaAnnotationProcessor {
-
-    public void process(MetadataRepository repository, ComplexTypeMetadata type, XmlSchemaAnnotation annotation, XmlSchemaAnnotationProcessorState state) {
-        if (annotation != null) {
-            Iterator annotations = annotation.getItems().getIterator();
-            while (annotations.hasNext()) {
-                Object next = annotations.next();
-                if (next instanceof XmlSchemaAppInfo) {
-                    XmlSchemaAppInfo appInfo = (XmlSchemaAppInfo) next;
-                    if ("X_ForeignKey".equals(appInfo.getSource())) { //$NON-NLS-1$
-                        handleForeignKey(repository, state, appInfo);
-                    } else if ("X_ForeignKeyInfo".equals(appInfo.getSource())) { //$NON-NLS-1$
-                        handleForeignKeyInfo(repository, type, state, appInfo);
-                    } else if ("X_FKIntegrity".equals(appInfo.getSource())) { //$NON-NLS-1$
-                        state.setFkIntegrity(Boolean.valueOf(appInfo.getMarkup().item(0).getNodeValue()));
-                    } else if ("X_FKIntegrity_Override".equals(appInfo.getSource())) { //$NON-NLS-1$
-                        state.setFkIntegrityOverride(Boolean.valueOf(appInfo.getMarkup().item(0).getNodeValue()));
-                    }
-                }
-            }
-        }
-    }
 
     @Override
     public void process(MetadataRepository repository, ComplexTypeMetadata type, XSDAnnotation annotation, XmlSchemaAnnotationProcessorState state) {
@@ -86,40 +63,6 @@ class ForeignKeyProcessor implements XmlSchemaAnnotationProcessor {
         String userNamespace = repository.getUserNamespace();
         state.setFieldType(new SoftTypeRef(repository, userNamespace, typeAndFields[0].trim(), true));
         state.setReferencedType(new SoftTypeRef(repository, userNamespace, typeAndFields[0].trim(), true)); // Only reference instantiable types.
-        List<String> fieldList = Arrays.asList(typeAndFields);
-        FieldMetadata fieldMetadata = createFieldReference(repository, state.getFieldType(), fieldList);
-        if (fieldMetadata == null) {
-            throw new IllegalArgumentException("Path '" + path + "' is not supported.");
-        }
-        state.setReferencedField(fieldMetadata);
-    }
-
-    private void handleForeignKeyInfo(MetadataRepository repository, ComplexTypeMetadata type, XmlSchemaAnnotationProcessorState state, XmlSchemaAppInfo appInfo) {
-        String path = appInfo.getMarkup().item(0).getNodeValue();
-        String[] typeAndFields = path.split("/"); //$NON-NLS-1$
-        String typeName;
-        if (typeAndFields[0].equals(".")) { //$NON-NLS-1$
-            typeName = type.getName();
-        } else {
-            typeName = typeAndFields[0].trim();
-        }
-
-        List<String> fieldList = Arrays.asList(typeAndFields);
-        FieldMetadata fieldMetadata = createFieldReference(repository, new SoftTypeRef(repository, repository.getUserNamespace(), typeName, true), fieldList);
-        if (fieldMetadata == null) {
-            throw new IllegalArgumentException("Path '" + path + "' is not supported.");
-        }
-        state.setForeignKeyInfo(fieldMetadata);
-    }
-
-    private void handleForeignKey(MetadataRepository repository, XmlSchemaAnnotationProcessorState state, XmlSchemaAppInfo appInfo) {
-        state.markAsReference();
-        String path = appInfo.getMarkup().item(0).getNodeValue();
-        String[] typeAndFields = path.split("/"); //$NON-NLS-1$
-        String userNamespace = repository.getUserNamespace();
-        state.setFieldType(new SoftTypeRef(repository, userNamespace, typeAndFields[0].trim(), true));
-        state.setReferencedType(new SoftTypeRef(repository, userNamespace, typeAndFields[0].trim(), true)); // Only reference instantiable types.
-
         List<String> fieldList = Arrays.asList(typeAndFields);
         FieldMetadata fieldMetadata = createFieldReference(repository, state.getFieldType(), fieldList);
         if (fieldMetadata == null) {
