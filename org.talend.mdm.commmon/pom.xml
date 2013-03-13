@@ -24,6 +24,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <includes>
+                        <include>**/metadata/**</include>
                         <include>**/util/**</include>
                     </includes>
                     <excludes>
@@ -54,6 +55,26 @@
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.schema</groupId>
+            <artifactId>XmlSchema</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.ecore</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.xsd</groupId>
+            <artifactId>org.eclipse.xsd</artifactId>
         </dependency>
     </dependencies>
 
