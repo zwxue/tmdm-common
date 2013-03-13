@@ -9,16 +9,17 @@
  * 9 rue Pages 92150 Suresnes, France
  */
 
-package org.talend.mdm.commmon.metadata;
+package org.talend.mdm.commmon.metadata.annotation;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.xsd.XSDAnnotation;
+import org.talend.mdm.commmon.metadata.*;
 import org.w3c.dom.Element;
 
 import java.util.*;
 
-class ForeignKeyProcessor implements XmlSchemaAnnotationProcessor {
+public class ForeignKeyProcessor implements XmlSchemaAnnotationProcessor {
 
     @Override
     public void process(MetadataRepository repository, ComplexTypeMetadata type, XSDAnnotation annotation, XmlSchemaAnnotationProcessorState state) {

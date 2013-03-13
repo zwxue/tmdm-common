@@ -11,6 +11,7 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.talend.mdm.commmon.metadata.annotation.*;
 import org.talend.mdm.commmon.metadata.xsd.XSDVisitor;
 import org.talend.mdm.commmon.metadata.xsd.XmlSchemaWalker;
 import org.apache.commons.lang.NotImplementedException;
@@ -42,11 +43,14 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
 
     public static final String XSD_DOM_ELEMENT = "metadata.xsd.dom.element"; //$NON-NLS-1$
 
-    private static final String ANONYMOUS_PREFIX = "X_ANONYMOUS";
+    public static final String ANONYMOUS_PREFIX = "X_ANONYMOUS";
 
     private static final Logger LOGGER = Logger.getLogger(MetadataRepository.class);
 
-    private final static List<XmlSchemaAnnotationProcessor> XML_ANNOTATIONS_PROCESSORS = Arrays.asList(new ForeignKeyProcessor(), new UserAccessProcessor(), new SchematronProcessor());
+    private final static List<XmlSchemaAnnotationProcessor> XML_ANNOTATIONS_PROCESSORS = Arrays.asList(new ForeignKeyProcessor(),
+            new UserAccessProcessor(),
+            new SchematronProcessor(),
+            new PrimaryKeyInfoProcessor());
 
     private final static String USER_NAMESPACE = StringUtils.EMPTY;
 
@@ -160,7 +164,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
     }
 
     public void load(InputStream inputStream) {
-        load(inputStream, DefaultValidationHandler.INSTANCE);
+        load(inputStream, new DefaultValidationHandler());
     }
 
     public void load(InputStream inputStream, ValidationHandler handler) {
@@ -192,6 +196,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
         for (TypeMetadata type : getTypes()) {
             type.freeze(handler);
         }
+        handler.end();
     }
 
     private static void resolveAdditionalSuperTypes(MetadataRepository repository, ValidationHandler handler) {
@@ -427,6 +432,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
                         state.getDenyPhysicalDelete(),
                         state.getDenyLogicalDelete(),
                         state.getSchematron(),
+                        state.getPrimaryKeyInfo(),
                         true);
                 // Keep line and column of definition
                 type.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
@@ -627,6 +633,11 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
 
         @Override
         public void warning(TypeMetadata type, String message, int lineNumber, int columnNumber) {
+            // Nothing to do (No op validation)
+        }
+
+        @Override
+        public void end() {
             // Nothing to do (No op validation)
         }
     }

@@ -9,17 +9,20 @@
  * 9 rue Pages 92150 Suresnes, France
  */
 
-package org.talend.mdm.commmon.metadata;
+package org.talend.mdm.commmon.metadata.annotation;
 
 import org.apache.commons.lang.StringUtils;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.TypeMetadata;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * A simple bean that keeps track of information parsed by {@link XmlSchemaAnnotationProcessor} implementations.
  */
-class XmlSchemaAnnotationProcessorState {
+public class XmlSchemaAnnotationProcessorState {
 
     private final List<String> hide = new LinkedList<String>();
 
@@ -46,6 +49,8 @@ class XmlSchemaAnnotationProcessorState {
     private FieldMetadata referencedField;
 
     private String schematron = StringUtils.EMPTY;
+
+    private List<FieldMetadata> primaryKeyInfo = Collections.emptyList();
 
     public void setFkIntegrity(boolean fkIntegrity) {
         this.fkIntegrity = fkIntegrity;
@@ -129,5 +134,13 @@ class XmlSchemaAnnotationProcessorState {
 
     public String getSchematron() {
         return schematron;
+    }
+
+    public void setPrimaryKeyInfo(List<FieldMetadata> primaryKeyInfo) {
+        this.primaryKeyInfo = primaryKeyInfo;
+    }
+
+    public List<FieldMetadata> getPrimaryKeyInfo() {
+        return primaryKeyInfo;
     }
 }

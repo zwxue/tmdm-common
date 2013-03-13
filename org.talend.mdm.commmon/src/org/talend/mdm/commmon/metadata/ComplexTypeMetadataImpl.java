@@ -45,6 +45,8 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
 
     private final boolean isInstantiable;
 
+    private List<FieldMetadata> primaryKeyInfo;
+
     private String name;
 
     private MetadataRepository repository;
@@ -52,10 +54,28 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
     private boolean isFrozen;
 
     public ComplexTypeMetadataImpl(String nameSpace, String name, boolean instantiable) {
-        this(nameSpace, name, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY, instantiable);
+        this(nameSpace,
+                name,
+                Collections.<String>emptyList(),
+                Collections.<String>emptyList(),
+                Collections.<String>emptyList(),
+                Collections.<String>emptyList(),
+                Collections.<String>emptyList(),
+                StringUtils.EMPTY,
+                Collections.<FieldMetadata>emptyList(),
+                instantiable);
     }
 
-    public ComplexTypeMetadataImpl(String nameSpace, String name, List<String> allowWrite, List<String> denyCreate, List<String> hideUsers, List<String> physicalDelete, List<String> logicalDelete, String schematron, boolean instantiable) {
+    public ComplexTypeMetadataImpl(String nameSpace,
+                                   String name,
+                                   List<String> allowWrite,
+                                   List<String> denyCreate,
+                                   List<String> hideUsers,
+                                   List<String> physicalDelete,
+                                   List<String> logicalDelete,
+                                   String schematron,
+                                   List<FieldMetadata> primaryKeyInfo,
+                                   boolean instantiable) {
         this.name = name;
         this.nameSpace = nameSpace;
         this.allowWrite = allowWrite;
@@ -64,6 +84,7 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
         this.physicalDelete = physicalDelete;
         this.logicalDelete = logicalDelete;
         this.schematron = schematron;
+        this.primaryKeyInfo = primaryKeyInfo;
         this.isInstantiable = instantiable;
     }
 
@@ -220,7 +241,7 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
                 physicalDelete,
                 logicalDelete,
                 schematron,
-                isInstantiable);
+                primaryKeyInfo, isInstantiable);
         repository.addTypeMetadata(copy);
 
         Collection<FieldMetadata> fields = getFields();
@@ -248,6 +269,7 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
                 physicalDelete,
                 logicalDelete,
                 schematron,
+                primaryKeyInfo,
                 isInstantiable);
     }
 
@@ -278,12 +300,23 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
         return schematron;
     }
 
+    @Override
+    public List<FieldMetadata> getPrimaryKeyInfo() {
+        return primaryKeyInfo;
+    }
+
     public boolean hasField(String fieldName) {
         if (fieldName == null || fieldName.isEmpty()) {
             return false;
         }
         if (fieldName.indexOf('/') < 0) {
-            return fieldMetadata.containsKey(fieldName);
+            boolean contains = fieldMetadata.containsKey(fieldName);
+            if (!contains) {
+                for (TypeMetadata typeMetadata : getSuperTypes()) {
+                    contains |= ((ComplexTypeMetadata) typeMetadata).hasField(fieldName);
+                }
+            }
+            return contains;
         }
         StringTokenizer tokenizer = new StringTokenizer(fieldName, "/"); //$NON-NLS-1$
         ComplexTypeMetadata currentType = this;
@@ -358,7 +391,6 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
                 fieldMetadata.put(thisTypeField.getName(), thisTypeField);
             }
         }
-
         // Freeze all fields.
         Collection<FieldMetadata> values = new LinkedList<FieldMetadata>(fieldMetadata.values());
         for (FieldMetadata value : values) {
@@ -375,6 +407,13 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
         for (Map.Entry<String, FieldMetadata> keyField : keyFields.entrySet()) {
             keyField.setValue(keyField.getValue().freeze(handler));
         }
+        // Freeze primary info
+        List<FieldMetadata> frozenPrimaryKeyInfo = new LinkedList<FieldMetadata>();
+        for (FieldMetadata pkInfo : primaryKeyInfo) {
+            frozenPrimaryKeyInfo.add(pkInfo.freeze(handler));
+        }
+        primaryKeyInfo = frozenPrimaryKeyInfo;
+        // Done freeze (and validation of type).
         isFrozen = true;
         return this;
     }

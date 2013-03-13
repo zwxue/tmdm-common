@@ -11,6 +11,7 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import javax.xml.XMLConstants;
 import java.util.List;
 
 public class ReferenceFieldMetadata extends AbstractMetadataExtensible implements FieldMetadata {
@@ -26,6 +27,7 @@ public class ReferenceFieldMetadata extends AbstractMetadataExtensible implement
     private final List<String> hideUsers;
 
     private TypeMetadata fieldType;
+
     private final List<String> writeUsers;
 
     private final boolean isMandatory;
@@ -111,14 +113,21 @@ public class ReferenceFieldMetadata extends AbstractMetadataExtensible implement
         isFrozen = true;
         fieldType = fieldType.freeze(handler);
         TypeMetadata currentType = fieldType;
-        while (!currentType.getSuperTypes().isEmpty()) {
-            currentType = currentType.getSuperTypes().iterator().next();
+        // TODO This is duplicated code from MetadataUtils, bring MetadataUtils to this module (non core-dependent parts).
+        if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace())) {
+            while (!currentType.getSuperTypes().isEmpty()) {
+                TypeMetadata superType = currentType.getSuperTypes().iterator().next();
+                if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(superType.getNamespace())
+                        && ("anyType".equals(superType.getName())
+                        || "anySimpleType".equals(superType.getName()))) {
+                    break;
+                }
+                currentType = superType;
+            }
         }
         if (!"string".equals(currentType.getName())) { //$NON-NLS-1$
-            /*
-            handler.error("FK field '" + getName() + "' is invalid because it isn't typed as string (nor a string restriction).");
+            handler.error(containingType, "FK field '" + getName() + "' is invalid because it isn't typed as string (nor a string restriction).", -1, -1);
             return this;
-            */
         }
         if (foreignKeyInfo != null) {
             foreignKeyInfo = foreignKeyInfo.freeze(handler);

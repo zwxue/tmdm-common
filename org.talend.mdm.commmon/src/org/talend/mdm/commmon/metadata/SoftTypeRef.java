@@ -222,6 +222,11 @@ public class SoftTypeRef implements ComplexTypeMetadata {
     }
 
     @Override
+    public List<FieldMetadata> getPrimaryKeyInfo() {
+        return getTypeAsComplex().getPrimaryKeyInfo();
+    }
+
+    @Override
     public boolean hasField(String fieldName) {
         return getTypeAsComplex().hasField(fieldName);
     }

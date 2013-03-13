@@ -9,11 +9,13 @@
  * 9 rue Pages 92150 Suresnes, France
  */
 
-package org.talend.mdm.commmon.metadata;
+package org.talend.mdm.commmon.metadata.annotation;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.xsd.XSDAnnotation;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.w3c.dom.Element;
 
 import javax.xml.transform.Transformer;

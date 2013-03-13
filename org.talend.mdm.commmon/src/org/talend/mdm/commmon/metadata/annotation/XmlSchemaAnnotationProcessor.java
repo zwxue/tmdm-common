@@ -9,15 +9,17 @@
  * 9 rue Pages 92150 Suresnes, France
  */
 
-package org.talend.mdm.commmon.metadata;
+package org.talend.mdm.commmon.metadata.annotation;
 
 import org.eclipse.xsd.XSDAnnotation;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
 
 /**
  * Enrich a {@link ComplexTypeMetadata} being built with information contained in XML Schema information.
  * @see MetadataRepository#createFieldMetadata(org.eclipse.xsd.XSDElementDeclaration, ComplexTypeMetadata)
  */
-interface XmlSchemaAnnotationProcessor {
+public interface XmlSchemaAnnotationProcessor {
 
     /**
      * Process additional type information contained in {@link XSDAnnotation}.
@@ -25,8 +27,8 @@ interface XmlSchemaAnnotationProcessor {
      * @param repository The repository that contains the <code>type</code>.
      * @param type       The {@link ComplexTypeMetadata} being enriched by the <code>annotation</code>.
      * @param annotation An XML Schema annotation.
-     * @param state      A {@link XmlSchemaAnnotationProcessorState} that keeps track of information parsed by
-     *                   {@link XmlSchemaAnnotationProcessor}.
+     * @param state      A {@link org.talend.mdm.commmon.metadata.annotation.XmlSchemaAnnotationProcessorState} that keeps track of information parsed by
+ *                   {@link org.talend.mdm.commmon.metadata.annotation.XmlSchemaAnnotationProcessor}.
      */
     void process(MetadataRepository repository, ComplexTypeMetadata type, XSDAnnotation annotation, XmlSchemaAnnotationProcessorState state);
 }

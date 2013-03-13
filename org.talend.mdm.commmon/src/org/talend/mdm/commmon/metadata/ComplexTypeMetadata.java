@@ -91,6 +91,11 @@ public interface ComplexTypeMetadata extends TypeMetadata {
     String getSchematron();
 
     /**
+     * @return Returns the fields to be used for primary key info, or empty list if undefined.
+     */
+    List<FieldMetadata> getPrimaryKeyInfo();
+
+    /**
      * Tests if a {@link FieldMetadata} exists for given name. Name might either be a field name or a '/'-separated path
      * (like 'Family/FamilyId').
      * @param fieldName A field name. Field name is case sensitive and implementations supports path syntax.

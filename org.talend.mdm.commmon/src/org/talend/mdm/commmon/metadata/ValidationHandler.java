@@ -12,7 +12,7 @@
 package org.talend.mdm.commmon.metadata;
 
 /**
- *
+ * @see MetadataRepository#load(java.io.InputStream, ValidationHandler)
  */
 public interface ValidationHandler {
     void error(TypeMetadata type, String message, int lineNumber, int columnNumber);
@@ -20,4 +20,11 @@ public interface ValidationHandler {
     void fatal(TypeMetadata type, String message, int lineNumber, int columnNumber);
 
     void warning(TypeMetadata type, String message, int lineNumber, int columnNumber);
+
+    /**
+     * Called by validation process to indicate implementation should no longer wait for other messages (example:
+     * implementation can store messages and throw an exception that aggregates all messages in one exception when this
+     * method is called).
+     */
+    void end();
 }

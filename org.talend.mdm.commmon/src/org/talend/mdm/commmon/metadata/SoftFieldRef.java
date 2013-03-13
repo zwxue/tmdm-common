@@ -96,19 +96,23 @@ public class SoftFieldRef implements FieldMetadata {
         }
         if (containingType != null) {
             ComplexTypeMetadata type = repository.getComplexType(containingType.getName());
+            Integer lineNumberObject = (Integer) additionalData.get(MetadataRepository.XSD_LINE_NUMBER);
+            Integer columnNumberObject = (Integer) additionalData.get(MetadataRepository.XSD_COLUMN_NUMBER);
             if (type == null) {
-                handler.error(null, "Type '" + containingType + "' does not exist.", -1, -1);
+                handler.error(null,
+                        "Type '" + containingType + "' does not exist.",
+                        -1,
+                        -1);
                 return this;
             }
-            FieldMetadata field = type.getField(fieldName);
-            if (field == null) {
+            if (!type.hasField(fieldName)) {
                 handler.error(type,
                         "Type '" + containingType + "' does not own field '" + fieldName + "'.",
-                        type.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                        type.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER));
+                        lineNumberObject == null ? containingType.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER) : lineNumberObject,
+                        columnNumberObject == null ? containingType.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER) : columnNumberObject);
                 return this;
             }
-            frozenField = field;
+            frozenField = type.getField(fieldName);
         } else {
             frozenField = containingField;
         }
