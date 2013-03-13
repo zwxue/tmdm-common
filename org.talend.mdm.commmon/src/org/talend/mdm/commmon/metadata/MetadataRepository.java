@@ -44,7 +44,7 @@ public class MetadataRepository implements MetadataVisitable, XmlSchemaVisitor, 
 
     public static final String XSD_COLUMN_NUMBER = "metadata.xsd.column"; //$NON-NLS-1$
 
-    private static final String XSD_DOM_ELEMENT = "metadata.xsd.dom.element"; //$NON-NLS-1$
+    public static final String XSD_DOM_ELEMENT = "metadata.xsd.dom.element"; //$NON-NLS-1$
 
     private static final String ANONYMOUS_PREFIX = "X_ANONYMOUS";
 
@@ -54,11 +54,12 @@ public class MetadataRepository implements MetadataVisitable, XmlSchemaVisitor, 
 
     private final static String USER_NAMESPACE = StringUtils.EMPTY;
 
-    public static final boolean USE_APACHE_LIBRARY = true; // TODO Temp property
+    public static final boolean USE_APACHE_LIBRARY = false; // TODO Temp property
 
     private final Map<String, Map<String, TypeMetadata>> entityTypes = new TreeMap<String, Map<String, TypeMetadata>>();
 
     private final Map<String, Map<String, TypeMetadata>> nonInstantiableTypes = new TreeMap<String, Map<String, TypeMetadata>>();
+
     private final Stack<ComplexTypeMetadata> currentTypeStack = new Stack<ComplexTypeMetadata>();
 
     private String targetNamespace;
