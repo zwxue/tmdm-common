@@ -185,6 +185,14 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
         for (FieldMetadata value : fieldMetadata.values()) {
             value.validate(handler);
         }
+        for (FieldMetadata keyField : keyFields.values()) {
+            if (keyField.isMany()) {
+                handler.error(keyField,
+                        "Key field cannot be a repeatable element.",
+                        keyField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                        keyField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER));
+            }
+        }
         // Validate primary info
         for (FieldMetadata pkInfo : primaryKeyInfo) {
             // Order matters here: check if field is correct (exists) before checking isMany().

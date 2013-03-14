@@ -193,7 +193,10 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
         // TMDM-4876 Additional processing for entity inheritance
         resolveAdditionalSuperTypes(this, handler);
         // Validates data model
-        for (TypeMetadata type : getTypes()) {
+        for (TypeMetadata type : getUserComplexTypes()) {
+            type.validate(handler);
+        }
+        for (TypeMetadata type : getNonInstantiableTypes()) {
             type.validate(handler);
         }
         handler.end();

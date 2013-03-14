@@ -40,7 +40,9 @@ public class SoftIdFieldRef implements FieldMetadata {
 
     private FieldMetadata getField() {
         if (frozenField == null) {
-            throw new IllegalStateException("Field reference should be frozen before used.");
+            DefaultValidationHandler handler = new DefaultValidationHandler();
+            freeze(handler);
+            handler.end();
         }
         return frozenField;
     }
