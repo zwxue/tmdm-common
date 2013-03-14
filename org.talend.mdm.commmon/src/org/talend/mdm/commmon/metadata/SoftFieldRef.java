@@ -49,7 +49,9 @@ public class SoftFieldRef implements FieldMetadata {
 
     private FieldMetadata getField() {
         if (frozenField == null) {
-            throw new IllegalStateException("Field reference should be frozen before used.");
+            DefaultValidationHandler handler = new DefaultValidationHandler();
+            freeze(handler);
+            handler.end();
         }
         return frozenField;
     }
@@ -96,22 +98,6 @@ public class SoftFieldRef implements FieldMetadata {
         }
         if (containingType != null) {
             ComplexTypeMetadata type = repository.getComplexType(containingType.getName());
-            Integer lineNumberObject = (Integer) additionalData.get(MetadataRepository.XSD_LINE_NUMBER);
-            Integer columnNumberObject = (Integer) additionalData.get(MetadataRepository.XSD_COLUMN_NUMBER);
-            if (type == null) {
-                handler.error(null,
-                        "Type '" + containingType + "' does not exist.",
-                        -1,
-                        -1);
-                return this;
-            }
-            if (!type.hasField(fieldName)) {
-                handler.error(type,
-                        "Type '" + containingType + "' does not own field '" + fieldName + "'.",
-                        lineNumberObject == null ? containingType.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER) : lineNumberObject,
-                        columnNumberObject == null ? containingType.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER) : columnNumberObject);
-                return this;
-            }
             frozenField = type.getField(fieldName);
         } else {
             frozenField = containingField;
@@ -126,6 +112,28 @@ public class SoftFieldRef implements FieldMetadata {
     @Override
     public void promoteToKey() {
         getField().promoteToKey();
+    }
+
+    @Override
+    public void validate(ValidationHandler handler) {
+        if (containingType != null) {
+            ComplexTypeMetadata type = repository.getComplexType(containingType.getName());
+            Integer lineNumberObject = (Integer) additionalData.get(MetadataRepository.XSD_LINE_NUMBER);
+            Integer columnNumberObject = (Integer) additionalData.get(MetadataRepository.XSD_COLUMN_NUMBER);
+            if (type == null) {
+                handler.error(this,
+                        "Type '" + containingType + "' does not exist.",
+                        lineNumberObject == null ? containingType.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER) : lineNumberObject,
+                        columnNumberObject == null ? containingType.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER) : columnNumberObject);
+                return;
+            }
+            if (!type.hasField(fieldName)) {
+                handler.error(this,
+                        "Type '" + containingType + "' does not own field '" + fieldName + "'.",
+                        lineNumberObject == null ? containingType.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER) : lineNumberObject,
+                        columnNumberObject == null ? containingType.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER) : columnNumberObject);
+            }
+        }
     }
 
     @Override

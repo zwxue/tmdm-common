@@ -104,4 +104,12 @@ public interface FieldMetadata extends MetadataVisitable, MetadataExtensible {
      * Promotes this field to "key". After this method has been called, {@link #isKey()} must return <code>true</code>.
      */
     void promoteToKey();
+
+    /**
+     * Validates the field: performs assertions on content specific to MDM (this method should not raise XSD compliance
+     * issues).
+     * @param handler A {@link ValidationHandler} to be used for error / warning reporting.
+     * @see ValidationHandler#error(FieldMetadata, String, int, int)
+     */
+    void validate(ValidationHandler handler);
 }

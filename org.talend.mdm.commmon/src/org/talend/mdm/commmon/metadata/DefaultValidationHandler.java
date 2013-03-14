@@ -22,14 +22,33 @@ public class DefaultValidationHandler implements ValidationHandler {
 
     private final Set<String> messages = new HashSet<String>();
 
+    private int errorCount;
+
     @Override
-    public void error(TypeMetadata type, String message, int lineNumber, int columnNumber) {
-        messages.add(message + " (line: " + lineNumber + ", column:" + columnNumber + ")");
+    public void fatal(FieldMetadata field, String message, int lineNumber, int columnNumber) {
+        throw new RuntimeException(message);
+    }
+
+    @Override
+    public void error(FieldMetadata field, String message, int lineNumber, int columnNumber) {
+        messages.add("(Field) " + message + " (line: " + lineNumber + ", column: " + columnNumber + ")");
+        errorCount++;
+    }
+
+    @Override
+    public void warning(FieldMetadata field, String message, int lineNumber, int columnNumber) {
+        LOGGER.warn(message);
     }
 
     @Override
     public void fatal(TypeMetadata type, String message, int lineNumber, int columnNumber) {
-        messages.add(message + " (line: " + lineNumber + ", column:" + columnNumber + ")");
+        throw new RuntimeException(message);
+    }
+
+    @Override
+    public void error(TypeMetadata type, String message, int lineNumber, int columnNumber) {
+        messages.add("(Type) " + message + " (line: " + lineNumber + ", column: " + columnNumber + ")");
+        errorCount++;
     }
 
     @Override
@@ -41,10 +60,20 @@ public class DefaultValidationHandler implements ValidationHandler {
     public void end() {
         if (!messages.isEmpty()) {
             StringBuilder aggregatedMessages = new StringBuilder();
+            aggregatedMessages.append('\t');
             for (String message : messages) {
-                aggregatedMessages.append(message).append('\n').append('\t');
+                aggregatedMessages.append(message).append('\n').append('\t').append('\t');
             }
             throw new RuntimeException("Data model is invalid:\n\t" + aggregatedMessages.toString());
         }
+    }
+
+    @Override
+    public int getErrorCount() {
+        return errorCount;
+    }
+
+    public Set<String> getMessages() {
+        return messages;
     }
 }

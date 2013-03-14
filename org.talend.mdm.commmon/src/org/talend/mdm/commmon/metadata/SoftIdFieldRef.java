@@ -94,17 +94,10 @@ public class SoftIdFieldRef implements FieldMetadata {
             type = (ComplexTypeMetadata) repository.getNonInstantiableType(repository.getUserNamespace(), typeName);
         }
         if (type == null) {
-            handler.error(null, "Type '" + typeName + "' does not exist.", -1, -1);
+            handler.fatal((TypeMetadata) null, "Type '" + typeName + "' does not exist.", -1, -1);
             return this;
         }
         Collection<FieldMetadata> keyFields = type.getKeyFields();
-        if (keyFields.isEmpty()) {
-            handler.error(type,
-                    "Type '" + typeName + "' does not own a key and no FK field was defined.",
-                    type.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                    type.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER));
-            return this;
-        }
         if (fieldName == null) {
             if (keyFields.size() == 1) {
                 frozenField = keyFields.iterator().next();
@@ -124,6 +117,28 @@ public class SoftIdFieldRef implements FieldMetadata {
     @Override
     public void promoteToKey() {
         getField().promoteToKey();
+    }
+
+    @Override
+    public void validate(ValidationHandler handler) {
+        ComplexTypeMetadata type = (ComplexTypeMetadata) repository.getType(typeName);
+        if (type == null) {
+            type = (ComplexTypeMetadata) repository.getNonInstantiableType(repository.getUserNamespace(), typeName);
+        }
+        if (type == null) {
+            handler.error(this,
+                    "Type '" + typeName + "' does not exist",
+                    (Integer) additionalData.get(MetadataRepository.XSD_LINE_NUMBER),
+                    (Integer) additionalData.get(MetadataRepository.XSD_COLUMN_NUMBER));
+            return;
+        }
+        Collection<FieldMetadata> keyFields = type.getKeyFields();
+        if (keyFields.isEmpty()) {
+            handler.error(type,
+                    "Type '" + typeName + "' does not own a key and no FK field was defined.",
+                    type.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                    type.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER));
+        }
     }
 
     @Override

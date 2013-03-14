@@ -104,6 +104,11 @@ public class SimpleTypeFieldMetadata extends AbstractMetadataExtensible implemen
         isKey = true;
     }
 
+    @Override
+    public void validate(ValidationHandler handler) {
+        // Nothing to do for this type of field.
+    }
+
     public TypeMetadata getDeclaringType() {
         return declaringType;
     }

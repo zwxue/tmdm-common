@@ -187,6 +187,29 @@ public class SoftTypeRef implements ComplexTypeMetadata {
     }
 
     @Override
+    public void validate(ValidationHandler handler) {
+        TypeMetadata type;
+        if (instantiable) {
+            type = repository.getType(namespace, typeName);
+        } else {
+            type = repository.getNonInstantiableType(namespace, typeName);
+        }
+        if (type == null) {
+            if (instantiable) {
+                handler.error((TypeMetadata) null,
+                        "Entity type '" + typeName + "' (namespace: '" + namespace + "') is not present in type repository.",
+                        -1,
+                        -1);
+            } else {
+                handler.error((TypeMetadata) null,
+                        "Non entity type '" + typeName + "' (namespace: '" + namespace + "') is not present in type repository.",
+                        -1,
+                        -1);
+            }
+        }
+    }
+
+    @Override
     public Collection<FieldMetadata> getKeyFields() {
         return getTypeAsComplex().getKeyFields();
     }

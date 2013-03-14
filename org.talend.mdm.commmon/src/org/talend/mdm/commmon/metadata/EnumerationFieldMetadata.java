@@ -94,6 +94,11 @@ public class EnumerationFieldMetadata extends AbstractMetadataExtensible impleme
         isKey = true;
     }
 
+    @Override
+    public void validate(ValidationHandler handler) {
+        fieldType.validate(handler);
+    }
+
     public TypeMetadata getDeclaringType() {
         return declaringType;
     }

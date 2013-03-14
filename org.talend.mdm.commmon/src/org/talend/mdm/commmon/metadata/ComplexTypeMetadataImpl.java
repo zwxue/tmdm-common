@@ -160,6 +160,46 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
         return isFrozen;
     }
 
+    @Override
+    public void validate(ValidationHandler handler) {
+        // Gets fields from super types.
+        if (!superTypes.isEmpty()) {
+            List<TypeMetadata> thisSuperTypes = new LinkedList<TypeMetadata>(superTypes);
+            for (TypeMetadata superType : thisSuperTypes) {
+                if (isInstantiable() == superType.isInstantiable()) {
+                    if (superType instanceof ComplexTypeMetadata) {
+                        Collection<FieldMetadata> thisTypeKeyFields = getKeyFields();
+                        for (FieldMetadata thisTypeKeyField : thisTypeKeyFields) {
+                            if (!((ComplexTypeMetadata) superType).hasField(thisTypeKeyField.getName())) {
+                                handler.error(superType, "Type '" + name + "' cannot add field(s) to its key because " +
+                                        "super type '" + superType.getName() + "' already defines key.",
+                                        superType.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                                        superType.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // Validate all fields.
+        for (FieldMetadata value : fieldMetadata.values()) {
+            value.validate(handler);
+        }
+        // Validate primary info
+        for (FieldMetadata pkInfo : primaryKeyInfo) {
+            // Order matters here: check if field is correct (exists) before checking isMany().
+            int previousErrorCount = handler.getErrorCount();
+            pkInfo.validate(handler);
+            // No need to check isMany() if field definition is already wrong.
+            if (handler.getErrorCount() == previousErrorCount && pkInfo.isMany()) {
+                handler.error(pkInfo,
+                        "Primary key info element cannot be a repeatable element.",
+                        pkInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                        pkInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER));
+            }
+        }
+    }
+
     public Collection<FieldMetadata> getKeyFields() {
         return Collections.unmodifiableCollection(keyFields.values());
     }
@@ -364,15 +404,6 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
                 if (isInstantiable() == superType.isInstantiable()) {
                     superType = superType.freeze(handler);
                     if (superType instanceof ComplexTypeMetadata) {
-                        Collection<FieldMetadata> thisTypeKeyFields = getKeyFields();
-                        for (FieldMetadata thisTypeKeyField : thisTypeKeyFields) {
-                            if (!((ComplexTypeMetadata) superType).hasField(thisTypeKeyField.getName())) {
-                                handler.error(superType, "Type '" + name + "' cannot add field(s) to its key because " +
-                                        "super type '" + superType.getName() + "' already defines key.",
-                                        superType.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                                        superType.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER));
-                            }
-                        }
                         ((ComplexTypeMetadata) superType).registerSubType(this);
                     }
                     superTypes.add(superType);

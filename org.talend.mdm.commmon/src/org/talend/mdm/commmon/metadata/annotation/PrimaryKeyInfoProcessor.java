@@ -14,6 +14,7 @@ package org.talend.mdm.commmon.metadata.annotation;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.xsd.XSDAnnotation;
+import org.eclipse.xsd.util.XSDParser;
 import org.talend.mdm.commmon.metadata.*;
 import org.w3c.dom.Element;
 
@@ -45,6 +46,10 @@ public class PrimaryKeyInfoProcessor implements XmlSchemaAnnotationProcessor {
         String path = appInfo.getTextContent();
         String typeName = StringUtils.substringBefore(path, "/").trim(); //$NON-NLS-1$
         String fieldName = StringUtils.substringAfter(path, "/").trim(); //$NON-NLS-1$
-        return new SoftFieldRef(repository, fieldName, new SoftTypeRef(repository, repository.getUserNamespace(), typeName, true));
+        SoftFieldRef field = new SoftFieldRef(repository, fieldName, new SoftTypeRef(repository, repository.getUserNamespace(), typeName, true));
+        field.setData(MetadataRepository.XSD_LINE_NUMBER, XSDParser.getStartLine(appInfo));
+        field.setData(MetadataRepository.XSD_COLUMN_NUMBER, XSDParser.getStartColumn(appInfo));
+        field.setData(MetadataRepository.XSD_DOM_ELEMENT, appInfo);
+        return field;
     }
 }

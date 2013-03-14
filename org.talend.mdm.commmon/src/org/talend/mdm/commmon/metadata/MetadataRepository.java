@@ -184,19 +184,23 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
         for (XSDDiagnostic diagnostic : diagnostics) {
             XSDDiagnosticSeverity severity = diagnostic.getSeverity();
             if (severity.equals(XSDDiagnosticSeverity.ERROR_LITERAL)) {
-                handler.error(null, "XSD validation error: " + diagnostic.getMessage(), -1, -1);
+                handler.error((TypeMetadata) null, "XSD validation error: " + diagnostic.getMessage(), -1, -1);
             } else if (severity.equals(XSDDiagnosticSeverity.WARNING_LITERAL)) {
-                handler.error(null, "XSD validation warning: " + diagnostic.getMessage(), -1, -1);
+                handler.error((TypeMetadata) null, "XSD validation warning: " + diagnostic.getMessage(), -1, -1);
             }
         }
         XmlSchemaWalker.walk(schema, this);
         // TMDM-4876 Additional processing for entity inheritance
         resolveAdditionalSuperTypes(this, handler);
+        // Validates data model
+        for (TypeMetadata type : getTypes()) {
+            type.validate(handler);
+        }
+        handler.end();
         // "Freeze" all types (a consequence of this will be validation of all fields).
         for (TypeMetadata type : getTypes()) {
             type.freeze(handler);
         }
-        handler.end();
     }
 
     private static void resolveAdditionalSuperTypes(MetadataRepository repository, ValidationHandler handler) {
@@ -472,18 +476,25 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
     // TODO To refactor once test coverage is good.
     private FieldMetadata createFieldMetadata(XSDElementDeclaration element, ComplexTypeMetadata containingType) {
         String fieldName = element.getName();
-        boolean isMany = ((XSDParticle) element.getContainer()).getMaxOccurs() == -1 || ((XSDParticle) element.getContainer()).getMaxOccurs() > 1;
-        XmlSchemaAnnotationProcessorState state;
+        int minOccurs = ((XSDParticle) element.getContainer()).getMinOccurs();
+        int maxOccurs = ((XSDParticle) element.getContainer()).getMaxOccurs();
+        if (maxOccurs > 0 && minOccurs > maxOccurs) { // Eclipse XSD does not check this
+            throw new IllegalArgumentException("Can not parse information on field '"
+                    + element.getQName()
+                    + "' of type '"
+                    + containingType + "' (maxOccurs > minOccurs)");
+        }
+        boolean isMany = maxOccurs == -1 || maxOccurs > 1;
+        XmlSchemaAnnotationProcessorState state = new XmlSchemaAnnotationProcessorState();
         try {
             XSDAnnotation annotation = element.getAnnotation();
-            state = new XmlSchemaAnnotationProcessorState();
             for (XmlSchemaAnnotationProcessor processor : XML_ANNOTATIONS_PROCESSORS) {
                 processor.process(this, containingType, annotation, state);
             }
         } catch (Exception e) {
             throw new RuntimeException("Annotation processing exception while parsing info for field '" + fieldName + "' in type '" + containingType.getName() + "'", e);
         }
-        boolean isMandatory = ((XSDParticle) element.getContainer()).getMinOccurs() > 0;
+        boolean isMandatory = minOccurs > 0;
         boolean isContained = false;
         boolean isReference = state.isReference();
         boolean fkIntegrity = state.isFkIntegrity();
@@ -519,9 +530,9 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
                         fieldType,
                         allowWriteUsers,
                         hideUsers);
-                referencedField.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
-                referencedField.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
-                referencedField.setData(XSD_DOM_ELEMENT, element.getElement());
+                referenceField.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
+                referenceField.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
+                referenceField.setData(XSD_DOM_ELEMENT, element.getElement());
                 return referenceField;
             }
             if (content != null) {
@@ -627,6 +638,21 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
         }
 
         @Override
+        public void fatal(FieldMetadata field, String message, int lineNumber, int columnNumber) {
+            // Nothing to do (No op validation)
+        }
+
+        @Override
+        public void error(FieldMetadata field, String message, int lineNumber, int columnNumber) {
+            // Nothing to do (No op validation)
+        }
+
+        @Override
+        public void warning(FieldMetadata field, String message, int lineNumber, int columnNumber) {
+            // Nothing to do (No op validation)
+        }
+
+        @Override
         public void fatal(TypeMetadata type, String message, int lineNumber, int columnNumber) {
             // Nothing to do (No op validation)
         }
@@ -639,6 +665,11 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
         @Override
         public void end() {
             // Nothing to do (No op validation)
+        }
+
+        @Override
+        public int getErrorCount() {
+            return 0;
         }
     }
 }

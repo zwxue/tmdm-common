@@ -112,6 +112,20 @@ public class ReferenceFieldMetadata extends AbstractMetadataExtensible implement
         }
         isFrozen = true;
         fieldType = fieldType.freeze(handler);
+        if (foreignKeyInfo != null) {
+            foreignKeyInfo = foreignKeyInfo.freeze(handler);
+        }
+        referencedField = referencedField.freeze(handler);
+        referencedType = (ComplexTypeMetadata) referencedType.freeze(handler);
+        return this;
+    }
+
+    public void promoteToKey() {
+        throw new UnsupportedOperationException("FK field can't be promoted to key.");
+    }
+
+    @Override
+    public void validate(ValidationHandler handler) {
         TypeMetadata currentType = fieldType;
         // TODO This is duplicated code from MetadataUtils, bring MetadataUtils to this module (non core-dependent parts).
         if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace())) {
@@ -127,18 +141,8 @@ public class ReferenceFieldMetadata extends AbstractMetadataExtensible implement
         }
         if (!"string".equals(currentType.getName())) { //$NON-NLS-1$
             handler.error(containingType, "FK field '" + getName() + "' is invalid because it isn't typed as string (nor a string restriction).", -1, -1);
-            return this;
         }
-        if (foreignKeyInfo != null) {
-            foreignKeyInfo = foreignKeyInfo.freeze(handler);
-        }
-        referencedField = referencedField.freeze(handler);
-        referencedType = (ComplexTypeMetadata) referencedType.freeze(handler);
-        return this;
-    }
-
-    public void promoteToKey() {
-        throw new UnsupportedOperationException("FK field can't be promoted to key.");
+        referencedField.validate(handler);
     }
 
     public TypeMetadata getDeclaringType() {

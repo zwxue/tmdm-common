@@ -98,4 +98,12 @@ public interface TypeMetadata extends MetadataVisitable, MetadataExtensible {
      * otherwise.
      */
     boolean isFrozen();
+
+    /**
+     * Validates the type: performs assertions on content specific to MDM (this method should not raise XSD compliance
+     * issues).
+     * @param handler A {@link ValidationHandler} to be used for error / warning reporting.
+     * @see ValidationHandler#error(TypeMetadata, String, int, int)
+     */
+    void validate(ValidationHandler handler);
 }

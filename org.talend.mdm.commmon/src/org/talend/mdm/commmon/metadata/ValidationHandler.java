@@ -15,9 +15,16 @@ package org.talend.mdm.commmon.metadata;
  * @see MetadataRepository#load(java.io.InputStream, ValidationHandler)
  */
 public interface ValidationHandler {
-    void error(TypeMetadata type, String message, int lineNumber, int columnNumber);
+
+    void fatal(FieldMetadata field, String message, int lineNumber, int columnNumber);
+
+    void error(FieldMetadata field, String message, int lineNumber, int columnNumber);
+
+    void warning(FieldMetadata field, String message, int lineNumber, int columnNumber);
 
     void fatal(TypeMetadata type, String message, int lineNumber, int columnNumber);
+
+    void error(TypeMetadata type, String message, int lineNumber, int columnNumber);
 
     void warning(TypeMetadata type, String message, int lineNumber, int columnNumber);
 
@@ -27,4 +34,10 @@ public interface ValidationHandler {
      * method is called).
      */
     void end();
+
+    /**
+     * @return The number errors this {@link ValidationHandler} received so far (i.e. the number of times the methods
+     * error(...) were called).
+     */
+    int getErrorCount();
 }

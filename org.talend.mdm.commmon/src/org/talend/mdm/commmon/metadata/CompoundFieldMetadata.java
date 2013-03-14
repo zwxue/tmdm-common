@@ -75,6 +75,13 @@ public class CompoundFieldMetadata extends AbstractMetadataExtensible implements
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public void validate(ValidationHandler handler) {
+        for (FieldMetadata field : fields) {
+            field.validate(handler);
+        }
+    }
+
     public TypeMetadata getDeclaringType() {
         return fields[0].getDeclaringType();
     }

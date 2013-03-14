@@ -86,6 +86,11 @@ public class ContainedTypeFieldMetadata extends AbstractMetadataExtensible imple
         throw new UnsupportedOperationException("Contained type field can't be promoted to key.");
     }
 
+    @Override
+    public void validate(ValidationHandler handler) {
+        fieldType.validate(handler);
+    }
+
     public TypeMetadata getDeclaringType() {
         return declaringType;
     }

@@ -85,6 +85,22 @@ public class SimpleTypeMetadata extends AbstractMetadataExtensible implements Ty
     }
 
     public TypeMetadata freeze(ValidationHandler handler) {
+        isFrozen = true;
+        return this;
+    }
+
+    @Override
+    public boolean isInstantiable() {
+        return false;
+    }
+
+    @Override
+    public boolean isFrozen() {
+        return true;
+    }
+
+    @Override
+    public void validate(ValidationHandler handler) {
         if (!superTypes.isEmpty()) {
             List<TypeMetadata> thisSuperTypes = new LinkedList<TypeMetadata>(superTypes);
             superTypes.clear();
@@ -100,18 +116,6 @@ public class SimpleTypeMetadata extends AbstractMetadataExtensible implements Ty
                 }
             }
         }
-        isFrozen = true;
-        return this;
-    }
-
-    @Override
-    public boolean isInstantiable() {
-        return false;
-    }
-
-    @Override
-    public boolean isFrozen() {
-        return true;
     }
 
     public void addSuperType(TypeMetadata superType, MetadataRepository repository) {
