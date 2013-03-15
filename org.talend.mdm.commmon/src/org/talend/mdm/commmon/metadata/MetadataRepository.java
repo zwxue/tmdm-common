@@ -200,9 +200,13 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
             type.validate(handler);
         }
         handler.end();
-        // "Freeze" all types (a consequence of this will be validation of all fields).
-        for (TypeMetadata type : getTypes()) {
-            type.freeze(handler);
+        if (handler.getErrorCount() == 0) {
+            // "Freeze" all types (a consequence of this will be validation of all fields).
+            for (TypeMetadata type : getTypes()) {
+                type.freeze(handler);
+            }
+        } else {
+            LOGGER.error("Could not parse data model (" + handler.getErrorCount() + " error(s) found).");
         }
     }
 
