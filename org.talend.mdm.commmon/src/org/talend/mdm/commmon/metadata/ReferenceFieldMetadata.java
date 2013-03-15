@@ -126,6 +126,11 @@ public class ReferenceFieldMetadata extends AbstractMetadataExtensible implement
 
     @Override
     public void validate(ValidationHandler handler) {
+        int errorCount = handler.getErrorCount();
+        fieldType.validate(handler);
+        if (handler.getErrorCount() > errorCount) {
+            return;
+        }
         TypeMetadata currentType = fieldType;
         // TODO This is duplicated code from MetadataUtils, bring MetadataUtils to this module (non core-dependent parts).
         if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace())) {
@@ -137,10 +142,18 @@ public class ReferenceFieldMetadata extends AbstractMetadataExtensible implement
                     break;
                 }
                 currentType = superType;
+                errorCount = handler.getErrorCount();
+                currentType.validate(handler);
+                if (handler.getErrorCount() > errorCount) {
+                    return;
+                }
             }
         }
         if (!"string".equals(currentType.getName())) { //$NON-NLS-1$
-            handler.error(containingType, "FK field '" + getName() + "' is invalid because it isn't typed as string (nor a string restriction).", -1, -1);
+            handler.error(this,
+                    "FK field '" + getName() + "' is invalid because it isn't typed as string (nor a string restriction).",
+                    this.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                    this.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER));
         }
         referencedField.validate(handler);
     }

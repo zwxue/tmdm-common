@@ -522,6 +522,9 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
             XSDSimpleTypeDefinition content = simpleSchemaType.getBaseTypeDefinition();
             if (schemaType.getQName() != null) { // Null QNames may happen for anonymous types extending other types.
                 fieldType = new SoftTypeRef(this, schemaType.getTargetNamespace(), schemaType.getName(), false);
+                fieldType.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
+                fieldType.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
+                fieldType.setData(XSD_DOM_ELEMENT, element.getElement());
             }
             if (isReference) {
                 ReferenceFieldMetadata referenceField = new ReferenceFieldMetadata(containingType,

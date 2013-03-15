@@ -11,8 +11,7 @@
 
 package org.talend.mdm.commmon.metadata;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import org.apache.commons.lang.NotImplementedException;
 
@@ -32,6 +31,10 @@ public class SoftTypeRef implements ComplexTypeMetadata {
     private final String namespace;
 
     private final boolean instantiable;
+
+    private final Map<String, Object> additionalData = new HashMap<String, Object>();
+
+    private TypeMetadata frozenType;
 
     private SoftTypeRef(MetadataRepository repository, FieldMetadata fieldRef) {
         if (fieldRef == null) {
@@ -89,12 +92,12 @@ public class SoftTypeRef implements ComplexTypeMetadata {
 
     @Override
     public synchronized void setData(String key, Object data) {
-        getType().setData(key, data);
+        additionalData.put(key, data);
     }
 
     @Override
     public <X> X getData(String key) {
-        return getType().<X> getData(key);
+        return (X) additionalData.get(key);
     }
 
     @Override
@@ -148,7 +151,14 @@ public class SoftTypeRef implements ComplexTypeMetadata {
 
     @Override
     public TypeMetadata freeze(ValidationHandler handler) {
-        return getType().freeze(handler);
+        if (frozenType == null) {
+            frozenType = getType().freeze(handler);
+            Set<Map.Entry<String, Object>> data = additionalData.entrySet();
+            for (Map.Entry<String, Object> currentData : data) {
+                frozenType.setData(currentData.getKey(), currentData.getValue());
+            }
+        }
+        return frozenType;
     }
 
     @Override
@@ -198,13 +208,13 @@ public class SoftTypeRef implements ComplexTypeMetadata {
             if (instantiable) {
                 handler.error((TypeMetadata) null,
                         "Entity type '" + typeName + "' (namespace: '" + namespace + "') is not present in type repository.",
-                        -1,
-                        -1);
+                        (Integer) additionalData.get(MetadataRepository.XSD_LINE_NUMBER),
+                        (Integer) additionalData.get(MetadataRepository.XSD_COLUMN_NUMBER));
             } else {
                 handler.error((TypeMetadata) null,
                         "Non entity type '" + typeName + "' (namespace: '" + namespace + "') is not present in type repository.",
-                        -1,
-                        -1);
+                        (Integer) additionalData.get(MetadataRepository.XSD_LINE_NUMBER),
+                        (Integer) additionalData.get(MetadataRepository.XSD_COLUMN_NUMBER));
             }
         }
     }
