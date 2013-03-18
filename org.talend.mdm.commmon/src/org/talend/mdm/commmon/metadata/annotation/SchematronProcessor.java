@@ -11,7 +11,6 @@
 
 package org.talend.mdm.commmon.metadata.annotation;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.xsd.XSDAnnotation;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -21,8 +20,9 @@ import org.w3c.dom.Element;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.StringReader;
 import java.io.StringWriter;
 
 public class SchematronProcessor implements XmlSchemaAnnotationProcessor {
@@ -40,8 +40,8 @@ public class SchematronProcessor implements XmlSchemaAnnotationProcessor {
                         StringWriter sw = new StringWriter();
                         Transformer transformer = transformerFactory.newTransformer();
                         transformer.setOutputProperty("omit-xml-declaration", "yes"); //$NON-NLS-1$ //$NON-NLS-2$
-                        transformer.transform(new DOMSource(appInfo.getFirstChild()), new StreamResult(sw));
-                        state.setSchematron("<schema>" + StringEscapeUtils.unescapeXml(sw.toString()) + "</schema>"); //$NON-NLS-1$ //$NON-NLS-2$
+                        transformer.transform(new StreamSource(new StringReader(appInfo.getTextContent())), new StreamResult(sw));
+                        state.setSchematron("<schema>" + sw.toString() + "</schema>"); //$NON-NLS-1$ //$NON-NLS-2$
                     } catch (TransformerException e) {
                         throw new RuntimeException(e);
                     }
