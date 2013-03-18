@@ -13,6 +13,8 @@ package org.talend.mdm.commmon.metadata;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Collections;
+
 /**
  * A "contained" type represents a type inside another type (but this type can not be used as MDM entity type). Usually
  * contained types are created for XSD anonymous types.
@@ -31,7 +33,7 @@ public class ContainedComplexTypeMetadata extends ComplexTypeMetadataImpl {
                 containerType.getDenyDelete(DeleteType.PHYSICAL),
                 containerType.getDenyDelete(DeleteType.LOGICAL),
                 StringUtils.EMPTY,
-                containerType.getPrimaryKeyInfo(),
+                Collections.<FieldMetadata>emptyList(),
                 false);
         this.containerType = containerType;
     }
