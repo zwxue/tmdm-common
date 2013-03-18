@@ -13,14 +13,14 @@ package org.talend.mdm.commmon.metadata;
 
 import org.apache.log4j.Logger;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 public class DefaultValidationHandler implements ValidationHandler {
 
     public static final Logger LOGGER = Logger.getLogger(DefaultValidationHandler.class);
 
-    private final Set<String> messages = new HashSet<String>();
+    private final Collection<String> messages = new HashSet<String>();
 
     private int errorCount;
 
@@ -73,7 +73,7 @@ public class DefaultValidationHandler implements ValidationHandler {
         return errorCount;
     }
 
-    public Set<String> getMessages() {
+    public Collection<String> getMessages() {
         return messages;
     }
 }

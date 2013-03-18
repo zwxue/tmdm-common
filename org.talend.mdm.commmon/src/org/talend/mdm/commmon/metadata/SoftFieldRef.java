@@ -83,7 +83,7 @@ public class SoftFieldRef implements FieldMetadata {
 
     @Override
     public ComplexTypeMetadata getContainingType() {
-        return getField().getContainingType();
+        return (ComplexTypeMetadata) containingType;
     }
 
     @Override

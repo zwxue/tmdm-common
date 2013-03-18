@@ -195,6 +195,14 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
         }
         // Validate primary info
         for (FieldMetadata pkInfo : primaryKeyInfo) {
+            // PK Info must be defined in the entity (can't reference other entity field).
+            if (!this.equals(pkInfo.getContainingType())) {
+                handler.error(this,
+                        "Primary key info must refer a field of the same entity.",
+                        pkInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                        pkInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER));
+                continue;
+            }
             // Order matters here: check if field is correct (exists) before checking isMany().
             int previousErrorCount = handler.getErrorCount();
             pkInfo.validate(handler);
