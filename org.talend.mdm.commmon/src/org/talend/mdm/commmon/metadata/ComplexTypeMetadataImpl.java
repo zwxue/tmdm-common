@@ -197,7 +197,7 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
         for (FieldMetadata pkInfo : primaryKeyInfo) {
             // PK Info must be defined in the entity (can't reference other entity field).
             if (!this.equals(pkInfo.getContainingType())) {
-                handler.error(this,
+                handler.error(pkInfo,
                         "Primary key info must refer a field of the same entity.",
                         pkInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                         pkInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER));
