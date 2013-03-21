@@ -174,7 +174,8 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
                                 handler.error(superType, "Type '" + name + "' cannot add field(s) to its key because " +
                                         "super type '" + superType.getName() + "' already defines key.",
                                         superType.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                                        superType.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER));
+                                        superType.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                                        ValidationError.TYPE_CANNOT_OVERRIDE_SUPER_TYPE_KEY);
                             }
                         }
                     }
@@ -190,7 +191,8 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
                 handler.error(keyField,
                         "Key field cannot be a repeatable element.",
                         keyField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                        keyField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER));
+                        keyField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                        ValidationError.FIELD_KEY_CANNOT_BE_REPEATABLE);
             }
         }
         // Validate primary info
@@ -200,7 +202,8 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
                 handler.error(pkInfo,
                         "Primary key info must refer a field of the same entity.",
                         pkInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                        pkInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER));
+                        pkInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                        ValidationError.PRIMARY_KEY_INFO_NOT_IN_ENTITY);
                 continue;
             }
             // Order matters here: check if field is correct (exists) before checking isMany().
@@ -211,7 +214,8 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
                 handler.error(pkInfo,
                         "Primary key info element cannot be a repeatable element.",
                         pkInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                        pkInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER));
+                        pkInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                        ValidationError.PRIMARY_KEY_INFO_CANNOT_BE_REPEATABLE);
             }
         }
     }

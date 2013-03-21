@@ -11,53 +11,63 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.apache.log4j.Logger;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.*;
 
 public class DefaultValidationHandler implements ValidationHandler {
 
     public static final Logger LOGGER = Logger.getLogger(DefaultValidationHandler.class);
 
-    private final Collection<String> messages = new HashSet<String>();
+    private final Map<ValidationError, MultiKeyMap> errors = new HashMap<ValidationError, MultiKeyMap>();
 
     private int errorCount;
 
+    private void addErrorMessage(String message, int lineNumber, int columnNumber, ValidationError error) {
+        MultiKeyMap currentErrors = errors.get(error);
+        if (currentErrors == null) {
+            currentErrors = new MultiKeyMap();
+            errors.put(error, currentErrors);
+        }
+        currentErrors.put(lineNumber, columnNumber, message);
+    }
+
     @Override
-    public void fatal(FieldMetadata field, String message, int lineNumber, int columnNumber) {
+    public void fatal(FieldMetadata field, String message, int lineNumber, int columnNumber, ValidationError error) {
         throw new RuntimeException(message);
     }
 
     @Override
-    public void error(FieldMetadata field, String message, int lineNumber, int columnNumber) {
-        messages.add("(Field) " + message + " (line: " + lineNumber + ", column: " + columnNumber + ")");
+    public void error(FieldMetadata field, String message, int lineNumber, int columnNumber, ValidationError error) {
+        addErrorMessage(message, lineNumber, columnNumber, error);
         errorCount++;
     }
 
     @Override
-    public void warning(FieldMetadata field, String message, int lineNumber, int columnNumber) {
+    public void warning(FieldMetadata field, String message, int lineNumber, int columnNumber, ValidationError error) {
         LOGGER.warn(message);
     }
 
     @Override
-    public void fatal(TypeMetadata type, String message, int lineNumber, int columnNumber) {
+    public void fatal(TypeMetadata type, String message, int lineNumber, int columnNumber, ValidationError error) {
         throw new RuntimeException(message);
     }
 
     @Override
-    public void error(TypeMetadata type, String message, int lineNumber, int columnNumber) {
-        messages.add("(Type) " + message + " (line: " + lineNumber + ", column: " + columnNumber + ")");
+    public void error(TypeMetadata type, String message, int lineNumber, int columnNumber, ValidationError error) {
+        addErrorMessage(message, lineNumber, columnNumber, error);
         errorCount++;
     }
 
     @Override
-    public void warning(TypeMetadata type, String message, int lineNumber, int columnNumber) {
+    public void warning(TypeMetadata type, String message, int lineNumber, int columnNumber, ValidationError error) {
         LOGGER.warn(message);
     }
 
     @Override
     public void end() {
+        Collection<String> messages = getMessages();
         if (!messages.isEmpty()) {
             StringBuilder aggregatedMessages = new StringBuilder();
             aggregatedMessages.append('\t');
@@ -74,6 +84,10 @@ public class DefaultValidationHandler implements ValidationHandler {
     }
 
     public Collection<String> getMessages() {
+        Collection<String> messages = new LinkedList<String>();
+        for (Map.Entry<ValidationError, MultiKeyMap> error : errors.entrySet()) {
+            messages.addAll(error.getValue().values());
+        }
         return messages;
     }
 }

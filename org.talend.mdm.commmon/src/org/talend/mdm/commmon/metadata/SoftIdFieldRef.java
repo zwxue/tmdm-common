@@ -96,7 +96,7 @@ public class SoftIdFieldRef implements FieldMetadata {
             type = (ComplexTypeMetadata) repository.getNonInstantiableType(repository.getUserNamespace(), typeName);
         }
         if (type == null) {
-            handler.fatal((TypeMetadata) null, "Type '" + typeName + "' does not exist.", -1, -1);
+            handler.fatal((TypeMetadata) null, "Type '" + typeName + "' does not exist.", -1, -1, ValidationError.TYPE_DOES_NOT_EXIST);
             return this;
         }
         Collection<FieldMetadata> keyFields = type.getKeyFields();
@@ -131,7 +131,8 @@ public class SoftIdFieldRef implements FieldMetadata {
             handler.error(this,
                     "Type '" + typeName + "' does not exist",
                     (Integer) additionalData.get(MetadataRepository.XSD_LINE_NUMBER),
-                    (Integer) additionalData.get(MetadataRepository.XSD_COLUMN_NUMBER));
+                    (Integer) additionalData.get(MetadataRepository.XSD_COLUMN_NUMBER),
+                    ValidationError.TYPE_DOES_NOT_EXIST);
             return;
         }
         Collection<FieldMetadata> keyFields = type.getKeyFields();
@@ -139,7 +140,8 @@ public class SoftIdFieldRef implements FieldMetadata {
             handler.error(type,
                     "Type '" + typeName + "' does not own a key and no FK field was defined.",
                     type.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                    type.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER));
+                    type.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                    ValidationError.TYPE_DOES_NOT_OWN_KEY);
         }
     }
 

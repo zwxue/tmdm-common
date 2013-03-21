@@ -153,7 +153,8 @@ public class ReferenceFieldMetadata extends AbstractMetadataExtensible implement
             handler.error(this,
                     "FK field '" + getName() + "' is invalid because it isn't typed as string (nor a string restriction).",
                     this.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                    this.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER));
+                    this.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                    ValidationError.FOREIGN_KEY_NOT_STRING_TYPED);
         }
         referencedField.validate(handler);
     }

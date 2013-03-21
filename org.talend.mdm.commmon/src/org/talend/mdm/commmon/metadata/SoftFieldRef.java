@@ -124,19 +124,23 @@ public class SoftFieldRef implements FieldMetadata {
         } else {
             validationContainingType = containingField.getContainingType();
         }
-        ComplexTypeMetadata type = repository.getComplexType(validationContainingType.getName());
-        if (type == null) {
-            handler.error(this,
-                    "Type '" + validationContainingType + "' does not exist.",
-                    lineNumberObject == null ? validationContainingType.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER) : lineNumberObject,
-                    columnNumberObject == null ? validationContainingType.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER) : columnNumberObject);
-            return;
-        }
-        if (!type.hasField(fieldName)) {
-            handler.error(this,
-                    "Type '" + validationContainingType + "' does not own field '" + fieldName + "'.",
-                    lineNumberObject == null ? validationContainingType.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER) : lineNumberObject,
-                    columnNumberObject == null ? validationContainingType.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER) : columnNumberObject);
+        if (validationContainingType != null) {
+            ComplexTypeMetadata type = repository.getComplexType(validationContainingType.getName());
+            if (type == null) {
+                handler.error(this,
+                        "Type '" + validationContainingType + "' does not exist.",
+                        lineNumberObject == null ? validationContainingType.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER) : lineNumberObject,
+                        columnNumberObject == null ? validationContainingType.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER) : columnNumberObject,
+                        ValidationError.TYPE_DOES_NOT_EXIST);
+                return;
+            }
+            if (!type.hasField(fieldName)) {
+                handler.error(this,
+                        "Type '" + validationContainingType + "' does not own field '" + fieldName + "'.",
+                        lineNumberObject == null ? validationContainingType.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER) : lineNumberObject,
+                        columnNumberObject == null ? validationContainingType.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER) : columnNumberObject,
+                        ValidationError.TYPE_DOES_NOT_OWN_FIELD);
+            }
         }
     }
 

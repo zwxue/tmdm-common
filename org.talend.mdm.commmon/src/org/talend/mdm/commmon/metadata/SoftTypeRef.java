@@ -209,12 +209,14 @@ public class SoftTypeRef implements ComplexTypeMetadata {
                 handler.error((TypeMetadata) null,
                         "Entity type '" + typeName + "' (namespace: '" + namespace + "') is not present in type repository.",
                         (Integer) additionalData.get(MetadataRepository.XSD_LINE_NUMBER),
-                        (Integer) additionalData.get(MetadataRepository.XSD_COLUMN_NUMBER));
+                        (Integer) additionalData.get(MetadataRepository.XSD_COLUMN_NUMBER),
+                        ValidationError.TYPE_DOES_NOT_EXIST);
             } else {
                 handler.error((TypeMetadata) null,
                         "Non entity type '" + typeName + "' (namespace: '" + namespace + "') is not present in type repository.",
                         (Integer) additionalData.get(MetadataRepository.XSD_LINE_NUMBER),
-                        (Integer) additionalData.get(MetadataRepository.XSD_COLUMN_NUMBER));
+                        (Integer) additionalData.get(MetadataRepository.XSD_COLUMN_NUMBER),
+                        ValidationError.TYPE_DOES_NOT_EXIST);
             }
         }
     }

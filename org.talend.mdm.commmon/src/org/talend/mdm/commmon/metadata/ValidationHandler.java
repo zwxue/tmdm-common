@@ -16,17 +16,17 @@ package org.talend.mdm.commmon.metadata;
  */
 public interface ValidationHandler {
 
-    void fatal(FieldMetadata field, String message, int lineNumber, int columnNumber);
+    void fatal(FieldMetadata field, String message, int lineNumber, int columnNumber, ValidationError error);
 
-    void error(FieldMetadata field, String message, int lineNumber, int columnNumber);
+    void error(FieldMetadata field, String message, int lineNumber, int columnNumber, ValidationError error);
 
-    void warning(FieldMetadata field, String message, int lineNumber, int columnNumber);
+    void warning(FieldMetadata field, String message, int lineNumber, int columnNumber, ValidationError error);
 
-    void fatal(TypeMetadata type, String message, int lineNumber, int columnNumber);
+    void fatal(TypeMetadata type, String message, int lineNumber, int columnNumber, ValidationError error);
 
-    void error(TypeMetadata type, String message, int lineNumber, int columnNumber);
+    void error(TypeMetadata type, String message, int lineNumber, int columnNumber, ValidationError error);
 
-    void warning(TypeMetadata type, String message, int lineNumber, int columnNumber);
+    void warning(TypeMetadata type, String message, int lineNumber, int columnNumber, ValidationError error);
 
     /**
      * Called by validation process to indicate implementation should no longer wait for other messages (example:

@@ -184,9 +184,9 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
         for (XSDDiagnostic diagnostic : diagnostics) {
             XSDDiagnosticSeverity severity = diagnostic.getSeverity();
             if (severity.equals(XSDDiagnosticSeverity.ERROR_LITERAL)) {
-                handler.error((TypeMetadata) null, "XSD validation error: " + diagnostic.getMessage(), -1, -1);
+                handler.error((TypeMetadata) null, "XSD validation error: " + diagnostic.getMessage(), -1, -1, ValidationError.XML_SCHEMA);
             } else if (severity.equals(XSDDiagnosticSeverity.WARNING_LITERAL)) {
-                handler.error((TypeMetadata) null, "XSD validation warning: " + diagnostic.getMessage(), -1, -1);
+                handler.error((TypeMetadata) null, "XSD validation warning: " + diagnostic.getMessage(), -1, -1, ValidationError.XML_SCHEMA);
             }
         }
         XmlSchemaWalker.walk(schema, this);
@@ -221,7 +221,8 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
                         handler.error(nonInstantiableType,
                                 "Multiple inheritance is not supported.",
                                 nonInstantiableType.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                                nonInstantiableType.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER));
+                                nonInstantiableType.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                                ValidationError.MULTIPLE_INHERITANCE_NOT_ALLOWED);
                     }
                     TypeMetadata superType = nonInstantiableType.getSuperTypes().iterator().next();
                     ComplexTypeMetadata entitySuperType = null;
@@ -643,32 +644,32 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
 
     private static class NoOpValidationHandler implements ValidationHandler {
         @Override
-        public void error(TypeMetadata type, String message, int lineNumber, int columnNumber) {
+        public void error(TypeMetadata type, String message, int lineNumber, int columnNumber, ValidationError error) {
             // Nothing to do (No op validation)
         }
 
         @Override
-        public void fatal(FieldMetadata field, String message, int lineNumber, int columnNumber) {
+        public void fatal(FieldMetadata field, String message, int lineNumber, int columnNumber, ValidationError error) {
             // Nothing to do (No op validation)
         }
 
         @Override
-        public void error(FieldMetadata field, String message, int lineNumber, int columnNumber) {
+        public void error(FieldMetadata field, String message, int lineNumber, int columnNumber, ValidationError error) {
             // Nothing to do (No op validation)
         }
 
         @Override
-        public void warning(FieldMetadata field, String message, int lineNumber, int columnNumber) {
+        public void warning(FieldMetadata field, String message, int lineNumber, int columnNumber, ValidationError error) {
             // Nothing to do (No op validation)
         }
 
         @Override
-        public void fatal(TypeMetadata type, String message, int lineNumber, int columnNumber) {
+        public void fatal(TypeMetadata type, String message, int lineNumber, int columnNumber, ValidationError error) {
             // Nothing to do (No op validation)
         }
 
         @Override
-        public void warning(TypeMetadata type, String message, int lineNumber, int columnNumber) {
+        public void warning(TypeMetadata type, String message, int lineNumber, int columnNumber, ValidationError error) {
             // Nothing to do (No op validation)
         }
 
