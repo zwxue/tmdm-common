@@ -76,20 +76,28 @@ public class ForeignKeyProcessor implements XmlSchemaAnnotationProcessor {
         Queue<String> processQueue = new LinkedList<String>(path);
         processQueue.poll(); // Remove first (first is type name and required additional processing for '.')
         SoftTypeRef currentType = new SoftTypeRef(repository, rootTypeName.getNamespace(), rootTypeName.getName(), true);
-        FieldMetadata fieldMetadata = null;
+        FieldMetadata fieldMetadata;
         if (processQueue.isEmpty()) {
             // handle case where referenced type "Type" only and not "Type/Id" (way to reference composite id).
             fieldMetadata = new SoftIdFieldRef(repository, rootTypeName.getName());
         } else {
+            SoftFieldRef previous = null;
+            SoftFieldRef newField = null;
             while (!processQueue.isEmpty()) {
                 // In case of "PersonneMorale/IdPersonneMorale[PersonneMorale/ListeRole/Role/IdRole=DEP]", skip xpath condition.
-                String currentField = StringUtils.substringBefore(processQueue.poll().trim(), "["); //$NON-NLS-1$
-                if (fieldMetadata == null) {
-                    fieldMetadata = new SoftFieldRef(repository, currentField, currentType);
-                } else {
-                    fieldMetadata = new SoftFieldRef(repository, currentField, (SoftFieldRef) fieldMetadata);
+                String currentField = processQueue.poll().trim();
+                if (currentField.indexOf('[') > 0) {
+                    currentField = StringUtils.substringBefore(currentField, "["); //$NON-NLS-1$
+                    processQueue.clear(); // don't process any further the xpath expression.
                 }
+                if (previous == null) {
+                    newField = new SoftFieldRef(repository, currentField, currentType);
+                } else {
+                    newField = new SoftFieldRef(repository, currentField, previous);
+                }
+                previous = newField;
             }
+            fieldMetadata = newField;
         }
         if (fieldMetadata == null) {
             throw new IllegalStateException();

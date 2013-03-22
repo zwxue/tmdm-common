@@ -157,6 +157,9 @@ public class ReferenceFieldMetadata extends AbstractMetadataExtensible implement
                     ValidationError.FOREIGN_KEY_NOT_STRING_TYPED);
         }
         referencedField.validate(handler);
+        if (foreignKeyInfo != null) {
+            foreignKeyInfo.validate(handler);
+        }
     }
 
     public TypeMetadata getDeclaringType() {

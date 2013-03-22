@@ -30,7 +30,7 @@ public class DefaultValidationHandler implements ValidationHandler {
             currentErrors = new MultiKeyMap();
             errors.put(error, currentErrors);
         }
-        currentErrors.put(lineNumber, columnNumber, message);
+        currentErrors.put(lineNumber, columnNumber, message + " (line: " + lineNumber + " / column: " + columnNumber + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     @Override
