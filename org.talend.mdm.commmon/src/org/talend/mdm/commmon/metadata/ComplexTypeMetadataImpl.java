@@ -14,6 +14,7 @@ package org.talend.mdm.commmon.metadata;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 
+import javax.xml.XMLConstants;
 import java.util.*;
 
 /**
@@ -43,6 +44,8 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
 
     private final Collection<ComplexTypeMetadata> subTypes = new HashSet<ComplexTypeMetadata>();
 
+    private final List<FieldMetadata> lookupFields;
+
     private final boolean isInstantiable;
 
     private List<FieldMetadata> primaryKeyInfo;
@@ -63,6 +66,7 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
                 Collections.<String>emptyList(),
                 StringUtils.EMPTY,
                 Collections.<FieldMetadata>emptyList(),
+                Collections.<FieldMetadata>emptyList(),
                 instantiable);
     }
 
@@ -75,6 +79,7 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
                                    List<String> logicalDelete,
                                    String schematron,
                                    List<FieldMetadata> primaryKeyInfo,
+                                   List<FieldMetadata> lookupFields,
                                    boolean instantiable) {
         this.name = name;
         this.nameSpace = nameSpace;
@@ -85,9 +90,9 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
         this.logicalDelete = logicalDelete;
         this.schematron = schematron;
         this.primaryKeyInfo = primaryKeyInfo;
+        this.lookupFields = lookupFields;
         this.isInstantiable = instantiable;
     }
-
 
     public void addSuperType(TypeMetadata superType, MetadataRepository repository) {
         if (isFrozen) {
@@ -218,6 +223,52 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
                         ValidationError.PRIMARY_KEY_INFO_CANNOT_BE_REPEATABLE);
             }
         }
+        // Validate lookup fields
+        for (FieldMetadata lookupField : lookupFields) {
+            int errorCount = handler.getErrorCount();
+            lookupField.validate(handler);
+            if (handler.getErrorCount() > errorCount) {
+                continue;
+            }
+            // Lookup field must be defined in the entity (can't reference other entity field).
+            if (!this.equals(lookupField.getContainingType())) {
+                handler.error(lookupField,
+                        "Lookup field info must refer a field of the same entity.",
+                        lookupField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                        lookupField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                        ValidationError.LOOKUP_FIELD_NOT_IN_ENTITY);
+                continue;
+            }
+            if (lookupField.isKey()) {
+                handler.error(lookupField,
+                        "Lookup field cannot be in entity key.",
+                        lookupField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                        lookupField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                        ValidationError.LOOKUP_FIELD_CANNOT_BE_KEY);
+                continue;
+            }
+            // Order matters here: check if field is correct (exists) before checking isMany().
+            lookupField.validate(handler);
+            TypeMetadata currentType = lookupField.getType();
+            if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace())) {
+                while (!currentType.getSuperTypes().isEmpty()) {
+                    TypeMetadata superType = currentType.getSuperTypes().iterator().next();
+                    if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(superType.getNamespace())
+                            && ("anyType".equals(superType.getName()) //$NON-NLS-1$
+                            || "anySimpleType".equals(superType.getName()))) { //$NON-NLS-1$
+                        break;
+                    }
+                    currentType = superType;
+                }
+            }
+            if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace())) {
+                handler.error(lookupField,
+                        "Lookup field must be a simple typed element.",
+                        lookupField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                        lookupField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                        ValidationError.LOOKUP_FIELD_MUST_BE_SIMPLE_TYPE);
+            }
+        }
     }
 
     public Collection<FieldMetadata> getKeyFields() {
@@ -301,7 +352,7 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
                 physicalDelete,
                 logicalDelete,
                 schematron,
-                primaryKeyInfo, isInstantiable);
+                primaryKeyInfo, Collections.<FieldMetadata>emptyList(), isInstantiable);
         repository.addTypeMetadata(copy);
 
         Collection<FieldMetadata> fields = getFields();
@@ -330,7 +381,7 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
                 logicalDelete,
                 schematron,
                 primaryKeyInfo,
-                isInstantiable);
+                Collections.<FieldMetadata>emptyList(), isInstantiable);
     }
 
     public List<String> getWriteUsers() {
@@ -363,6 +414,11 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
     @Override
     public List<FieldMetadata> getPrimaryKeyInfo() {
         return primaryKeyInfo;
+    }
+
+    @Override
+    public List<FieldMetadata> getLookupFields() {
+        return lookupFields;
     }
 
     public boolean hasField(String fieldName) {
@@ -413,7 +469,6 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
         if (isFrozen) {
             return this;
         }
-
         // Gets fields from super types.
         if (!superTypes.isEmpty()) {
             Collection<FieldMetadata> thisTypeFields = new LinkedList<FieldMetadata>(fieldMetadata.values());
@@ -442,6 +497,7 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
                 fieldMetadata.put(thisTypeField.getName(), thisTypeField);
             }
         }
+        isFrozen = true;
         // Freeze all fields.
         Collection<FieldMetadata> values = new LinkedList<FieldMetadata>(fieldMetadata.values());
         for (FieldMetadata value : values) {
@@ -464,8 +520,6 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
             frozenPrimaryKeyInfo.add(pkInfo.freeze(handler));
         }
         primaryKeyInfo = frozenPrimaryKeyInfo;
-        // Done freeze (and validation of type).
-        isFrozen = true;
         return this;
     }
 

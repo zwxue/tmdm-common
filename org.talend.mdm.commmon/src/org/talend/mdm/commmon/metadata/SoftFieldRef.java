@@ -98,6 +98,7 @@ public class SoftFieldRef implements FieldMetadata {
         }
         if (containingType != null) {
             ComplexTypeMetadata type = repository.getComplexType(containingType.getName());
+            type.freeze(handler);
             frozenField = type.getField(fieldName);
         } else {
             ComplexTypeMetadata type = (ComplexTypeMetadata) containingField.getType();

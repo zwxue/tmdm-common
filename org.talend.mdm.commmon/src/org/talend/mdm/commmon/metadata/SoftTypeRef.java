@@ -277,6 +277,11 @@ public class SoftTypeRef implements ComplexTypeMetadata {
     }
 
     @Override
+    public List<FieldMetadata> getLookupFields() {
+        return getTypeAsComplex().getLookupFields();
+    }
+
+    @Override
     public void registerKey(FieldMetadata keyField) {
         getTypeAsComplex().registerKey(keyField);
     }

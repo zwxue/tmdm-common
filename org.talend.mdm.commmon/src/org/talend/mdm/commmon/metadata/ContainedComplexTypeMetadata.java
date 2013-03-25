@@ -34,6 +34,7 @@ public class ContainedComplexTypeMetadata extends ComplexTypeMetadataImpl {
                 containerType.getDenyDelete(DeleteType.LOGICAL),
                 StringUtils.EMPTY,
                 Collections.<FieldMetadata>emptyList(),
+                Collections.<FieldMetadata>emptyList(),
                 false);
         this.containerType = containerType;
     }

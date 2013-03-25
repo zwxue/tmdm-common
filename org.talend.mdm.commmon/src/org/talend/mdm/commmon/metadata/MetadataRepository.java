@@ -50,7 +50,8 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
     private final static List<XmlSchemaAnnotationProcessor> XML_ANNOTATIONS_PROCESSORS = Arrays.asList(new ForeignKeyProcessor(),
             new UserAccessProcessor(),
             new SchematronProcessor(),
-            new PrimaryKeyInfoProcessor());
+            new PrimaryKeyInfoProcessor(),
+            new LookupFieldProcessor());
 
     private final static String USER_NAMESPACE = StringUtils.EMPTY;
 
@@ -445,6 +446,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
                         state.getDenyLogicalDelete(),
                         state.getSchematron(),
                         state.getPrimaryKeyInfo(),
+                        state.getLookupFields(),
                         true);
                 // Keep line and column of definition
                 type.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));

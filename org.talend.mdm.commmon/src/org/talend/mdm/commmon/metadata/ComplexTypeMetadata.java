@@ -116,6 +116,8 @@ public interface ComplexTypeMetadata extends TypeMetadata {
      */
     void registerSubType(ComplexTypeMetadata type);
 
+    List<FieldMetadata> getLookupFields();
+
     enum DeleteType {
         /**
          * Logical delete (a.k.a. send to trash)

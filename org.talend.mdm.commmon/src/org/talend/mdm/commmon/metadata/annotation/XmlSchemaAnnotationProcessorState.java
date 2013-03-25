@@ -52,6 +52,8 @@ public class XmlSchemaAnnotationProcessorState {
 
     private List<FieldMetadata> primaryKeyInfo = Collections.emptyList();
 
+    private List<FieldMetadata> lookupFields = Collections.emptyList();
+
     public void setFkIntegrity(boolean fkIntegrity) {
         this.fkIntegrity = fkIntegrity;
     }
@@ -142,5 +144,13 @@ public class XmlSchemaAnnotationProcessorState {
 
     public List<FieldMetadata> getPrimaryKeyInfo() {
         return primaryKeyInfo;
+    }
+
+    public void setLookupFields(List<FieldMetadata> lookupFields) {
+        this.lookupFields = lookupFields;
+    }
+
+    public List<FieldMetadata> getLookupFields() {
+        return lookupFields;
     }
 }
