@@ -215,12 +215,22 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
             int previousErrorCount = handler.getErrorCount();
             pkInfo.validate(handler);
             // No need to check isMany() if field definition is already wrong.
-            if (handler.getErrorCount() == previousErrorCount && pkInfo.isMany()) {
-                handler.error(pkInfo,
-                        "Primary key info element cannot be a repeatable element.",
-                        pkInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                        pkInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                        ValidationError.PRIMARY_KEY_INFO_CANNOT_BE_REPEATABLE);
+            if (handler.getErrorCount() == previousErrorCount) {
+                if (pkInfo.isMany()) {
+                    handler.error(pkInfo,
+                            "Primary key info element cannot be a repeatable element.",
+                            pkInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                            pkInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                            ValidationError.PRIMARY_KEY_INFO_CANNOT_BE_REPEATABLE);
+                    continue;
+                }
+                if (!isPrimitiveTypeField(pkInfo)) {
+                    handler.warning(pkInfo,
+                            "Primary key info should refer to a field with a primitive XSD type.",
+                            pkInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                            pkInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                            ValidationError.PRIMARY_KEY_INFO_TYPE_NOT_PRIMITIVE);
+                }
             }
         }
         // Validate lookup fields
@@ -249,19 +259,7 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
             }
             // Order matters here: check if field is correct (exists) before checking isMany().
             lookupField.validate(handler);
-            TypeMetadata currentType = lookupField.getType();
-            if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace())) {
-                while (!currentType.getSuperTypes().isEmpty()) {
-                    TypeMetadata superType = currentType.getSuperTypes().iterator().next();
-                    if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(superType.getNamespace())
-                            && ("anyType".equals(superType.getName()) //$NON-NLS-1$
-                            || "anySimpleType".equals(superType.getName()))) { //$NON-NLS-1$
-                        break;
-                    }
-                    currentType = superType;
-                }
-            }
-            if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace())) {
+            if (!isPrimitiveTypeField(lookupField)) {
                 handler.error(lookupField,
                         "Lookup field must be a simple typed element.",
                         lookupField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
@@ -269,6 +267,22 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
                         ValidationError.LOOKUP_FIELD_MUST_BE_SIMPLE_TYPE);
             }
         }
+    }
+
+    private static boolean isPrimitiveTypeField(FieldMetadata lookupField) {
+        TypeMetadata currentType = lookupField.getType();
+        if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace())) {
+            while (!currentType.getSuperTypes().isEmpty()) {
+                TypeMetadata superType = currentType.getSuperTypes().iterator().next();
+                if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(superType.getNamespace())
+                        && ("anyType".equals(superType.getName()) //$NON-NLS-1$
+                        || "anySimpleType".equals(superType.getName()))) { //$NON-NLS-1$
+                    break;
+                }
+                currentType = superType;
+            }
+        }
+        return XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace());
     }
 
     public Collection<FieldMetadata> getKeyFields() {

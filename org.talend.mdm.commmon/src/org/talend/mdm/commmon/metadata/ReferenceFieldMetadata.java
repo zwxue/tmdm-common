@@ -159,7 +159,37 @@ public class ReferenceFieldMetadata extends AbstractMetadataExtensible implement
         referencedField.validate(handler);
         if (foreignKeyInfo != null) {
             foreignKeyInfo.validate(handler);
+            if (!isPrimitiveTypeField(foreignKeyInfo)) {
+                handler.warning(foreignKeyInfo,
+                        "Foreign key info is not typed as string.",
+                        foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                        foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                        ValidationError.FOREIGN_KEY_INFO_NOT_STRING_TYPED);
+            }
+            if (foreignKeyInfo.isMany()) {
+                handler.warning(foreignKeyInfo,
+                        "Foreign key info should not be a repeatable element.",
+                        foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                        foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                        ValidationError.FOREIGN_KEY_INFO_REPEATABLE);
+            }
         }
+    }
+
+    private static boolean isPrimitiveTypeField(FieldMetadata lookupField) {
+        TypeMetadata currentType = lookupField.getType();
+        if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace())) {
+            while (!currentType.getSuperTypes().isEmpty()) {
+                TypeMetadata superType = currentType.getSuperTypes().iterator().next();
+                if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(superType.getNamespace())
+                        && ("anyType".equals(superType.getName()) //$NON-NLS-1$
+                        || "anySimpleType".equals(superType.getName()))) { //$NON-NLS-1$
+                    break;
+                }
+                currentType = superType;
+            }
+        }
+        return XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace());
     }
 
     public TypeMetadata getDeclaringType() {
