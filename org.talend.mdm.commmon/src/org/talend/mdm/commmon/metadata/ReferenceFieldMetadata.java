@@ -158,7 +158,11 @@ public class ReferenceFieldMetadata extends AbstractMetadataExtensible implement
         }
         referencedField.validate(handler);
         if (foreignKeyInfo != null) {
+            errorCount = handler.getErrorCount();
             foreignKeyInfo.validate(handler);
+            if (handler.getErrorCount() > errorCount) {
+                return; // No need to perform other checks if field is already invalid.
+            }
             if (!isPrimitiveTypeField(foreignKeyInfo)) {
                 handler.warning(foreignKeyInfo,
                         "Foreign key info is not typed as string.",
