@@ -14,6 +14,7 @@ package org.talend.mdm.commmon.metadata;
 import java.util.*;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.w3c.dom.Element;
 
 /**
  * Represents a reference to a {@link ComplexTypeMetadata} type where methods are evaluated using
@@ -208,12 +209,14 @@ public class SoftTypeRef implements ComplexTypeMetadata {
             if (instantiable) {
                 handler.error((TypeMetadata) null,
                         "Entity type '" + typeName + "' (namespace: '" + namespace + "') is not present in type repository.",
+                        (Element) additionalData.get(MetadataRepository.XSD_DOM_ELEMENT),
                         (Integer) additionalData.get(MetadataRepository.XSD_LINE_NUMBER),
                         (Integer) additionalData.get(MetadataRepository.XSD_COLUMN_NUMBER),
                         ValidationError.TYPE_DOES_NOT_EXIST);
             } else {
                 handler.error((TypeMetadata) null,
                         "Non entity type '" + typeName + "' (namespace: '" + namespace + "') is not present in type repository.",
+                        (Element) additionalData.get(MetadataRepository.XSD_DOM_ELEMENT),
                         (Integer) additionalData.get(MetadataRepository.XSD_LINE_NUMBER),
                         (Integer) additionalData.get(MetadataRepository.XSD_COLUMN_NUMBER),
                         ValidationError.TYPE_DOES_NOT_EXIST);

@@ -13,6 +13,7 @@ package org.talend.mdm.commmon.metadata;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
+import org.w3c.dom.Element;
 
 import javax.xml.XMLConstants;
 import java.util.*;
@@ -178,6 +179,7 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
                             if (!((ComplexTypeMetadata) superType).hasField(thisTypeKeyField.getName())) {
                                 handler.error(superType, "Type '" + name + "' cannot add field(s) to its key because " +
                                         "super type '" + superType.getName() + "' already defines key.",
+                                        superType.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
                                         superType.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                                         superType.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                                         ValidationError.TYPE_CANNOT_OVERRIDE_SUPER_TYPE_KEY);
@@ -195,6 +197,7 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
             if (keyField.isMany()) {
                 handler.error(keyField,
                         "Key field cannot be a repeatable element.",
+                        keyField.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
                         keyField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                         keyField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                         ValidationError.FIELD_KEY_CANNOT_BE_REPEATABLE);
@@ -204,8 +207,9 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
         for (FieldMetadata pkInfo : primaryKeyInfo) {
             // PK Info must be defined in the entity (can't reference other entity field).
             if (!this.equals(pkInfo.getContainingType())) {
-                handler.error(pkInfo,
+                handler.error(this,
                         "Primary key info must refer a field of the same entity.",
+                        pkInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
                         pkInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                         pkInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                         ValidationError.PRIMARY_KEY_INFO_NOT_IN_ENTITY);
@@ -217,16 +221,18 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
             // No need to check isMany() if field definition is already wrong.
             if (handler.getErrorCount() == previousErrorCount) {
                 if (pkInfo.isMany()) {
-                    handler.error(pkInfo,
+                    handler.error(this,
                             "Primary key info element cannot be a repeatable element.",
+                            pkInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
                             pkInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                             pkInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                             ValidationError.PRIMARY_KEY_INFO_CANNOT_BE_REPEATABLE);
                     continue;
                 }
                 if (!isPrimitiveTypeField(pkInfo)) {
-                    handler.warning(pkInfo,
+                    handler.warning(this,
                             "Primary key info should refer to a field with a primitive XSD type.",
+                            pkInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
                             pkInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                             pkInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                             ValidationError.PRIMARY_KEY_INFO_TYPE_NOT_PRIMITIVE);
@@ -242,16 +248,18 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
             }
             // Lookup field must be defined in the entity (can't reference other entity field).
             if (!this.equals(lookupField.getContainingType())) {
-                handler.error(lookupField,
+                handler.error(this,
                         "Lookup field info must refer a field of the same entity.",
+                        lookupField.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
                         lookupField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                         lookupField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                         ValidationError.LOOKUP_FIELD_NOT_IN_ENTITY);
                 continue;
             }
             if (lookupField.isKey()) {
-                handler.error(lookupField,
+                handler.error(this,
                         "Lookup field cannot be in entity key.",
+                        lookupField.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
                         lookupField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                         lookupField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                         ValidationError.LOOKUP_FIELD_CANNOT_BE_KEY);
@@ -260,8 +268,9 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
             // Order matters here: check if field is correct (exists) before checking isMany().
             lookupField.validate(handler);
             if (!isPrimitiveTypeField(lookupField)) {
-                handler.error(lookupField,
+                handler.error(this,
                         "Lookup field must be a simple typed element.",
+                        lookupField.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
                         lookupField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                         lookupField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                         ValidationError.LOOKUP_FIELD_MUST_BE_SIMPLE_TYPE);

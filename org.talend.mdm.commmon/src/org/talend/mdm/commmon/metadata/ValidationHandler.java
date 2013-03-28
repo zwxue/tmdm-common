@@ -11,22 +11,24 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.w3c.dom.Element;
+
 /**
  * @see MetadataRepository#load(java.io.InputStream, ValidationHandler)
  */
 public interface ValidationHandler {
 
-    void fatal(FieldMetadata field, String message, int lineNumber, int columnNumber, ValidationError error);
+    void fatal(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error);
 
-    void error(FieldMetadata field, String message, int lineNumber, int columnNumber, ValidationError error);
+    void error(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error);
 
-    void warning(FieldMetadata field, String message, int lineNumber, int columnNumber, ValidationError error);
+    void warning(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error);
 
-    void fatal(TypeMetadata type, String message, int lineNumber, int columnNumber, ValidationError error);
+    void fatal(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error);
 
-    void error(TypeMetadata type, String message, int lineNumber, int columnNumber, ValidationError error);
+    void error(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error);
 
-    void warning(TypeMetadata type, String message, int lineNumber, int columnNumber, ValidationError error);
+    void warning(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error);
 
     /**
      * Called by validation process to indicate implementation should no longer wait for other messages (example:

@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xsd.*;
 import org.eclipse.xsd.util.XSDParser;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
+import org.w3c.dom.Element;
 import org.xml.sax.helpers.LocatorImpl;
 
 import javax.xml.XMLConstants;
@@ -185,9 +186,9 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
         for (XSDDiagnostic diagnostic : diagnostics) {
             XSDDiagnosticSeverity severity = diagnostic.getSeverity();
             if (severity.equals(XSDDiagnosticSeverity.ERROR_LITERAL)) {
-                handler.error((TypeMetadata) null, "XSD validation error: " + diagnostic.getMessage(), -1, -1, ValidationError.XML_SCHEMA);
+                handler.error((TypeMetadata) null, "XSD validation error: " + diagnostic.getMessage(), null, -1, -1, ValidationError.XML_SCHEMA);
             } else if (severity.equals(XSDDiagnosticSeverity.WARNING_LITERAL)) {
-                handler.error((TypeMetadata) null, "XSD validation warning: " + diagnostic.getMessage(), -1, -1, ValidationError.XML_SCHEMA);
+                handler.error((TypeMetadata) null, "XSD validation warning: " + diagnostic.getMessage(), null, -1, -1, ValidationError.XML_SCHEMA);
             }
         }
         XmlSchemaWalker.walk(schema, this);
@@ -221,6 +222,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
                     if (nonInstantiableType.getSuperTypes().size() > 1) {
                         handler.error(nonInstantiableType,
                                 "Multiple inheritance is not supported.",
+                                nonInstantiableType.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
                                 nonInstantiableType.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                                 nonInstantiableType.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                                 ValidationError.MULTIPLE_INHERITANCE_NOT_ALLOWED);
@@ -646,32 +648,32 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
 
     private static class NoOpValidationHandler implements ValidationHandler {
         @Override
-        public void error(TypeMetadata type, String message, int lineNumber, int columnNumber, ValidationError error) {
+        public void error(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
             // Nothing to do (No op validation)
         }
 
         @Override
-        public void fatal(FieldMetadata field, String message, int lineNumber, int columnNumber, ValidationError error) {
+        public void fatal(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
             // Nothing to do (No op validation)
         }
 
         @Override
-        public void error(FieldMetadata field, String message, int lineNumber, int columnNumber, ValidationError error) {
+        public void error(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
             // Nothing to do (No op validation)
         }
 
         @Override
-        public void warning(FieldMetadata field, String message, int lineNumber, int columnNumber, ValidationError error) {
+        public void warning(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
             // Nothing to do (No op validation)
         }
 
         @Override
-        public void fatal(TypeMetadata type, String message, int lineNumber, int columnNumber, ValidationError error) {
+        public void fatal(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
             // Nothing to do (No op validation)
         }
 
         @Override
-        public void warning(TypeMetadata type, String message, int lineNumber, int columnNumber, ValidationError error) {
+        public void warning(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
             // Nothing to do (No op validation)
         }
 

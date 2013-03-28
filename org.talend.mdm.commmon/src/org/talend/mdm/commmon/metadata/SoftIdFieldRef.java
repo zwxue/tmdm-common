@@ -11,6 +11,8 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.w3c.dom.Element;
+
 import java.util.*;
 
 /**
@@ -96,7 +98,7 @@ public class SoftIdFieldRef implements FieldMetadata {
             type = (ComplexTypeMetadata) repository.getNonInstantiableType(repository.getUserNamespace(), typeName);
         }
         if (type == null) {
-            handler.fatal((TypeMetadata) null, "Type '" + typeName + "' does not exist.", -1, -1, ValidationError.TYPE_DOES_NOT_EXIST);
+            handler.fatal((TypeMetadata) null, "Type '" + typeName + "' does not exist.", null, -1, -1, ValidationError.TYPE_DOES_NOT_EXIST);
             return this;
         }
         Collection<FieldMetadata> keyFields = type.getKeyFields();
@@ -130,6 +132,7 @@ public class SoftIdFieldRef implements FieldMetadata {
         if (type == null) {
             handler.error(this,
                     "Type '" + typeName + "' does not exist",
+                    (Element) additionalData.get(MetadataRepository.XSD_DOM_ELEMENT),
                     (Integer) additionalData.get(MetadataRepository.XSD_LINE_NUMBER),
                     (Integer) additionalData.get(MetadataRepository.XSD_COLUMN_NUMBER),
                     ValidationError.TYPE_DOES_NOT_EXIST);
@@ -139,6 +142,7 @@ public class SoftIdFieldRef implements FieldMetadata {
         if (keyFields.isEmpty()) {
             handler.error(type,
                     "Type '" + typeName + "' does not own a key and no FK field was defined.",
+                    type.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
                     type.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                     type.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                     ValidationError.TYPE_DOES_NOT_OWN_KEY);

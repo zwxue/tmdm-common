@@ -11,6 +11,8 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.w3c.dom.Element;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -150,6 +152,7 @@ public class SoftFieldRef implements FieldMetadata {
         if (type == null) {
             handler.error(this,
                     "Type '" + validationType.getName() + "' does not exist.",
+                    (Element) additionalData.get(MetadataRepository.XSD_DOM_ELEMENT),
                     lineNumberObject,
                     columnNumberObject,
                     ValidationError.TYPE_DOES_NOT_EXIST);
@@ -160,6 +163,7 @@ public class SoftFieldRef implements FieldMetadata {
             if (!complexTypeMetadata.hasField(fieldName)) {
                 handler.error(this,
                         "Type '" + validationType.getName() + "' does not own field '" + fieldName + "'.",
+                        (Element) additionalData.get(MetadataRepository.XSD_DOM_ELEMENT),
                         lineNumberObject,
                         columnNumberObject,
                         ValidationError.TYPE_DOES_NOT_OWN_FIELD);

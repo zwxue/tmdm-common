@@ -109,7 +109,7 @@ public interface FieldMetadata extends MetadataVisitable, MetadataExtensible {
      * Validates the field: performs assertions on content specific to MDM (this method should not raise XSD compliance
      * issues).
      * @param handler A {@link ValidationHandler} to be used for error / warning reporting.
-     * @see ValidationHandler#error(FieldMetadata, String, int, int, ValidationError)
+     * @see ValidationHandler#error(FieldMetadata, String, org.w3c.dom.Element, int, int, ValidationError)
      */
     void validate(ValidationHandler handler);
 }

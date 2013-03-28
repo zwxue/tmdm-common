@@ -11,6 +11,8 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.w3c.dom.Element;
+
 import javax.xml.XMLConstants;
 import java.util.List;
 
@@ -152,6 +154,7 @@ public class ReferenceFieldMetadata extends AbstractMetadataExtensible implement
         if (!"string".equals(currentType.getName())) { //$NON-NLS-1$
             handler.error(this,
                     "FK field '" + getName() + "' is invalid because it isn't typed as string (nor a string restriction).",
+                    this.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
                     this.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                     this.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                     ValidationError.FOREIGN_KEY_NOT_STRING_TYPED);
@@ -166,6 +169,7 @@ public class ReferenceFieldMetadata extends AbstractMetadataExtensible implement
             if (!isPrimitiveTypeField(foreignKeyInfo)) {
                 handler.warning(foreignKeyInfo,
                         "Foreign key info is not typed as string.",
+                        foreignKeyInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
                         foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                         foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                         ValidationError.FOREIGN_KEY_INFO_NOT_STRING_TYPED);
@@ -173,6 +177,7 @@ public class ReferenceFieldMetadata extends AbstractMetadataExtensible implement
             if (foreignKeyInfo.isMany()) {
                 handler.warning(foreignKeyInfo,
                         "Foreign key info should not be a repeatable element.",
+                        foreignKeyInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
                         foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                         foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                         ValidationError.FOREIGN_KEY_INFO_REPEATABLE);
