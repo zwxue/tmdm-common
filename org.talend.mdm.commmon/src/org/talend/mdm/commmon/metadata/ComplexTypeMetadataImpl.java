@@ -300,7 +300,9 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
 
     public Collection<FieldMetadata> getFields() {
         if (!isFrozen) {
-            throw new IllegalStateException("Type should be frozen before calling this method.");
+            DefaultValidationHandler validationHandler = new DefaultValidationHandler();
+            freeze(validationHandler);
+            validationHandler.end();
         }
         return Collections.unmodifiableCollection(fieldMetadata.values());
     }
