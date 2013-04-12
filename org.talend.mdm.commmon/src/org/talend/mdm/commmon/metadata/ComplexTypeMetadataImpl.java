@@ -194,6 +194,7 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
             value.validate(handler);
         }
         for (FieldMetadata keyField : keyFields.values()) {
+            keyField.validate(handler);
             if (keyField.isMany()) {
                 handler.error(keyField,
                         "Key field cannot be a repeatable element.",
@@ -201,6 +202,15 @@ public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implemen
                         keyField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                         keyField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                         ValidationError.FIELD_KEY_CANNOT_BE_REPEATABLE);
+            }
+            FieldMetadata frozenField = keyField.freeze(handler);
+            if (frozenField instanceof ReferenceFieldMetadata) {
+                handler.error(frozenField,
+                        "Key field cannot be a foreign key element.",
+                        frozenField.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
+                        frozenField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                        frozenField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                        ValidationError.FIELD_KEY_CANNOT_BE_FOREIGN_KEY);
             }
         }
         // Validate primary info
