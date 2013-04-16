@@ -127,7 +127,7 @@ public class ReferenceFieldMetadata extends AbstractMetadataExtensible implement
     }
 
     @Override
-    public void validate(ValidationHandler handler) {
+    public void validate(final ValidationHandler handler) {
         int errorCount = handler.getErrorCount();
         fieldType.validate(handler);
         if (handler.getErrorCount() > errorCount) {
@@ -159,7 +159,46 @@ public class ReferenceFieldMetadata extends AbstractMetadataExtensible implement
                     this.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                     ValidationError.FOREIGN_KEY_NOT_STRING_TYPED);
         }
-        referencedField.validate(handler);
+        // When type does not exist, client expects the reference field as error iso. the referenced field.
+        referencedField.validate(new ValidationHandler() {
+            @Override
+            public void error(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+                handler.error(type, message, element, lineNumber, columnNumber, error);
+            }
+
+            public void warning(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+                handler.warning(type, message, element, lineNumber, columnNumber, error);
+            }
+
+            public void end() {
+                handler.end();
+            }
+
+            public int getErrorCount() {
+                return handler.getErrorCount();
+            }
+
+            public void fatal(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+                handler.fatal(field, message, element, lineNumber, columnNumber, error);
+            }
+
+            @Override
+            public void error(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+                if (error == ValidationError.TYPE_DOES_NOT_EXIST) {
+                    handler.error(ReferenceFieldMetadata.this, message, element, lineNumber, columnNumber, error);
+                } else {
+                    handler.error(field, message, element, lineNumber, columnNumber, error);
+                }
+            }
+
+            public void warning(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+                handler.warning(field, message, element, lineNumber, columnNumber, error);
+            }
+
+            public void fatal(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+                handler.fatal(type, message, element, lineNumber, columnNumber, error);
+            }
+        });
         if (foreignKeyInfo != null) {
             errorCount = handler.getErrorCount();
             foreignKeyInfo.validate(handler);
