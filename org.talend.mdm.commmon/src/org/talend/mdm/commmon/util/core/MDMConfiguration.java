@@ -178,8 +178,14 @@ public final class MDMConfiguration {
         }
     }
 
+    /**
+     * It can be only called when MDM applies on user data containers.
+     * <li>DispatchWrapper is Hybrid configuration,</li>
+     * <li>SQLWrapper is Full SQL</li>
+     */
     public static boolean isSqlDataBase() {
         String xmlServerClass = getConfiguration().getProperty("xmlserver.class"); //$NON-NLS-1$
-        return "com.amalto.core.storage.DispatchWrapper".equals(xmlServerClass); //$NON-NLS-1$
+        return "com.amalto.core.storage.DispatchWrapper".equals(xmlServerClass)  //$NON-NLS-1$
+                || "com.amalto.core.storage.SQLWrapper".equals(xmlServerClass); //$NON-NLS-1$
     }
 }
