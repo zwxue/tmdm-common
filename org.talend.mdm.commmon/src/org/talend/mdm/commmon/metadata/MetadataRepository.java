@@ -38,6 +38,8 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
 
     public static final String DATA_MAX_LENGTH = "metadata.data.length"; //$NON-NLS-1$
 
+    public static final String DATA_ZIPPED = "metadata.zipped"; //$NON-NLS-1$
+
     public static final String XSD_LINE_NUMBER = "metadata.xsd.line"; //$NON-NLS-1$
 
     public static final String XSD_COLUMN_NUMBER = "metadata.xsd.column"; //$NON-NLS-1$
