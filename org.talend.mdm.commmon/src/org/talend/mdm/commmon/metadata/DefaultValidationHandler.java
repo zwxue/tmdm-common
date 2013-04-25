@@ -19,7 +19,7 @@ import java.util.*;
 
 public class DefaultValidationHandler implements ValidationHandler {
 
-    public static final Logger LOGGER = Logger.getLogger(DefaultValidationHandler.class);
+    private static final Logger LOGGER = Logger.getLogger(DefaultValidationHandler.class);
 
     private final Map<ValidationError, MultiKeyMap> errors = new HashMap<ValidationError, MultiKeyMap>();
 

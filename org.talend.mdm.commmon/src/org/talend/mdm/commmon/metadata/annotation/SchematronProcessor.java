@@ -38,7 +38,7 @@ public class SchematronProcessor implements XmlSchemaAnnotationProcessor {
             for (Element appInfo : annotations) {
                 if ("X_Schematron".equals(appInfo.getAttribute("source"))) { //$NON-NLS-1$ //$NON-NLS-2$
                     StringWriter sw = new StringWriter();
-                    Transformer transformer = null;
+                    Transformer transformer;
                     try {
                         transformer = transformerFactory.newTransformer();
                     } catch (TransformerConfigurationException e) {

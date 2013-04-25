@@ -93,7 +93,7 @@ public class ContainedComplexTypeRef extends ContainedComplexTypeMetadata {
 
     @Override
     public boolean equals(Object o) {
-        return reference.equals(o);
+        return o.getClass().equals(reference.getClass()) && reference.equals(o);
     }
 
     @Override

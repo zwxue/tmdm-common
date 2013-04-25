@@ -83,7 +83,7 @@ public interface TypeMetadata extends MetadataVisitable, MetadataExtensible {
      * when this method is called.
      *
      * @return A {@link TypeMetadata} that can't be modified afterwards.
-     * @param handler
+     * @param handler Handler to be used to report errors/warning during this operation.
      */
     TypeMetadata freeze(ValidationHandler handler);
 

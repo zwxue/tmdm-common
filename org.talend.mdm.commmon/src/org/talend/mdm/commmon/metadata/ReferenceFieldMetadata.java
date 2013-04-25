@@ -16,7 +16,7 @@ import org.w3c.dom.Element;
 import javax.xml.XMLConstants;
 import java.util.List;
 
-public class ReferenceFieldMetadata extends AbstractMetadataExtensible implements FieldMetadata {
+public class ReferenceFieldMetadata extends MetadataExtensions implements FieldMetadata {
 
     private final boolean isKey;
 
@@ -139,8 +139,8 @@ public class ReferenceFieldMetadata extends AbstractMetadataExtensible implement
             while (!currentType.getSuperTypes().isEmpty()) {
                 TypeMetadata superType = currentType.getSuperTypes().iterator().next();
                 if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(superType.getNamespace())
-                        && ("anyType".equals(superType.getName())
-                        || "anySimpleType".equals(superType.getName()))) {
+                        && ("anyType".equals(superType.getName()) //$NON-NLS-1$
+                        || "anySimpleType".equals(superType.getName()))) { //$NON-NLS-1$
                     break;
                 }
                 currentType = superType;
@@ -151,23 +151,26 @@ public class ReferenceFieldMetadata extends AbstractMetadataExtensible implement
                 }
             }
         }
+        final Integer line = this.getData(MetadataRepository.XSD_LINE_NUMBER);
+        final Integer column = this.getData(MetadataRepository.XSD_COLUMN_NUMBER);
+        final Element xmlElement = this.getData(MetadataRepository.XSD_DOM_ELEMENT);
         if (!"string".equals(currentType.getName())) { //$NON-NLS-1$
             handler.error(this,
                     "FK field '" + getName() + "' is invalid because it isn't typed as string (nor a string restriction).",
-                    this.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                    this.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                    this.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                    xmlElement,
+                    line,
+                    column,
                     ValidationError.FOREIGN_KEY_NOT_STRING_TYPED);
         }
         // When type does not exist, client expects the reference field as error iso. the referenced field.
         referencedField.validate(new ValidationHandler() {
             @Override
             public void error(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
-                handler.error(type, message, element, lineNumber, columnNumber, error);
+                handler.error(type, message, xmlElement, line, column, error);
             }
 
             public void warning(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
-                handler.warning(type, message, element, lineNumber, columnNumber, error);
+                handler.warning(type, message, xmlElement, line, column, error);
             }
 
             public void end() {
@@ -179,24 +182,24 @@ public class ReferenceFieldMetadata extends AbstractMetadataExtensible implement
             }
 
             public void fatal(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
-                handler.fatal(field, message, element, lineNumber, columnNumber, error);
+                handler.fatal(field, message, xmlElement, line, column, error);
             }
 
             @Override
             public void error(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
                 if (error == ValidationError.TYPE_DOES_NOT_EXIST) {
-                    handler.error(ReferenceFieldMetadata.this, message, element, lineNumber, columnNumber, error);
+                    handler.error(ReferenceFieldMetadata.this, message, xmlElement, line, column, error);
                 } else {
-                    handler.error(field, message, element, lineNumber, columnNumber, error);
+                    handler.error(field, message, xmlElement, line, column, error);
                 }
             }
 
             public void warning(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
-                handler.warning(field, message, element, lineNumber, columnNumber, error);
+                handler.warning(field, message, xmlElement, line, column, error);
             }
 
             public void fatal(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
-                handler.fatal(type, message, element, lineNumber, columnNumber, error);
+                handler.fatal(type, message, xmlElement, line, column, error);
             }
         });
         if (foreignKeyInfo != null) {
@@ -224,6 +227,7 @@ public class ReferenceFieldMetadata extends AbstractMetadataExtensible implement
         }
     }
 
+    // TODO Duplicated code in org.talend.mdm.commmon.metadata.ComplexTypeMetadataImpl.isPrimitiveTypeField()
     private static boolean isPrimitiveTypeField(FieldMetadata lookupField) {
         TypeMetadata currentType = lookupField.getType();
         if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace())) {

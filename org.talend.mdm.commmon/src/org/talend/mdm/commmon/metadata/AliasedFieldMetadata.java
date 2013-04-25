@@ -14,7 +14,7 @@ import java.util.List;
 
 public class AliasedFieldMetadata extends SimpleTypeFieldMetadata {
 
-    private String realFieldName;
+    private final String realFieldName;
 
     public AliasedFieldMetadata(ComplexTypeMetadata containingType, boolean isKey, boolean isMany, boolean isMandatory,
                                 String name, TypeMetadata fieldType, List<String> allowWriteUsers, List<String> hideUsers, String realFieldName) {

@@ -21,7 +21,7 @@ import java.util.*;
 /**
  * Default implementation for a MDM entity type (i.e. "complex" type).
  */
-public class ComplexTypeMetadataImpl extends AbstractMetadataExtensible implements ComplexTypeMetadata {
+public class ComplexTypeMetadataImpl extends MetadataExtensions implements ComplexTypeMetadata {
 
     private final String nameSpace;
 

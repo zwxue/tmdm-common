@@ -16,7 +16,7 @@ import java.util.List;
 /**
  *
  */
-public class EnumerationFieldMetadata extends AbstractMetadataExtensible implements FieldMetadata {
+public class EnumerationFieldMetadata extends MetadataExtensions implements FieldMetadata {
 
     private boolean isKey;
 

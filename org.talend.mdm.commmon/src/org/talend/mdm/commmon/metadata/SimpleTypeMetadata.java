@@ -20,7 +20,7 @@ import java.util.List;
 /**
  *
  */
-public class SimpleTypeMetadata extends AbstractMetadataExtensible implements TypeMetadata {
+public class SimpleTypeMetadata extends MetadataExtensions implements TypeMetadata {
 
     private final String nameSpace;
 

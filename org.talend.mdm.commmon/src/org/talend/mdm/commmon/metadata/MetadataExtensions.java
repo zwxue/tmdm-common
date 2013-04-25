@@ -14,7 +14,7 @@ package org.talend.mdm.commmon.metadata;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AbstractMetadataExtensible implements MetadataExtensible {
+public class MetadataExtensions implements MetadataExtensible {
 
     private Map<String, Object> dataMap;
 

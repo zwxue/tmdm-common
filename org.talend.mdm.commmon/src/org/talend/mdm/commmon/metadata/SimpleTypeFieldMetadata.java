@@ -16,7 +16,7 @@ import java.util.List;
 /**
  *
  */
-public class SimpleTypeFieldMetadata extends AbstractMetadataExtensible implements FieldMetadata {
+public class SimpleTypeFieldMetadata extends MetadataExtensions implements FieldMetadata {
 
     private final boolean isMany;
 
