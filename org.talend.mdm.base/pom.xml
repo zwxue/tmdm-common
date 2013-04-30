@@ -410,7 +410,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.1</version>
+                    <version>2.7</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -430,11 +430,13 @@
         <profile>
             <id>mdmDeployJboss</id>
             <activation>
-                <!-- <activeByDefault>true</activeByDefault> -->
                 <property>
                     <name>!mdm.deploy.jboss.skip</name>
                 </property>
             </activation>
+            <properties>
+                <mdm.deploy.jboss.dev.skip>true</mdm.deploy.jboss.dev.skip>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -488,6 +490,24 @@
                                         <goal>copy-dependencies</goal>
                                     </goals>
                                     <configuration>
+                                        <outputDirectory>${jboss.lib.dir}</outputDirectory>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-dependency-plugin</artifactId>
+                            <executions>
+                                <!-- Copy developer-only shared dependencies -->
+                                <execution>
+                                    <id>deploy-jboss-dev-libs</id>
+                                    <phase>none</phase>
+                                    <goals>
+                                        <goal>copy-dependencies</goal>
+                                    </goals>
+                                    <configuration>
+                                        <skip>${mdm.deploy.jboss.dev.skip}</skip>
                                         <outputDirectory>${jboss.lib.dir}</outputDirectory>
                                     </configuration>
                                 </execution>
@@ -943,11 +963,6 @@
                 <version>1.3.165</version>
             </dependency>
             <dependency>
-                <groupId>postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>9.1-902.jdbc4</version>
-            </dependency>
-            <dependency>
                 <groupId>opensymphony</groupId>
                 <artifactId>quartz</artifactId>
                 <version>1.6.0</version>
@@ -959,6 +974,12 @@
             </dependency>
 
             <!-- 3rd party dependencies (see deploy-jboss-other-libs execution) -->
+            <dependency>
+                <groupId>postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>9.1-902.jdbc4</version>
+                <scope>provided</scope>
+            </dependency>
             <dependency>
                 <groupId>com.microsoft.sql</groupId>
                 <artifactId>sqljdbc4</artifactId>
