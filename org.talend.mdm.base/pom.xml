@@ -493,12 +493,6 @@
                                         <outputDirectory>${jboss.lib.dir}</outputDirectory>
                                     </configuration>
                                 </execution>
-                            </executions>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-dependency-plugin</artifactId>
-                            <executions>
                                 <!-- Copy developer-only shared dependencies -->
                                 <execution>
                                     <id>deploy-jboss-dev-libs</id>
@@ -510,7 +504,7 @@
                                         <skip>${mdm.deploy.jboss.dev.skip}</skip>
                                         <outputDirectory>${jboss.lib.dir}</outputDirectory>
                                     </configuration>
-                                </execution>
+                                </execution> 
                             </executions>
                         </plugin>
                     </plugins>
