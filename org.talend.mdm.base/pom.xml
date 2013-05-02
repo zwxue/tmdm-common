@@ -43,6 +43,7 @@
         <jboss.lib.dir>${jboss.instance.dir}/lib</jboss.lib.dir>
         <jboss.conf.dir>${jboss.instance.dir}/conf</jboss.conf.dir>
         <jboss.conf.data>${jboss.instance.dir}/data</jboss.conf.data>
+        <mdm.extras.dir>${mdm.build.dir}/mdm-extras</mdm.extras.dir>
 
         <dev.mode.excluded.start></dev.mode.excluded.start>
         <dev.mode.excluded.end></dev.mode.excluded.end>
@@ -482,7 +483,7 @@
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-dependency-plugin</artifactId>
                             <executions>
-                                <!-- Copy other shared dependencies -->
+                                <!-- Copy other jboss shared dependencies -->
                                 <execution>
                                     <id>deploy-jboss-other-libs</id>
                                     <phase>none</phase>
@@ -493,7 +494,7 @@
                                         <outputDirectory>${jboss.lib.dir}</outputDirectory>
                                     </configuration>
                                 </execution>
-                                <!-- Copy developer-only shared dependencies -->
+                                <!-- Copy jboss developer-only shared dependencies -->
                                 <execution>
                                     <id>deploy-jboss-dev-libs</id>
                                     <phase>none</phase>
@@ -503,6 +504,17 @@
                                     <configuration>
                                         <skip>${mdm.deploy.jboss.dev.skip}</skip>
                                         <outputDirectory>${jboss.lib.dir}</outputDirectory>
+                                    </configuration>
+                                </execution>
+                                <!-- Copy extra dependencies -->
+                                <execution>
+                                    <id>deploy-extra-libs</id>
+                                    <phase>none</phase>
+                                    <goals>
+                                        <goal>copy-dependencies</goal>
+                                    </goals>
+                                    <configuration>
+                                        <outputDirectory>${mdm.extras.dir}</outputDirectory>
                                     </configuration>
                                 </execution> 
                             </executions>
