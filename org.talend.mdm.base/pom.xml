@@ -984,14 +984,14 @@
                 <version>1.2.2</version>
                 <scope>runtime</scope>
             </dependency>
-
-            <!-- 3rd party dependencies (see deploy-jboss-other-libs execution) -->
             <dependency>
                 <groupId>postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>9.1-902.jdbc4</version>
-                <scope>provided</scope>
+                <scope>runtime</scope>
             </dependency>
+
+            <!-- 3rd party dependencies (see deploy-jboss-other-libs execution) -->
             <dependency>
                 <groupId>com.microsoft.sql</groupId>
                 <artifactId>sqljdbc4</artifactId>
