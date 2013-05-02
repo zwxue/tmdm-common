@@ -978,6 +978,12 @@
                 <artifactId>quartz-jboss</artifactId>
                 <version>1.6.0</version>
             </dependency>
+            <dependency>
+                <groupId>net.sourceforge.jtds</groupId>
+                <artifactId>jtds</artifactId>
+                <version>1.2.2</version>
+                <scope>runtime</scope>
+            </dependency>
 
             <!-- 3rd party dependencies (see deploy-jboss-other-libs execution) -->
             <dependency>
@@ -1001,18 +1007,10 @@
                 <systemPath>${tom.location}/org.talend.mdm.core/lib/ojdbc6.jar</systemPath>
             </dependency>
             <dependency>
-                <groupId>net.sourceforge.jtds</groupId>
-                <artifactId>jtds</artifactId>
-                <version>1.2.2</version>
-                <scope>system</scope>
-                <systemPath>${tom.location}/org.talend.mdm.connector.jdbc/lib-drivers/z.jtds-1.2.2.jar</systemPath>
-            </dependency>
-            <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>5.1.5</version>
-                <scope>system</scope>
-                <systemPath>${tom.location}/org.talend.mdm.connector.jdbc/lib-drivers/z.mysql-connector-java-5.1.5-bin.jar</systemPath>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.lowagie</groupId>
