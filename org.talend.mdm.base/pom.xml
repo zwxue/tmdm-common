@@ -1354,15 +1354,13 @@
                 <groupId>jboss</groupId>
                 <artifactId>jboss-common</artifactId>
                 <version>4.2.2.GA</version>
-                <scope>system</scope>
-                <systemPath>${tom.location}/talend.mdm.libraries/lib/jboss-common.jar</systemPath>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>jboss</groupId>
                 <artifactId>jboss-j2ee</artifactId>
                 <version>4.2.2.GA</version>
-                <scope>system</scope>
-                <systemPath>${tom.location}/talend.mdm.libraries/lib/jboss-j2ee.jar</systemPath>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>jboss</groupId>
