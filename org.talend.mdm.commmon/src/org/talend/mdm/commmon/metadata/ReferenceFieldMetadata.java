@@ -188,7 +188,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
             @Override
             public void error(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
                 if (error == ValidationError.TYPE_DOES_NOT_EXIST) {
-                    handler.error(ReferenceFieldMetadata.this, message, xmlElement, line, column, error);
+                    handler.error(ReferenceFieldMetadata.this, message, element, lineNumber, columnNumber, error);
                 } else {
                     handler.error(field, message, xmlElement, line, column, error);
                 }
