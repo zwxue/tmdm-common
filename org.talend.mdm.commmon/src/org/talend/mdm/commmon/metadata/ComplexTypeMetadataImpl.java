@@ -47,7 +47,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
 
     private final List<FieldMetadata> lookupFields;
 
-    private final boolean isInstantiable;
+    private boolean isInstantiable;
 
     private List<FieldMetadata> primaryKeyInfo;
 
@@ -266,6 +266,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
                         ValidationError.LOOKUP_FIELD_NOT_IN_ENTITY);
                 continue;
             }
+            lookupField.getContainingType().freeze(handler);
             if (lookupField.isKey()) {
                 handler.error(this,
                         "Lookup field cannot be in entity key.",
@@ -286,6 +287,13 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
                         ValidationError.LOOKUP_FIELD_MUST_BE_SIMPLE_TYPE);
             }
         }
+    }
+
+    public void setInstantiable(boolean isInstantiable) {
+        if (isFrozen) {
+            throw new IllegalStateException("Type '" + name + "' is frozen and can not be modified.");
+        }
+        this.isInstantiable = isInstantiable;
     }
 
     private static boolean isPrimitiveTypeField(FieldMetadata lookupField) {
