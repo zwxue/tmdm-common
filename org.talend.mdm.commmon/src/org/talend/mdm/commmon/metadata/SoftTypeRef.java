@@ -225,6 +225,11 @@ public class SoftTypeRef implements ComplexTypeMetadata {
     }
 
     @Override
+    public void setInstantiable(boolean isInstantiable) {
+        getType().setInstantiable(isInstantiable);
+    }
+
+    @Override
     public Collection<FieldMetadata> getKeyFields() {
         return getTypeAsComplex().getKeyFields();
     }

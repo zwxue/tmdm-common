@@ -122,6 +122,13 @@ public class SimpleTypeMetadata extends MetadataExtensions implements TypeMetada
         }
     }
 
+    @Override
+    public void setInstantiable(boolean isInstantiable) {
+        if (isInstantiable) {
+            throw new IllegalStateException("Simple types can not be instantiated.");
+        }
+    }
+
     public void addSuperType(TypeMetadata superType, MetadataRepository repository) {
         superTypes.add(superType);
     }

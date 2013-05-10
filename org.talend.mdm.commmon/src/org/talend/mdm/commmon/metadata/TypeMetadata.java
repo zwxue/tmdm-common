@@ -94,6 +94,13 @@ public interface TypeMetadata extends MetadataVisitable, MetadataExtensible {
     boolean isInstantiable();
 
     /**
+     * @param isInstantiable <code>true</code> to make this type instantiable (i.e. a MDM entity type), <code>false</code>
+     *                       otherwise.
+     * @throws IllegalStateException If implementation does not support instantiation.
+     */
+    void setInstantiable(boolean isInstantiable);
+
+    /**
      * @return <code>true</code> if type can not be modified ({@link #freeze(ValidationHandler)} was previously called), <code>false</code>
      * otherwise.
      */
