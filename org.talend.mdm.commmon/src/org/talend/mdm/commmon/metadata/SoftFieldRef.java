@@ -119,20 +119,22 @@ public class SoftFieldRef implements FieldMetadata {
 
     @Override
     public void validate(ValidationHandler handler) {
+        // Get line and column numbers
+        Integer lineNumberObject = (Integer) additionalData.get(MetadataRepository.XSD_LINE_NUMBER);
+        Integer columnNumberObject = (Integer) additionalData.get(MetadataRepository.XSD_COLUMN_NUMBER);
+        Element xmlElement = (Element) additionalData.get(MetadataRepository.XSD_DOM_ELEMENT);
+
         TypeMetadata validationType;
         if (containingType != null) {
             validationType = containingType;
         } else {
             int errorCount = handler.getErrorCount();
-            containingField.validate(handler);
+            containingField.validate(new LocationOverride(containingField, handler, xmlElement, lineNumberObject, columnNumberObject));
             if (handler.getErrorCount() > errorCount) {
                 return;
             }
             validationType = containingField.getType();
         }
-        // Get line and column numbers
-        Integer lineNumberObject = (Integer) additionalData.get(MetadataRepository.XSD_LINE_NUMBER);
-        Integer columnNumberObject = (Integer) additionalData.get(MetadataRepository.XSD_COLUMN_NUMBER);
         if (lineNumberObject == null) {
             lineNumberObject = validationType.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER);
         }
@@ -152,7 +154,7 @@ public class SoftFieldRef implements FieldMetadata {
         if (type == null) {
             handler.error(this,
                     "Type '" + validationType.getName() + "' does not exist.",
-                    (Element) additionalData.get(MetadataRepository.XSD_DOM_ELEMENT),
+                    xmlElement,
                     lineNumberObject,
                     columnNumberObject,
                     ValidationError.TYPE_DOES_NOT_EXIST);
@@ -163,7 +165,7 @@ public class SoftFieldRef implements FieldMetadata {
             if (!complexTypeMetadata.hasField(fieldName)) {
                 handler.error(this,
                         "Type '" + validationType.getName() + "' does not own field '" + fieldName + "'.",
-                        (Element) additionalData.get(MetadataRepository.XSD_DOM_ELEMENT),
+                        xmlElement,
                         lineNumberObject,
                         columnNumberObject,
                         ValidationError.TYPE_DOES_NOT_OWN_FIELD);

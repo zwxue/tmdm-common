@@ -163,45 +163,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                     ValidationError.FOREIGN_KEY_NOT_STRING_TYPED);
         }
         // When type does not exist, client expects the reference field as error iso. the referenced field.
-        referencedField.validate(new ValidationHandler() {
-            @Override
-            public void error(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
-                handler.error(type, message, xmlElement, line, column, error);
-            }
-
-            public void warning(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
-                handler.warning(type, message, xmlElement, line, column, error);
-            }
-
-            public void end() {
-                handler.end();
-            }
-
-            public int getErrorCount() {
-                return handler.getErrorCount();
-            }
-
-            public void fatal(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
-                handler.fatal(field, message, xmlElement, line, column, error);
-            }
-
-            @Override
-            public void error(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
-                if (error == ValidationError.TYPE_DOES_NOT_EXIST) {
-                    handler.error(ReferenceFieldMetadata.this, message, element, lineNumber, columnNumber, error);
-                } else {
-                    handler.error(field, message, xmlElement, line, column, error);
-                }
-            }
-
-            public void warning(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
-                handler.warning(field, message, xmlElement, line, column, error);
-            }
-
-            public void fatal(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
-                handler.fatal(type, message, xmlElement, line, column, error);
-            }
-        });
+        referencedField.validate(new LocationOverride(this, handler, xmlElement, line, column));
         if (foreignKeyInfo != null) {
             errorCount = handler.getErrorCount();
             foreignKeyInfo.validate(handler);
@@ -368,4 +330,5 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         cachedHashCode = result;
         return result;
     }
+
 }
