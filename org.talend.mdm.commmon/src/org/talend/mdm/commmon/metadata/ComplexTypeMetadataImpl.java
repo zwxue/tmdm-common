@@ -195,15 +195,23 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         }
         for (FieldMetadata keyField : keyFields.values()) {
             keyField.validate(handler);
-            if (keyField.isMany()) {
-                handler.error(keyField,
+            FieldMetadata frozenField = keyField.freeze(handler);
+            if (frozenField.isMany()) {
+                handler.error(frozenField,
                         "Key field cannot be a repeatable element.",
-                        keyField.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                        keyField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                        keyField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                        frozenField.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
+                        frozenField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                        frozenField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                         ValidationError.FIELD_KEY_CANNOT_BE_REPEATABLE);
             }
-            FieldMetadata frozenField = keyField.freeze(handler);
+            if (!frozenField.isMandatory()) {
+                handler.error(frozenField,
+                        "Key field must be a mandatory element.",
+                        frozenField.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
+                        frozenField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                        frozenField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                        ValidationError.FIELD_KEY_MUST_BE_MANDATORY);
+            }
             if (frozenField instanceof ReferenceFieldMetadata) {
                 handler.error(frozenField,
                         "Key field cannot be a foreign key element.",
