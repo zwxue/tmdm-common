@@ -98,13 +98,21 @@ public class SoftFieldRef implements FieldMetadata {
         if (frozenField != null) {
             return frozenField;
         }
+        ComplexTypeMetadata type;
         if (containingType != null) {
-            ComplexTypeMetadata type = repository.getComplexType(containingType.getName());
-            frozenField = type.getField(fieldName);
+            type = repository.getComplexType(containingType.getName());
         } else {
-            ComplexTypeMetadata type = (ComplexTypeMetadata) containingField.getType();
-            frozenField = type.getField(fieldName);
+            type = (ComplexTypeMetadata) containingField.getType();
         }
+        if (type == null) {
+            Integer line = this.getData(MetadataRepository.XSD_LINE_NUMBER);
+            Integer column = this.getData(MetadataRepository.XSD_COLUMN_NUMBER);
+            Element xmlElement = this.getData(MetadataRepository.XSD_DOM_ELEMENT);
+            handler.error(this, this.getContainingType().getName() + "/" + this.getName() + " is a nonexistent target.", xmlElement, line, column, ValidationError.TYPE_DOES_NOT_EXIST);  //$NON-NLS-1$//$NON-NLS-2$
+            return null;
+        }
+        frozenField = type.getField(fieldName);
+        
         Set<Map.Entry<String,Object>> data = additionalData.entrySet();
         for (Map.Entry<String, Object> currentData : data) {
             frozenField.setData(currentData.getKey(), currentData.getValue());
