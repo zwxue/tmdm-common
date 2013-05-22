@@ -172,11 +172,11 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
             }
             if (!isPrimitiveTypeField(foreignKeyInfo)) {
                 handler.warning(foreignKeyInfo,
-                        "Foreign key info is not typed as string.",
+                        "Foreign key info is not typed as primitive XSD.",
                         foreignKeyInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
                         foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                         foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                        ValidationError.FOREIGN_KEY_INFO_NOT_STRING_TYPED);
+                        ValidationError.FOREIGN_KEY_INFO_NOT_PRIMITIVE_XSD_TYPED);
             }
             if (foreignKeyInfo.isMany()) {
                 handler.warning(foreignKeyInfo,

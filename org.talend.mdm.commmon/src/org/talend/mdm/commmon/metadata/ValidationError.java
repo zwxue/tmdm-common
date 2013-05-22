@@ -1,12 +1,11 @@
 /*
  * Copyright (C) 2006-2013 Talend Inc. - www.talend.com
- *
+ * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
- *
- * You should have received a copy of the agreement
- * along with this program; if not, write to Talend SA
- * 9 rue Pages 92150 Suresnes, France
+ * 
+ * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
+ * 92150 Suresnes, France
  */
 
 package org.talend.mdm.commmon.metadata;
@@ -33,5 +32,5 @@ public enum ValidationError {
     TYPE_CANNOT_OVERRIDE_SUPER_TYPE_KEY,
     FOREIGN_KEY_INFO_REPEATABLE,
     FIELD_KEY_CANNOT_BE_FOREIGN_KEY,
-    FOREIGN_KEY_INFO_NOT_STRING_TYPED
+    FOREIGN_KEY_INFO_NOT_PRIMITIVE_XSD_TYPED
 }
