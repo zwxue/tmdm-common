@@ -71,7 +71,7 @@ public class CompoundFieldMetadata extends MetadataExtensions implements FieldMe
         return this;
     }
 
-    public void promoteToKey() {
+    public void promoteToKey(ValidationHandler handler) {
         throw new UnsupportedOperationException();
     }
 

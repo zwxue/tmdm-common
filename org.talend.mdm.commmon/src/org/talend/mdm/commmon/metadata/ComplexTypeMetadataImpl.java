@@ -212,14 +212,6 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
                         frozenField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                         ValidationError.FIELD_KEY_MUST_BE_MANDATORY);
             }
-            if (frozenField instanceof ReferenceFieldMetadata) {
-                handler.error(frozenField,
-                        "Key field cannot be a foreign key element.",
-                        frozenField.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                        frozenField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                        frozenField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                        ValidationError.FIELD_KEY_CANNOT_BE_FOREIGN_KEY);
-            }
         }
         // Validate primary info
         for (FieldMetadata pkInfo : primaryKeyInfo) {
@@ -556,7 +548,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
                 FieldMetadata frozenFieldDeclaration = value.freeze(handler);
                 fieldMetadata.put(value.getName(), frozenFieldDeclaration);
                 if (keyFields.containsKey(value.getName()) && !frozenFieldDeclaration.isKey()) {
-                    frozenFieldDeclaration.promoteToKey();
+                    frozenFieldDeclaration.promoteToKey(handler);
                 }
             } catch (Exception e) {
                 throw new RuntimeException("Could not process field '" + value.getName() + "' in type '" + getName() + "'", e);

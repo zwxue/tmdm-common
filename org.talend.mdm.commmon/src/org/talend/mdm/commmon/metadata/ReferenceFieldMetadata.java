@@ -14,6 +14,7 @@ package org.talend.mdm.commmon.metadata;
 import org.w3c.dom.Element;
 
 import javax.xml.XMLConstants;
+import java.util.Iterator;
 import java.util.List;
 
 public class ReferenceFieldMetadata extends MetadataExtensions implements FieldMetadata {
@@ -117,13 +118,18 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         if (foreignKeyInfo != null) {
             foreignKeyInfo = foreignKeyInfo.freeze(handler);
         }
-        referencedField = referencedField.freeze(handler);
         referencedType = (ComplexTypeMetadata) referencedType.freeze(handler);
+        referencedField = referencedField.freeze(handler);
         return this;
     }
 
-    public void promoteToKey() {
-        throw new UnsupportedOperationException("FK field can't be promoted to key.");
+    public void promoteToKey(ValidationHandler handler) {
+        handler.error(this,
+                "Key field cannot be a foreign key element.",
+                this.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
+                this.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                this.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                ValidationError.FIELD_KEY_CANNOT_BE_FOREIGN_KEY);
     }
 
     @Override
@@ -163,7 +169,32 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                     ValidationError.FOREIGN_KEY_NOT_STRING_TYPED);
         }
         // When type does not exist, client expects the reference field as error iso. the referenced field.
+        int previousErrorCount = handler.getErrorCount();
         referencedField.validate(new LocationOverride(this, handler, xmlElement, line, column));
+        if (handler.getErrorCount() > previousErrorCount) {
+            return;
+        }
+        // FK can not be non-PK check
+        freeze(handler);
+        if (!referencedField.isKey()) {
+            // Compute valid PK fields as help for user
+            StringBuilder referencedTypePK = new StringBuilder();
+            Iterator<FieldMetadata> keyFields = referencedType.getKeyFields().iterator();
+            while (keyFields.hasNext()) {
+                referencedTypePK.append('\'').append(keyFields.next().getName()).append('\'');
+                if (keyFields.hasNext()) {
+                    referencedTypePK.append(' ');
+                }
+            }
+            // Reports error
+            handler.warning(referencedField,
+                    "Foreign key should point to a primary key (recommended choices are: " + referencedTypePK + ")",
+                    this.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
+                    this.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                    this.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                    ValidationError.FOREIGN_KEY_SHOULD_POINT_TO_PRIMARY_KEY);
+        }
+        // Foreign key info checks
         if (foreignKeyInfo != null) {
             errorCount = handler.getErrorCount();
             foreignKeyInfo.validate(handler);

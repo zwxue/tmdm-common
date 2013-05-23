@@ -90,7 +90,7 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
         return this;
     }
 
-    public void promoteToKey() {
+    public void promoteToKey(ValidationHandler handler) {
         isKey = true;
     }
 

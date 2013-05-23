@@ -100,7 +100,7 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
         return this;
     }
 
-    public void promoteToKey() {
+    public void promoteToKey(ValidationHandler handler) {
         isKey = true;
     }
 

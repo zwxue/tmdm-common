@@ -82,7 +82,7 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
         return this;
     }
 
-    public void promoteToKey() {
+    public void promoteToKey(ValidationHandler handler) {
         throw new UnsupportedOperationException("Contained type field can't be promoted to key.");
     }
 

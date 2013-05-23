@@ -119,8 +119,8 @@ public class SoftIdFieldRef implements FieldMetadata {
     }
 
     @Override
-    public void promoteToKey() {
-        getField().promoteToKey();
+    public void promoteToKey(ValidationHandler handler) {
+        getField().promoteToKey(handler);
     }
 
     @Override
