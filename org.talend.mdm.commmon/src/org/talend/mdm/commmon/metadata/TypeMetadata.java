@@ -79,9 +79,13 @@ public interface TypeMetadata extends MetadataVisitable, MetadataExtensible {
     TypeMetadata copyShallow();
 
     /**
+     * <p>
      * Mark type as unmodifiable and resolves all information (fields, super type) that <b>must</b> be present in {@link MetadataRepository}
      * when this method is called.
-     *
+     * </p>
+     * <p>
+     * You should call {@link #validate(ValidationHandler)} before calling this method to ensure type is valid.
+     * </p>
      * @return A {@link TypeMetadata} that can't be modified afterwards.
      * @param handler Handler to be used to report errors/warning during this operation.
      */
@@ -107,8 +111,14 @@ public interface TypeMetadata extends MetadataVisitable, MetadataExtensible {
     boolean isFrozen();
 
     /**
+     * <p>
      * Validates the type: performs assertions on content specific to MDM (this method should not raise XSD compliance
      * issues).
+     * </p>
+     * <p>
+     * If <code>handler</code> did not receive any error during validation, {@link #freeze(ValidationHandler)} can be
+     * safely called (it can't / shouldn't fail).
+     * </p>
      * @param handler A {@link ValidationHandler} to be used for error / warning reporting.
      * @see ValidationHandler#error(TypeMetadata, String, org.w3c.dom.Element, int, int, ValidationError)
      */

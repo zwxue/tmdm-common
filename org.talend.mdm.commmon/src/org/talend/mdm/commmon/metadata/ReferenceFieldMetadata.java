@@ -160,13 +160,21 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         final Integer line = this.getData(MetadataRepository.XSD_LINE_NUMBER);
         final Integer column = this.getData(MetadataRepository.XSD_COLUMN_NUMBER);
         final Element xmlElement = this.getData(MetadataRepository.XSD_DOM_ELEMENT);
-        if (!"string".equals(currentType.getName())) { //$NON-NLS-1$
+        if (!Types.STRING.equals(currentType.getName())) {
             handler.error(this,
                     "FK field '" + getName() + "' is invalid because it isn't typed as string (nor a string restriction).",
                     xmlElement,
                     line,
                     column,
                     ValidationError.FOREIGN_KEY_NOT_STRING_TYPED);
+        }
+        if (fieldType.freeze(handler).getData(MetadataRepository.DATA_MAX_LENGTH) != null) {
+            handler.warning(this,
+                    "FK field '" + getName() + "' uses max length restriction. Make sure to include square brackets in max length value.",
+                    xmlElement,
+                    line,
+                    column,
+                    ValidationError.FOREIGN_KEY_USES_MAX_LENGTH);
         }
         // When type does not exist, client expects the reference field as error iso. the referenced field.
         int previousErrorCount = handler.getErrorCount();
