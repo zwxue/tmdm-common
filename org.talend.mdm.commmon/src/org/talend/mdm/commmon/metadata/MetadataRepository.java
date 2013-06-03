@@ -554,7 +554,15 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
             }
             if (content != null) {
                 if (fieldType == null) {
-                    fieldType = new SoftTypeRef(this, content.getTargetNamespace(), content.getName(), false);
+                    fieldType = new SimpleTypeMetadata(content.getTargetNamespace(), content.getName());
+                    EList<XSDConstrainingFacet> facets = simpleSchemaType.getFacetContents();
+                    for (XSDConstrainingFacet currentFacet : facets) {
+                        if (currentFacet instanceof XSDMaxLengthFacet) {
+                            fieldType.setData(MetadataRepository.DATA_MAX_LENGTH, String.valueOf(((XSDMaxLengthFacet) currentFacet).getValue()));
+                        } else if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("Ignore simple type facet on type '" + fieldName + "': " + currentFacet);
+                        }
+                    }
                 }
                 if (content.getFacets().size() > 0) {
                     boolean isEnumeration = false;
