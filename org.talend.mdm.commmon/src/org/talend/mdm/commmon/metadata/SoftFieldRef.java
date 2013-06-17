@@ -108,7 +108,10 @@ public class SoftFieldRef implements FieldMetadata {
             Integer line = this.getData(MetadataRepository.XSD_LINE_NUMBER);
             Integer column = this.getData(MetadataRepository.XSD_COLUMN_NUMBER);
             Element xmlElement = this.getData(MetadataRepository.XSD_DOM_ELEMENT);
-            handler.error(this, this.getContainingType().getName() + "/" + this.getName() + " is a nonexistent target.", xmlElement, line, column, ValidationError.TYPE_DOES_NOT_EXIST);  //$NON-NLS-1$//$NON-NLS-2$
+            handler.error(this, this.getContainingType().getName() + "/" + this.getName() + " is a nonexistent target.", xmlElement, line, column, ValidationError.TYPE_DOES_NOT_EXIST);  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return null;
+        }
+        if (!type.hasField(fieldName)) {
             return null;
         }
         frozenField = type.getField(fieldName);
