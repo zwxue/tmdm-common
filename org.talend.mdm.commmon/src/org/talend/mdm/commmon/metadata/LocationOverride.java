@@ -51,7 +51,7 @@ class LocationOverride implements ValidationHandler {
 
     @Override
     public void error(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
-        if (error == ValidationError.TYPE_DOES_NOT_EXIST) {
+        if (error == ValidationError.TYPE_DOES_NOT_EXIST || error == ValidationError.TYPE_DOES_NOT_OWN_FIELD) {
             if (lineNumber < 0) {
                 handler.error(fieldMetadata, message, xmlElement, line, column, error);
             } else {

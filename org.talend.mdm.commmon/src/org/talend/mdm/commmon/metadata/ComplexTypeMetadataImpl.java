@@ -57,6 +57,8 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
 
     private boolean isFrozen;
 
+    private boolean isValidated;
+
     public ComplexTypeMetadataImpl(String nameSpace, String name, boolean instantiable) {
         this(nameSpace,
                 name,
@@ -168,6 +170,10 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
 
     @Override
     public void validate(ValidationHandler handler) {
+        if (isValidated) {
+            return; // Prevent reentry.
+        }
+        int originalErrorCount = handler.getErrorCount();
         // Gets fields from super types.
         if (!superTypes.isEmpty()) {
             List<TypeMetadata> thisSuperTypes = new LinkedList<TypeMetadata>(superTypes);
@@ -194,7 +200,11 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
             value.validate(handler);
         }
         for (FieldMetadata keyField : keyFields.values()) {
+            int errorCount = handler.getErrorCount();
             keyField.validate(handler);
+            if (handler.getErrorCount() > errorCount) {
+                continue;
+            }
             FieldMetadata frozenField = keyField.freeze(handler);
             if (frozenField.isMany()) {
                 handler.error(frozenField,
@@ -266,27 +276,31 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
                         ValidationError.LOOKUP_FIELD_NOT_IN_ENTITY);
                 continue;
             }
-            lookupField.getContainingType().freeze(handler);
-            if (lookupField.isKey()) {
-                handler.error(this,
-                        "Lookup field cannot be in entity key.",
-                        lookupField.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                        lookupField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                        lookupField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                        ValidationError.LOOKUP_FIELD_CANNOT_BE_KEY);
-                continue;
-            }
-            // Order matters here: check if field is correct (exists) before checking isMany().
-            lookupField.validate(handler);
-            if (!isPrimitiveTypeField(lookupField)) {
-                handler.error(this,
-                        "Lookup field must be a simple typed element.",
-                        lookupField.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                        lookupField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                        lookupField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                        ValidationError.LOOKUP_FIELD_MUST_BE_SIMPLE_TYPE);
+            if (handler.getErrorCount() == originalErrorCount) {
+                lookupField.getContainingType().freeze(handler);
+                if (lookupField.isKey()) {
+                    handler.error(this,
+                            "Lookup field cannot be in entity key.",
+                            lookupField.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
+                            lookupField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                            lookupField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                            ValidationError.LOOKUP_FIELD_CANNOT_BE_KEY);
+                    continue;
+                }
+                // Order matters here: check if field is correct (exists) before checking isMany().
+                lookupField.validate(handler);
+                if (!isPrimitiveTypeField(lookupField)) {
+                    handler.error(this,
+                            "Lookup field must be a simple typed element.",
+                            lookupField.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
+                            lookupField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                            lookupField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                            ValidationError.LOOKUP_FIELD_MUST_BE_SIMPLE_TYPE);
+                }
             }
         }
+        // Validation is done, mark this as validated (does not mean it's valid).
+        isValidated = true;
     }
 
     public void setInstantiable(boolean isInstantiable) {
