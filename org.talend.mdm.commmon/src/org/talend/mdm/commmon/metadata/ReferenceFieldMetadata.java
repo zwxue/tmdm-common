@@ -14,6 +14,8 @@ package org.talend.mdm.commmon.metadata;
 import org.w3c.dom.Element;
 
 import javax.xml.XMLConstants;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -41,7 +43,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
 
     private FieldMetadata referencedField;
 
-    private FieldMetadata foreignKeyInfo;
+    private List<FieldMetadata> foreignKeyInfoFields = Collections.emptyList();
 
     private ComplexTypeMetadata referencedType;
 
@@ -58,7 +60,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                                   String name,
                                   ComplexTypeMetadata referencedType,
                                   FieldMetadata referencedField,
-                                  FieldMetadata foreignKeyInfo,
+                                  List<FieldMetadata> foreignKeyInfo,
                                   boolean fkIntegrity,
                                   boolean allowFKIntegrityOverride,
                                   TypeMetadata fieldType,
@@ -67,7 +69,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         this.isMandatory = isMandatory;
         this.name = name;
         this.referencedField = referencedField;
-        this.foreignKeyInfo = foreignKeyInfo;
+        this.foreignKeyInfoFields = foreignKeyInfo;
         this.containingType = containingType;
         this.declaringType = containingType;
         this.allowFKIntegrityOverride = allowFKIntegrityOverride;
@@ -94,11 +96,11 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
     }
 
     public boolean hasForeignKeyInfo() {
-        return foreignKeyInfo != null;
+        return !foreignKeyInfoFields.isEmpty();
     }
 
-    public FieldMetadata getForeignKeyInfoField() {
-        return foreignKeyInfo;
+    public List<FieldMetadata> getForeignKeyInfoFields() {
+        return foreignKeyInfoFields;
     }
 
     public ComplexTypeMetadata getContainingType() {
@@ -115,8 +117,15 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         }
         isFrozen = true;
         fieldType = fieldType.freeze(handler);
-        if (foreignKeyInfo != null) {
-            foreignKeyInfo = foreignKeyInfo.freeze(handler);
+        if (!foreignKeyInfoFields.isEmpty()) {
+            List<FieldMetadata> frozenFKInfo = new ArrayList<FieldMetadata>(foreignKeyInfoFields.size());
+            for (FieldMetadata fieldMetadata : foreignKeyInfoFields) {
+                FieldMetadata freeze = fieldMetadata.freeze(handler);
+                if (freeze != null) {
+                    frozenFKInfo.add(freeze);
+                }
+            }
+            foreignKeyInfoFields = frozenFKInfo;
         }
         referencedType = (ComplexTypeMetadata) referencedType.freeze(handler);
         referencedField = referencedField.freeze(handler);
@@ -182,6 +191,30 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         if (handler.getErrorCount() > previousErrorCount) {
             return;
         }
+        // Foreign key info checks
+        for (FieldMetadata foreignKeyInfo : foreignKeyInfoFields) {
+            errorCount = handler.getErrorCount();
+            foreignKeyInfo.validate(handler);
+            if (handler.getErrorCount() > errorCount) {
+                continue; // No need to perform other checks if field is already invalid.
+            }
+            if (!isPrimitiveTypeField(foreignKeyInfo)) {
+                handler.warning(foreignKeyInfo,
+                        "Foreign key info is not typed as primitive XSD.",
+                        foreignKeyInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
+                        foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                        foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                        ValidationError.FOREIGN_KEY_INFO_NOT_PRIMITIVE_XSD_TYPED);
+            }
+            if (foreignKeyInfo.isMany()) {
+                handler.warning(foreignKeyInfo,
+                        "Foreign key info should not be a repeatable element.",
+                        foreignKeyInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
+                        foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                        foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                        ValidationError.FOREIGN_KEY_INFO_REPEATABLE);
+            }
+        }
         // FK can not be non-PK check
         freeze(handler);
         if (!referencedField.isKey()) {
@@ -201,30 +234,6 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                     this.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                     this.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                     ValidationError.FOREIGN_KEY_SHOULD_POINT_TO_PRIMARY_KEY);
-        }
-        // Foreign key info checks
-        if (foreignKeyInfo != null) {
-            errorCount = handler.getErrorCount();
-            foreignKeyInfo.validate(handler);
-            if (handler.getErrorCount() > errorCount) {
-                return; // No need to perform other checks if field is already invalid.
-            }
-            if (!isPrimitiveTypeField(foreignKeyInfo)) {
-                handler.warning(foreignKeyInfo,
-                        "Foreign key info is not typed as primitive XSD.",
-                        foreignKeyInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                        foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                        foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                        ValidationError.FOREIGN_KEY_INFO_NOT_PRIMITIVE_XSD_TYPED);
-            }
-            if (foreignKeyInfo.isMany()) {
-                handler.warning(foreignKeyInfo,
-                        "Foreign key info should not be a repeatable element.",
-                        foreignKeyInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                        foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                        foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                        ValidationError.FOREIGN_KEY_INFO_REPEATABLE);
-            }
         }
     }
 
@@ -278,7 +287,15 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
     public FieldMetadata copy(MetadataRepository repository) {
         ComplexTypeMetadata referencedTypeCopy = (ComplexTypeMetadata) referencedType.copy(repository);
         FieldMetadata referencedFieldCopy = referencedField.copy(repository);
-        FieldMetadata foreignKeyInfoCopy = hasForeignKeyInfo() ? foreignKeyInfo.copy(repository) : null;
+        List<FieldMetadata> foreignKeyInfoCopy;
+        if (hasForeignKeyInfo()) {
+            foreignKeyInfoCopy = new ArrayList<FieldMetadata>(foreignKeyInfoFields.size());
+            for (FieldMetadata foreignKeyInfoField : foreignKeyInfoFields) {
+                foreignKeyInfoCopy.add(foreignKeyInfoField.copy(repository));
+            }
+        } else {
+            foreignKeyInfoCopy = Collections.emptyList();
+        }
         ComplexTypeMetadata containingTypeCopy = (ComplexTypeMetadata) containingType.copy(repository);
         return new ReferenceFieldMetadata(containingTypeCopy,
                 isKey,
@@ -305,7 +322,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                 ", is many=" + isMany + //$NON-NLS-1$
                 ", referenced type= " + referencedType + //$NON-NLS-1$
                 ", referenced field= " + referencedField + //$NON-NLS-1$
-                ", foreign key info='" + foreignKeyInfo + '\'' + //$NON-NLS-1$
+                ", foreign key info='" + foreignKeyInfoFields + '\'' + //$NON-NLS-1$
                 ", allow FK integrity override= " + allowFKIntegrityOverride + //$NON-NLS-1$
                 ", check FK integrity= " + isFKIntegrity + //$NON-NLS-1$
                 '}';
@@ -343,7 +360,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
             return false;
         if (declaringType != null ? !declaringType.equals(that.declaringType) : that.declaringType != null)
             return false;
-        if (foreignKeyInfo != null ? !foreignKeyInfo.equals(that.foreignKeyInfo) : that.foreignKeyInfo != null)
+        if (foreignKeyInfoFields != null ? !foreignKeyInfoFields.equals(that.foreignKeyInfoFields) : that.foreignKeyInfoFields != null)
             return false;
         if (hideUsers != null ? !hideUsers.equals(that.hideUsers) : that.hideUsers != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
@@ -359,7 +376,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         }
         int result = (isKey ? 1 : 0);
         result = 31 * result + (isMany ? 1 : 0);
-        result = 31 * result + (foreignKeyInfo != null ? foreignKeyInfo.hashCode() : 0);
+        result = 31 * result + (foreignKeyInfoFields != null ? foreignKeyInfoFields.hashCode() : 0);
         result = 31 * result + (containingType != null ? containingType.hashCode() : 0);
         result = 31 * result + (declaringType != null ? declaringType.hashCode() : 0);
         result = 31 * result + (allowFKIntegrityOverride ? 1 : 0);

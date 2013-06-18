@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -112,7 +111,9 @@ public class ConsoleDumpMetadataVisitor extends DefaultMetadataVisitor<Void> {
 
         log("\t[FKIntegrity=" + referenceField.isFKIntegrity() + " / FKIntegrityOverride=" + referenceField.allowFKIntegrityOverride() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         if (referenceField.hasForeignKeyInfo()) {
-            log("\t[FKInfo=" + referenceField.getForeignKeyInfoField().getName() + " (" + referenceField.getForeignKeyInfoField() + ")]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            for (FieldMetadata fieldMetadata : referenceField.getForeignKeyInfoFields()) {
+                log("\t[FKInfo=" + fieldMetadata.getName() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
         }
         logUsers(referenceField);
         return null;

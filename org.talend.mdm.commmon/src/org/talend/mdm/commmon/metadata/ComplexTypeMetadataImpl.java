@@ -574,7 +574,10 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         // Freeze primary info
         List<FieldMetadata> frozenPrimaryKeyInfo = new LinkedList<FieldMetadata>();
         for (FieldMetadata pkInfo : primaryKeyInfo) {
-            frozenPrimaryKeyInfo.add(pkInfo.freeze(handler));
+            FieldMetadata freeze = pkInfo.freeze(handler);
+            if (freeze != null) {
+                frozenPrimaryKeyInfo.add(freeze);
+            }
         }
         primaryKeyInfo = frozenPrimaryKeyInfo;
         return this;

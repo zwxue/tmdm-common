@@ -104,14 +104,15 @@ public class SoftFieldRef implements FieldMetadata {
         } else {
             type = (ComplexTypeMetadata) containingField.getType();
         }
+        Integer line = this.getData(MetadataRepository.XSD_LINE_NUMBER);
+        Integer column = this.getData(MetadataRepository.XSD_COLUMN_NUMBER);
+        Element xmlElement = this.getData(MetadataRepository.XSD_DOM_ELEMENT);
         if (type == null) {
-            Integer line = this.getData(MetadataRepository.XSD_LINE_NUMBER);
-            Integer column = this.getData(MetadataRepository.XSD_COLUMN_NUMBER);
-            Element xmlElement = this.getData(MetadataRepository.XSD_DOM_ELEMENT);
             handler.error(this, this.getContainingType().getName() + "/" + this.getName() + " is a nonexistent target.", xmlElement, line, column, ValidationError.TYPE_DOES_NOT_EXIST);  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return null;
         }
         if (!type.hasField(fieldName)) {
+            handler.error(this, "Type '" + type.getName() + "' does not own field '" + fieldName + "'.", xmlElement, line, column, ValidationError.TYPE_DOES_NOT_OWN_FIELD);  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return null;
         }
         frozenField = type.getField(fieldName);
