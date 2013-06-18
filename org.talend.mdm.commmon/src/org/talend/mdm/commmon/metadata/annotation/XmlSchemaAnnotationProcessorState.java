@@ -34,11 +34,11 @@ public class XmlSchemaAnnotationProcessorState {
 
     private final List<String> denyLogicalDelete = new LinkedList<String>();
 
+    private final List<FieldMetadata> foreignKeyInfo = new LinkedList<FieldMetadata>();
+
     private boolean fkIntegrity = true; // Default is to enforce FK integrity
 
     private boolean fkIntegrityOverride = false; // Default is to disable FK integrity check
-
-    private FieldMetadata foreignKeyInfo = null;
 
     private TypeMetadata fieldType;
 
@@ -63,7 +63,7 @@ public class XmlSchemaAnnotationProcessorState {
     }
 
     public void setForeignKeyInfo(FieldMetadata foreignKeyInfo) {
-        this.foreignKeyInfo = foreignKeyInfo;
+        this.foreignKeyInfo.add(foreignKeyInfo);
     }
 
     public void setFieldType(TypeMetadata fieldType) {
@@ -90,7 +90,7 @@ public class XmlSchemaAnnotationProcessorState {
         return fkIntegrityOverride;
     }
 
-    public FieldMetadata getForeignKeyInfo() {
+    public List<FieldMetadata> getForeignKeyInfo() {
         return foreignKeyInfo;
     }
 

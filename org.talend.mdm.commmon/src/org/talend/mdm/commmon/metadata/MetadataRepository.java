@@ -513,16 +513,13 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
         boolean isReference = state.isReference();
         boolean fkIntegrity = state.isFkIntegrity();
         boolean fkIntegrityOverride = state.isFkIntegrityOverride();
-        FieldMetadata foreignKeyInfo = state.getForeignKeyInfo();
+        List<FieldMetadata> foreignKeyInfo = state.getForeignKeyInfo();
         TypeMetadata fieldType = state.getFieldType();
         FieldMetadata referencedField = state.getReferencedField();
         TypeMetadata referencedType = state.getReferencedType();
         List<String> hideUsers = state.getHide();
         List<String> allowWriteUsers = state.getAllowWrite();
         // TODO If allowWriteUsers is empty, put ICoreConstants.admin???
-        if (foreignKeyInfo != null && fieldType == null) {
-            throw new IllegalArgumentException("Invalid foreign key definition for field '" + fieldName + "' in type '" + containingType.getName() + "'.");
-        }
         XSDTypeDefinition schemaType = element.getType();
         if (schemaType instanceof XSDSimpleTypeDefinition) {
             XSDSimpleTypeDefinition simpleSchemaType = (XSDSimpleTypeDefinition) schemaType;
