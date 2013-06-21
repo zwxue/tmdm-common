@@ -35,34 +35,34 @@ public class DefaultValidationHandler implements ValidationHandler {
     }
 
     @Override
-    public void fatal(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+    public void fatal(FieldMetadata field, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
         throw new RuntimeException(message);
     }
 
     @Override
-    public void error(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+    public void error(FieldMetadata field, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
         addErrorMessage(message, lineNumber, columnNumber, error);
         errorCount++;
     }
 
     @Override
-    public void warning(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+    public void warning(FieldMetadata field, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
         LOGGER.warn(message);
     }
 
     @Override
-    public void fatal(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+    public void fatal(TypeMetadata type, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
         throw new RuntimeException(message);
     }
 
     @Override
-    public void error(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+    public void error(TypeMetadata type, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
         addErrorMessage(message, lineNumber, columnNumber, error);
         errorCount++;
     }
 
     @Override
-    public void warning(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+    public void warning(TypeMetadata type, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
         LOGGER.warn(message);
     }
 

@@ -29,11 +29,11 @@ class LocationOverride implements ValidationHandler {
     }
 
     @Override
-    public void error(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+    public void error(TypeMetadata type, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
         handler.error(type, message, xmlElement, line, column, error);
     }
 
-    public void warning(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+    public void warning(TypeMetadata type, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
         handler.warning(type, message, xmlElement, line, column, error);
     }
 
@@ -45,12 +45,12 @@ class LocationOverride implements ValidationHandler {
         return handler.getErrorCount();
     }
 
-    public void fatal(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+    public void fatal(FieldMetadata field, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
         handler.fatal(field, message, xmlElement, line, column, error);
     }
 
     @Override
-    public void error(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+    public void error(FieldMetadata field, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
         if (error == ValidationError.TYPE_DOES_NOT_EXIST || error == ValidationError.TYPE_DOES_NOT_OWN_FIELD) {
             if (lineNumber < 0) {
                 handler.error(fieldMetadata, message, xmlElement, line, column, error);
@@ -62,11 +62,11 @@ class LocationOverride implements ValidationHandler {
         }
     }
 
-    public void warning(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+    public void warning(FieldMetadata field, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
         handler.warning(field, message, xmlElement, line, column, error);
     }
 
-    public void fatal(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+    public void fatal(TypeMetadata type, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
         handler.fatal(type, message, xmlElement, line, column, error);
     }
 }

@@ -18,17 +18,17 @@ import org.w3c.dom.Element;
  */
 public interface ValidationHandler {
 
-    void fatal(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error);
+    void fatal(FieldMetadata field, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error);
 
-    void error(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error);
+    void error(FieldMetadata field, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error);
 
-    void warning(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error);
+    void warning(FieldMetadata field, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error);
 
-    void fatal(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error);
+    void fatal(TypeMetadata type, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error);
 
-    void error(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error);
+    void error(TypeMetadata type, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error);
 
-    void warning(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error);
+    void warning(TypeMetadata type, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error);
 
     /**
      * Called by validation process to indicate implementation should no longer wait for other messages (example:

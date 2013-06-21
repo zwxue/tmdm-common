@@ -214,6 +214,20 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                         foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                         ValidationError.FOREIGN_KEY_INFO_REPEATABLE);
             }
+            if (foreignKeyInfo.getContainingType() != null) {
+                ComplexTypeMetadata foreignKeyInfoContainingType = foreignKeyInfo.freeze(handler).getContainingType();
+                while (foreignKeyInfoContainingType instanceof ContainedComplexTypeMetadata) {
+                    foreignKeyInfoContainingType = ((ContainedComplexTypeMetadata) foreignKeyInfoContainingType).getContainerType();
+                }
+                if (foreignKeyInfoContainingType.isInstantiable() && !foreignKeyInfoContainingType.equals(referencedType)) {
+                    handler.error(foreignKeyInfo,
+                            "Foreign key info must reference an element in referenced type.",
+                            foreignKeyInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
+                            foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                            foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                            ValidationError.FOREIGN_KEY_INFO_NOT_REFERENCING_FK_TYPE);
+                }
+            }
         }
         // FK can not be non-PK check
         freeze(handler);

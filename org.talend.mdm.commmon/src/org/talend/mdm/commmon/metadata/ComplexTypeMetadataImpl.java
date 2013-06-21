@@ -267,7 +267,11 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
                 continue;
             }
             // Lookup field must be defined in the entity (can't reference other entity field).
-            if (!this.equals(lookupField.getContainingType())) {
+            ComplexTypeMetadata containingType = lookupField.freeze(handler).getContainingType();
+            while (containingType instanceof ContainedComplexTypeMetadata) {
+                containingType = ((ContainedComplexTypeMetadata) containingType).getContainerType();
+            }
+            if (!this.equals(containingType)) {
                 handler.error(this,
                         "Lookup field info must refer a field of the same entity.",
                         lookupField.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
@@ -277,7 +281,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
                 continue;
             }
             if (handler.getErrorCount() == originalErrorCount) {
-                lookupField.getContainingType().freeze(handler);
+                containingType.freeze(handler);
                 if (lookupField.isKey()) {
                     handler.error(this,
                             "Lookup field cannot be in entity key.",
