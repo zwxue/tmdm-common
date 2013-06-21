@@ -159,21 +159,13 @@ public class SoftFieldRef implements FieldMetadata {
         if (columnNumberObject == null) {
             columnNumberObject = -1;
         }
-        TypeMetadata type = repository.getComplexType(validationType.getName());
-        if (type == null) {
-            type = repository.getNonInstantiableType(validationType.getNamespace(), validationType.getName());
-        }
-        if (type == null) {
-            handler.error(this,
-                    "Type '" + validationType.getName() + "' does not exist.",
-                    xmlElement,
-                    lineNumberObject,
-                    columnNumberObject,
-                    ValidationError.TYPE_DOES_NOT_EXIST);
-            return;
-        }
         if (fieldName != null) {
             ComplexTypeMetadata complexTypeMetadata = (ComplexTypeMetadata) validationType;
+            int errorCount = handler.getErrorCount();
+            complexTypeMetadata.validate(handler);
+            if (handler.getErrorCount() > errorCount) {
+                return;
+            }
             if (!complexTypeMetadata.hasField(fieldName)) {
                 handler.error(this,
                         "Type '" + validationType.getName() + "' does not own field '" + fieldName + "'.",

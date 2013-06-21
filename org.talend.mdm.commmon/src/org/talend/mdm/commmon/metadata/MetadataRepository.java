@@ -655,32 +655,32 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
 
     private static class NoOpValidationHandler implements ValidationHandler {
         @Override
-        public void error(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+        public void error(TypeMetadata type, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
             // Nothing to do (No op validation)
         }
 
         @Override
-        public void fatal(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+        public void fatal(FieldMetadata field, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
             // Nothing to do (No op validation)
         }
 
         @Override
-        public void error(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+        public void error(FieldMetadata field, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
             // Nothing to do (No op validation)
         }
 
         @Override
-        public void warning(FieldMetadata field, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+        public void warning(FieldMetadata field, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
             // Nothing to do (No op validation)
         }
 
         @Override
-        public void fatal(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+        public void fatal(TypeMetadata type, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
             // Nothing to do (No op validation)
         }
 
         @Override
-        public void warning(TypeMetadata type, String message, Element element, int lineNumber, int columnNumber, ValidationError error) {
+        public void warning(TypeMetadata type, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
             // Nothing to do (No op validation)
         }
 
