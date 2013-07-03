@@ -30,7 +30,15 @@ class LocationOverride implements ValidationHandler {
 
     @Override
     public void error(TypeMetadata type, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
-        handler.error(type, message, xmlElement, line, column, error);
+        if (error == ValidationError.TYPE_DOES_NOT_EXIST || error == ValidationError.TYPE_DOES_NOT_OWN_FIELD) {
+            if (lineNumber == null || lineNumber < 0) {
+                handler.error(fieldMetadata.getContainingType(), message, xmlElement, line, column, error);
+            } else {
+                handler.error(fieldMetadata.getContainingType(), message, element, lineNumber, columnNumber, error);
+            }
+        } else {
+            handler.error(type, message, xmlElement, line, column, error);
+        }
     }
 
     public void warning(TypeMetadata type, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
@@ -52,7 +60,7 @@ class LocationOverride implements ValidationHandler {
     @Override
     public void error(FieldMetadata field, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
         if (error == ValidationError.TYPE_DOES_NOT_EXIST || error == ValidationError.TYPE_DOES_NOT_OWN_FIELD) {
-            if (lineNumber < 0) {
+            if (lineNumber == null || lineNumber < 0) {
                 handler.error(fieldMetadata, message, xmlElement, line, column, error);
             } else {
                 handler.error(fieldMetadata, message, element, lineNumber, columnNumber, error);
