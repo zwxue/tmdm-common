@@ -25,7 +25,7 @@ public class DefaultValidationHandler implements ValidationHandler {
 
     private int errorCount;
 
-    private void addErrorMessage(String message, int lineNumber, int columnNumber, ValidationError error) {
+    private void addErrorMessage(String message, Integer lineNumber, Integer columnNumber, ValidationError error) {
         MultiKeyMap currentErrors = errors.get(error);
         if (currentErrors == null) {
             currentErrors = new MultiKeyMap();
