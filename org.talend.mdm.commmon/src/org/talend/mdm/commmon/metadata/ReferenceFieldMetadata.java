@@ -11,17 +11,13 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
+import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 import org.w3c.dom.Element;
 
-import javax.xml.XMLConstants;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class ReferenceFieldMetadata extends MetadataExtensions implements FieldMetadata {
-
-    private final boolean isKey;
 
     private final boolean isMany;
 
@@ -31,8 +27,6 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
 
     private final List<String> hideUsers;
 
-    private TypeMetadata fieldType;
-
     private final List<String> writeUsers;
 
     private final boolean isMandatory;
@@ -40,6 +34,10 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
     private final String name;
 
     private final TypeMetadata declaringType;
+
+    private TypeMetadata fieldType;
+
+    private boolean isKey;
 
     private FieldMetadata referencedField;
 
@@ -111,161 +109,46 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         this.containingType = typeMetadata;
     }
 
-    public FieldMetadata freeze(ValidationHandler handler) {
+    public FieldMetadata freeze() {
         if (isFrozen) {
             return this;
         }
         isFrozen = true;
-        fieldType = fieldType.freeze(handler);
+        fieldType = fieldType.freeze();
         if (!foreignKeyInfoFields.isEmpty()) {
             List<FieldMetadata> frozenFKInfo = new ArrayList<FieldMetadata>(foreignKeyInfoFields.size());
             for (FieldMetadata fieldMetadata : foreignKeyInfoFields) {
-                FieldMetadata freeze = fieldMetadata.freeze(handler);
+                FieldMetadata freeze = fieldMetadata.freeze();
                 if (freeze != null) {
                     frozenFKInfo.add(freeze);
                 }
             }
             foreignKeyInfoFields = frozenFKInfo;
         }
-        referencedType = (ComplexTypeMetadata) referencedType.freeze(handler);
-        referencedField = referencedField.freeze(handler);
+        referencedType = (ComplexTypeMetadata) referencedType.freeze();
+        referencedField = referencedField.freeze();
         return this;
     }
 
-    public void promoteToKey(ValidationHandler handler) {
-        handler.error(this,
-                "Key field cannot be a foreign key element.",
-                this.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                this.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                this.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                ValidationError.FIELD_KEY_CANNOT_BE_FOREIGN_KEY);
+    public void promoteToKey() {
+        isKey = true;
     }
 
     @Override
-    public void validate(final ValidationHandler handler) {
-        int errorCount = handler.getErrorCount();
-        fieldType.validate(handler);
-        if (handler.getErrorCount() > errorCount) {
-            return;
-        }
-        TypeMetadata currentType = fieldType;
-        // TODO This is duplicated code from MetadataUtils, bring MetadataUtils to this module (non core-dependent parts).
-        if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace())) {
-            while (!currentType.getSuperTypes().isEmpty()) {
-                TypeMetadata superType = currentType.getSuperTypes().iterator().next();
-                if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(superType.getNamespace())
-                        && ("anyType".equals(superType.getName()) //$NON-NLS-1$
-                        || "anySimpleType".equals(superType.getName()))) { //$NON-NLS-1$
-                    break;
-                }
-                currentType = superType;
-                errorCount = handler.getErrorCount();
-                currentType.validate(handler);
-                if (handler.getErrorCount() > errorCount) {
-                    return;
-                }
-            }
-        }
-        final Integer line = this.getData(MetadataRepository.XSD_LINE_NUMBER);
-        final Integer column = this.getData(MetadataRepository.XSD_COLUMN_NUMBER);
-        final Element xmlElement = this.getData(MetadataRepository.XSD_DOM_ELEMENT);
-        if (!Types.STRING.equals(currentType.getName())) {
-            handler.error(this,
-                    "FK field '" + getName() + "' is invalid because it isn't typed as string (nor a string restriction).",
-                    xmlElement,
-                    line,
-                    column,
-                    ValidationError.FOREIGN_KEY_NOT_STRING_TYPED);
-        }
-        if (fieldType.freeze(handler).getData(MetadataRepository.DATA_MAX_LENGTH) != null) {
-            handler.warning(this,
-                    "FK field '" + getName() + "' uses max length restriction. Make sure to include square brackets in max length value.",
-                    xmlElement,
-                    line,
-                    column,
-                    ValidationError.FOREIGN_KEY_USES_MAX_LENGTH);
-        }
-        // When type does not exist, client expects the reference field as error iso. the referenced field.
-        int previousErrorCount = handler.getErrorCount();
-        referencedField.validate(new LocationOverride(this, handler, xmlElement, line, column));
-        if (handler.getErrorCount() > previousErrorCount) {
-            return;
-        }
-        // Foreign key info checks
-        for (FieldMetadata foreignKeyInfo : foreignKeyInfoFields) {
-            errorCount = handler.getErrorCount();
-            foreignKeyInfo.validate(handler);
-            if (handler.getErrorCount() > errorCount) {
-                continue; // No need to perform other checks if field is already invalid.
-            }
-            if (!isPrimitiveTypeField(foreignKeyInfo)) {
-                handler.warning(foreignKeyInfo,
-                        "Foreign key info is not typed as primitive XSD.",
-                        foreignKeyInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                        foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                        foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                        ValidationError.FOREIGN_KEY_INFO_NOT_PRIMITIVE_XSD_TYPED);
-            }
-            if (foreignKeyInfo.isMany()) {
-                handler.warning(foreignKeyInfo,
-                        "Foreign key info should not be a repeatable element.",
-                        foreignKeyInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                        foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                        foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                        ValidationError.FOREIGN_KEY_INFO_REPEATABLE);
-            }
-            if (foreignKeyInfo.getContainingType() != null) {
-                ComplexTypeMetadata foreignKeyInfoContainingType = foreignKeyInfo.freeze(handler).getContainingType();
-                while (foreignKeyInfoContainingType instanceof ContainedComplexTypeMetadata) {
-                    foreignKeyInfoContainingType = ((ContainedComplexTypeMetadata) foreignKeyInfoContainingType).getContainerType();
-                }
-                if (foreignKeyInfoContainingType.isInstantiable() && !foreignKeyInfoContainingType.equals(referencedType)) {
-                    handler.error(foreignKeyInfo,
-                            "Foreign key info must reference an element in referenced type.",
-                            foreignKeyInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                            foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                            foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                            ValidationError.FOREIGN_KEY_INFO_NOT_REFERENCING_FK_TYPE);
-                }
-            }
-        }
-        // FK can not be non-PK check
-        freeze(handler);
-        if (!referencedField.isKey()) {
-            // Compute valid PK fields as help for user
-            StringBuilder referencedTypePK = new StringBuilder();
-            Iterator<FieldMetadata> keyFields = referencedType.getKeyFields().iterator();
-            while (keyFields.hasNext()) {
-                referencedTypePK.append('\'').append(keyFields.next().getName()).append('\'');
-                if (keyFields.hasNext()) {
-                    referencedTypePK.append(' ');
-                }
-            }
-            // Reports error
-            handler.warning(referencedField,
-                    "Foreign key should point to a primary key (recommended choices are: " + referencedTypePK + ")",
-                    this.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                    this.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                    this.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                    ValidationError.FOREIGN_KEY_SHOULD_POINT_TO_PRIMARY_KEY);
-        }
+    public void validate(ValidationHandler handler) {
+        // When referenced field has errors, client expects the reference field as error iso. the referenced field.
+        Element element = this.getData(MetadataRepository.XSD_DOM_ELEMENT);
+        Integer lineNumber = this.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER);
+        Integer columnNumber = this.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER);
+        LocationOverride override = new LocationOverride(this, handler, element, lineNumber, columnNumber);
+        ValidationFactory.getRule(referencedField).perform(override);
+        // Validates this side of the relationship
+        ValidationFactory.getRule(this).perform(handler);
     }
 
-    // TODO Duplicated code in org.talend.mdm.commmon.metadata.ComplexTypeMetadataImpl.isPrimitiveTypeField()
-    private static boolean isPrimitiveTypeField(FieldMetadata lookupField) {
-        TypeMetadata currentType = lookupField.getType();
-        if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace())) {
-            while (!currentType.getSuperTypes().isEmpty()) {
-                TypeMetadata superType = currentType.getSuperTypes().iterator().next();
-                if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(superType.getNamespace())
-                        && ("anyType".equals(superType.getName()) //$NON-NLS-1$
-                        || "anySimpleType".equals(superType.getName()))) { //$NON-NLS-1$
-                    break;
-                }
-                currentType = superType;
-            }
-        }
-        return XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace());
+    @Override
+    public ValidationRule createValidationRule() {
+        return ValidationFactory.getRule(this);
     }
 
     public TypeMetadata getDeclaringType() {
@@ -287,7 +170,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
     }
 
     public TypeMetadata getType() {
-        return referencedField.getType();
+        return fieldType;
     }
 
     public boolean isKey() {

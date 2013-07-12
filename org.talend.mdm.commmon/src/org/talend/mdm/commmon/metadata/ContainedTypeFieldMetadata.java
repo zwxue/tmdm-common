@@ -11,6 +11,9 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
+import org.talend.mdm.commmon.metadata.validation.ValidationRule;
+
 import java.util.List;
 
 /**
@@ -73,22 +76,27 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
         this.containingType = typeMetadata;
     }
 
-    public FieldMetadata freeze(ValidationHandler handler) {
+    public FieldMetadata freeze() {
         if (isFrozen) {
             return this;
         }
         isFrozen = true;
-        fieldType = (ContainedComplexTypeMetadata) fieldType.freeze(handler);
+        fieldType = (ContainedComplexTypeMetadata) fieldType.freeze();
         return this;
     }
 
-    public void promoteToKey(ValidationHandler handler) {
+    public void promoteToKey() {
         throw new UnsupportedOperationException("Contained type field can't be promoted to key.");
     }
 
     @Override
     public void validate(ValidationHandler handler) {
-        fieldType.validate(handler);
+        ValidationFactory.getRule(this).perform(handler);
+    }
+
+    @Override
+    public ValidationRule createValidationRule() {
+        return ValidationFactory.getRule(this);
     }
 
     public TypeMetadata getDeclaringType() {

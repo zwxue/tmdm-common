@@ -13,7 +13,7 @@ package org.talend.mdm.commmon.metadata;
 
 import org.w3c.dom.Element;
 
-class LocationOverride implements ValidationHandler {
+public class LocationOverride implements ValidationHandler {
     private final ValidationHandler handler;
     private final Element xmlElement;
     private final Integer line;

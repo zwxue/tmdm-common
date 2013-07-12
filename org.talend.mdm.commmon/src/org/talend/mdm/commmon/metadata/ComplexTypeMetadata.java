@@ -59,7 +59,7 @@ public interface ComplexTypeMetadata extends TypeMetadata {
      *
      * @param fieldMetadata A new field to add to this type.
      * @throws IllegalArgumentException If <code>fieldMetadata</code> is <code>null</code> or is type is frozen.
-     * @see TypeMetadata#freeze(ValidationHandler)
+     * @see TypeMetadata#freeze()
      */
     void addField(FieldMetadata fieldMetadata);
 

@@ -11,6 +11,9 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
+import org.talend.mdm.commmon.metadata.validation.ValidationRule;
+
 import java.util.List;
 
 /**
@@ -46,10 +49,6 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
                                     TypeMetadata fieldType,
                                     List<String> allowWriteUsers,
                                     List<String> hideUsers) {
-        if (isKey && !isMandatory) {
-            throw new IllegalArgumentException("Key fields are mandatory");
-        }
-
         this.containingType = containingType;
         this.declaringType = containingType;
         this.isKey = isKey;
@@ -81,22 +80,27 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
         this.containingType = typeMetadata;
     }
 
-    public FieldMetadata freeze(ValidationHandler handler) {
+    public FieldMetadata freeze() {
         if (isFrozen) {
             return this;
         }
         isFrozen = true;
-        fieldType = fieldType.freeze(handler);
+        fieldType = fieldType.freeze();
         return this;
     }
 
-    public void promoteToKey(ValidationHandler handler) {
+    public void promoteToKey() {
         isKey = true;
     }
 
     @Override
     public void validate(ValidationHandler handler) {
-        fieldType.validate(handler);
+        ValidationFactory.getRule(this).perform(handler);
+    }
+
+    @Override
+    public ValidationRule createValidationRule() {
+        return ValidationFactory.getRule(this);
     }
 
     public TypeMetadata getDeclaringType() {

@@ -10,7 +10,10 @@
  */
 package org.talend.mdm.commmon.metadata;
 
-interface MetadataExtensible {
+import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
+import org.talend.mdm.commmon.metadata.validation.ValidationRule;
+
+public interface MetadataExtensible {
 
     /**
      * Sets the defined property with the given name.

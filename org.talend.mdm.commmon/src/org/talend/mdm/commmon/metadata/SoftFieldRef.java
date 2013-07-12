@@ -11,12 +11,11 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
+import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 import org.w3c.dom.Element;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  *
@@ -50,12 +49,7 @@ public class SoftFieldRef implements FieldMetadata {
     }
 
     private FieldMetadata getField() {
-        if (frozenField == null) {
-            DefaultValidationHandler handler = new DefaultValidationHandler();
-            freeze(handler);
-            handler.end();
-        }
-        return frozenField;
+        return freeze();
     }
 
     @Override
@@ -94,26 +88,32 @@ public class SoftFieldRef implements FieldMetadata {
     }
 
     @Override
-    public FieldMetadata freeze(ValidationHandler handler) {
+    public FieldMetadata freeze() {
         if (frozenField != null) {
             return frozenField;
         }
         ComplexTypeMetadata type;
         if (containingType != null) {
             type = repository.getComplexType(containingType.getName());
+            if (type == null) {
+                TypeMetadata freeze = containingType.freeze();
+                return new UnresolvedFieldMetadata(fieldName,
+                        true,
+                        (ComplexTypeMetadata) freeze);
+            }
         } else {
+            FieldMetadata frozenContainingField = containingField.freeze();
+            if (frozenContainingField instanceof UnresolvedFieldMetadata) {
+                return new UnresolvedFieldMetadata(fieldName,
+                        true,
+                        (ComplexTypeMetadata) containingField.getContainingType().freeze());
+            }
             type = (ComplexTypeMetadata) containingField.getType();
         }
-        Integer line = this.getData(MetadataRepository.XSD_LINE_NUMBER);
-        Integer column = this.getData(MetadataRepository.XSD_COLUMN_NUMBER);
-        Element xmlElement = this.getData(MetadataRepository.XSD_DOM_ELEMENT);
-        if (type == null) {
-            handler.error(this, this.getContainingType().getName() + "/" + this.getName() + " is a nonexistent target.", xmlElement, line, column, ValidationError.TYPE_DOES_NOT_EXIST);  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            return null;
-        }
         if (!type.hasField(fieldName)) {
-            handler.error(this, "Type '" + type.getName() + "' does not own field '" + fieldName + "'.", xmlElement, line, column, ValidationError.TYPE_DOES_NOT_OWN_FIELD);  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            return null;
+            return new UnresolvedFieldMetadata(fieldName,
+                    true,
+                    type);
         }
         frozenField = type.getField(fieldName);
         
@@ -125,8 +125,8 @@ public class SoftFieldRef implements FieldMetadata {
     }
 
     @Override
-    public void promoteToKey(ValidationHandler handler) {
-        getField().promoteToKey(handler);
+    public void promoteToKey() {
+        getField().promoteToKey();
     }
 
     @Override
@@ -178,6 +178,11 @@ public class SoftFieldRef implements FieldMetadata {
     }
 
     @Override
+    public ValidationRule createValidationRule() {
+        return ValidationFactory.getRule(this);
+    }
+
+    @Override
     public TypeMetadata getDeclaringType() {
         return getField().getDeclaringType();
     }
@@ -191,11 +196,7 @@ public class SoftFieldRef implements FieldMetadata {
 
     @Override
     public FieldMetadata copy(MetadataRepository repository) {
-        if (containingType == null) {
-            return new SoftFieldRef(repository, fieldName, containingField);
-        } else {
-            return new SoftFieldRef(repository, fieldName, containingType.copy(repository));
-        }
+        return this;
     }
 
     @Override

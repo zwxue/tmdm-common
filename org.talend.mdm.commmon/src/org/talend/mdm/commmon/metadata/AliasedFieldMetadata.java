@@ -10,6 +10,8 @@
  */
 package org.talend.mdm.commmon.metadata;
 
+import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
+
 import java.util.List;
 
 public class AliasedFieldMetadata extends SimpleTypeFieldMetadata {
@@ -42,5 +44,10 @@ public class AliasedFieldMetadata extends SimpleTypeFieldMetadata {
         int result = super.hashCode();
         result = 31 * result + (realFieldName != null ? realFieldName.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public void validate(ValidationHandler handler) {
+        ValidationFactory.getRule(this).perform(handler);
     }
 }

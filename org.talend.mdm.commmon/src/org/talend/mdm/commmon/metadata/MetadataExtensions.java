@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class MetadataExtensions implements MetadataExtensible {
 
-    private Map<String, Object> dataMap;
+    protected Map<String, Object> dataMap;
 
     public synchronized void setData(String key, Object data) {
         if (dataMap == null) {

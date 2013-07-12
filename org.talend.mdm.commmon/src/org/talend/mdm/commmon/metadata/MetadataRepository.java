@@ -196,22 +196,35 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
         XmlSchemaWalker.walk(schema, this);
         // TMDM-4876 Additional processing for entity inheritance
         resolveAdditionalSuperTypes(this, handler);
+        // "Freeze" all types (a consequence of this will be validation of all fields).
+        nonInstantiableTypes.put(getUserNamespace(), freezeTypes(nonInstantiableTypes.get(getUserNamespace())));
+        entityTypes.put(getUserNamespace(), freezeTypes(entityTypes.get(getUserNamespace())));
         // Validates data model
         for (TypeMetadata type : getUserComplexTypes()) {
-            type.validate(handler);
+            if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(type.getNamespace())) {
+                type.validate(handler);
+            }
         }
         for (TypeMetadata type : getNonInstantiableTypes()) {
-            type.validate(handler);
+            if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(type.getNamespace())) {
+                type.validate(handler);
+            }
         }
         handler.end();
-        if (handler.getErrorCount() == 0) {
-            // "Freeze" all types (a consequence of this will be validation of all fields).
-            for (TypeMetadata type : getTypes()) {
-                type.freeze(handler);
-            }
-        } else {
+        if (handler.getErrorCount() != 0) {
             LOGGER.error("Could not parse data model (" + handler.getErrorCount() + " error(s) found).");
         }
+    }
+
+    private Map<String, TypeMetadata> freezeTypes(Map<String, TypeMetadata> typesToFreeze) {
+        if (typesToFreeze == null) {
+            return null;
+        }
+        Map<String, TypeMetadata> workingTypes = new HashMap<String, TypeMetadata>(typesToFreeze);
+        for (TypeMetadata type : typesToFreeze.values()) {
+            workingTypes.put(type.getName(), type.freeze());
+        }
+        return workingTypes;
     }
 
     private static void resolveAdditionalSuperTypes(MetadataRepository repository, ValidationHandler handler) {

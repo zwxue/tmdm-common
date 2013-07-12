@@ -11,8 +11,11 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
+import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 import org.w3c.dom.Element;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,8 +30,6 @@ public class SimpleTypeMetadata extends MetadataExtensions implements TypeMetada
     private final List<TypeMetadata> superTypes = new LinkedList<TypeMetadata>();
 
     private String name;
-
-    private boolean isFrozen = false;
 
     public SimpleTypeMetadata(String nameSpace, String name) {
         if (name == null) {
@@ -47,10 +48,7 @@ public class SimpleTypeMetadata extends MetadataExtensions implements TypeMetada
     }
 
     public void setName(String name) {
-        if (isFrozen) {
-            throw new IllegalStateException("Cannot change name after type was frozen.");
-        }
-        this.name = name;
+        throw new IllegalStateException("Cannot change name after type was created.");
     }
 
     public String getNamespace() {
@@ -86,8 +84,17 @@ public class SimpleTypeMetadata extends MetadataExtensions implements TypeMetada
         return new SimpleTypeMetadata(nameSpace, name);
     }
 
-    public TypeMetadata freeze(ValidationHandler handler) {
-        isFrozen = true;
+    public TypeMetadata freeze() {
+        if (!superTypes.isEmpty()) {
+            List<TypeMetadata> thisSuperTypes = new ArrayList<TypeMetadata>(superTypes);
+            superTypes.clear();
+            for (TypeMetadata superType : thisSuperTypes) {
+                if (isInstantiable() == superType.isInstantiable()) {
+                    superType = superType.freeze();
+                    superTypes.add(superType);
+                }
+            }
+        }
         return this;
     }
 
@@ -104,12 +111,9 @@ public class SimpleTypeMetadata extends MetadataExtensions implements TypeMetada
     @Override
     public void validate(ValidationHandler handler) {
         if (!superTypes.isEmpty()) {
-            List<TypeMetadata> thisSuperTypes = new LinkedList<TypeMetadata>(superTypes);
-            superTypes.clear();
-            for (TypeMetadata superType : thisSuperTypes) {
+            for (TypeMetadata superType : superTypes) {
                 if (isInstantiable() == superType.isInstantiable()) {
-                    superType = superType.freeze(handler);
-                    superTypes.add(superType);
+                    superType.validate(handler);
                 } else {
                     handler.error(superType,
                             "Non instantiable type cannot inherits from entity type.",
@@ -120,6 +124,11 @@ public class SimpleTypeMetadata extends MetadataExtensions implements TypeMetada
                 }
             }
         }
+    }
+
+    @Override
+    public ValidationRule createValidationRule() {
+        return ValidationFactory.getRule(this);
     }
 
     @Override
