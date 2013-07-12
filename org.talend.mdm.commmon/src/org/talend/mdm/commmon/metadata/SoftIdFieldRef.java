@@ -11,6 +11,8 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
+import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 import org.w3c.dom.Element;
 
 import java.util.*;
@@ -42,9 +44,7 @@ public class SoftIdFieldRef implements FieldMetadata {
 
     private FieldMetadata getField() {
         if (frozenField == null) {
-            DefaultValidationHandler handler = new DefaultValidationHandler();
-            freeze(handler);
-            handler.end();
+            freeze();
         }
         return frozenField;
     }
@@ -89,7 +89,7 @@ public class SoftIdFieldRef implements FieldMetadata {
     }
 
     @Override
-    public FieldMetadata freeze(ValidationHandler handler) {
+    public FieldMetadata freeze() {
         if (frozenField != null) {
             return frozenField;
         }
@@ -98,25 +98,28 @@ public class SoftIdFieldRef implements FieldMetadata {
             type = (ComplexTypeMetadata) repository.getNonInstantiableType(repository.getUserNamespace(), typeName);
         }
         if (type == null) {
-            handler.fatal((TypeMetadata) null, "Type '" + typeName + "' does not exist.", null, -1, -1, ValidationError.TYPE_DOES_NOT_EXIST);
-            return this;
+            UnresolvedTypeMetadata containingType = new UnresolvedTypeMetadata(typeName);
+            Set<Map.Entry<String, Object>> data = additionalData.entrySet();
+            for (Map.Entry<String, Object> currentData : data) {
+                containingType.setData(currentData.getKey(), currentData.getValue());
+            }
+            UnresolvedFieldMetadata unresolvedFieldMetadata = new UnresolvedFieldMetadata(fieldName, true, containingType);
+            data = additionalData.entrySet();
+            for (Map.Entry<String, Object> currentData : data) {
+                unresolvedFieldMetadata.setData(currentData.getKey(), currentData.getValue());
+            }
+            return unresolvedFieldMetadata;
         }
         Collection<FieldMetadata> keyFields = type.getKeyFields();
         if (fieldName == null) {
             if (keyFields.size() == 1) {
-                frozenField = keyFields.iterator().next();
+                frozenField = keyFields.iterator().next().freeze();
             } else {
                 frozenField = new CompoundFieldMetadata(keyFields.toArray(new FieldMetadata[keyFields.size()]));
             }
         } else {
             if (!type.hasField(fieldName)) {
-                handler.error(this,
-                        "Type '" + typeName + "' does not own field '" + fieldName + "'",
-                        type.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                        type.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                        type.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                        ValidationError.TYPE_DOES_NOT_OWN_FIELD);
-                return this;
+                return new UnresolvedFieldMetadata(fieldName, true, type);
             }
             frozenField = type.getField(fieldName);
         }
@@ -128,8 +131,8 @@ public class SoftIdFieldRef implements FieldMetadata {
     }
 
     @Override
-    public void promoteToKey(ValidationHandler handler) {
-        getField().promoteToKey(handler);
+    public void promoteToKey() {
+        getField().promoteToKey();
     }
 
     @Override
@@ -165,6 +168,11 @@ public class SoftIdFieldRef implements FieldMetadata {
                     type.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                     ValidationError.TYPE_DOES_NOT_OWN_KEY);
         }
+    }
+
+    @Override
+    public ValidationRule createValidationRule() {
+        return ValidationFactory.getRule(this);
     }
 
     @Override

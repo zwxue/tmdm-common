@@ -56,13 +56,8 @@ public class ContainedComplexTypeRef extends ContainedComplexTypeMetadata {
     }
 
     @Override
-    public TypeMetadata freeze(ValidationHandler handler) {
-        if (isFrozen) {
-            return this;
-        }
-        isFrozen = true;
-        super.freeze(handler);
-        reference = (ComplexTypeMetadata) reference.freeze(handler);
+    public TypeMetadata freeze() {
+        reference = (ComplexTypeMetadata) reference.freeze();
         return this;
     }
 

@@ -48,4 +48,5 @@ public interface Types {
     String G_MONTH_DAY = "gMonthDay"; //$NON-NLS-1$
     String G_DAY = "gDay"; //$NON-NLS-1$
     String G_MONTH = "gMonth"; //$NON-NLS-1$
+    String ANY_TYPE = "anyType"; //$NON-NLS-1$
 }

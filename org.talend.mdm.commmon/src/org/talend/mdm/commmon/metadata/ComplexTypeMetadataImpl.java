@@ -13,6 +13,8 @@ package org.talend.mdm.commmon.metadata;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
+import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
+import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 import org.w3c.dom.Element;
 
 import javax.xml.XMLConstants;
@@ -45,7 +47,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
 
     private final Collection<ComplexTypeMetadata> subTypes = new HashSet<ComplexTypeMetadata>();
 
-    private final List<FieldMetadata> lookupFields;
+    private List<FieldMetadata> lookupFields;
 
     private boolean isInstantiable;
 
@@ -56,8 +58,6 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
     private MetadataRepository repository;
 
     private boolean isFrozen;
-
-    private boolean isValidated;
 
     public ComplexTypeMetadataImpl(String nameSpace, String name, boolean instantiable) {
         this(nameSpace,
@@ -170,141 +170,16 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
 
     @Override
     public void validate(ValidationHandler handler) {
-        if (isValidated) {
-            return; // Prevent reentry.
-        }
-        int originalErrorCount = handler.getErrorCount();
-        // Gets fields from super types.
-        if (!superTypes.isEmpty()) {
-            List<TypeMetadata> thisSuperTypes = new LinkedList<TypeMetadata>(superTypes);
-            for (TypeMetadata superType : thisSuperTypes) {
-                if (isInstantiable() == superType.isInstantiable()) {
-                    if (superType instanceof ComplexTypeMetadata) {
-                        Collection<FieldMetadata> thisTypeKeyFields = getKeyFields();
-                        for (FieldMetadata thisTypeKeyField : thisTypeKeyFields) {
-                            if (!((ComplexTypeMetadata) superType).hasField(thisTypeKeyField.getName())) {
-                                handler.error(superType, "Type '" + name + "' cannot add field(s) to its key because " +
-                                        "super type '" + superType.getName() + "' already defines key.",
-                                        superType.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                                        superType.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                                        superType.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                                        ValidationError.TYPE_CANNOT_OVERRIDE_SUPER_TYPE_KEY);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        ValidationFactory.getRule(this).perform(handler);
         // Validate all fields.
         for (FieldMetadata value : fieldMetadata.values()) {
-            value.validate(handler);
+            ValidationFactory.getRule(value).perform(handler);
         }
-        for (FieldMetadata keyField : keyFields.values()) {
-            int errorCount = handler.getErrorCount();
-            keyField.validate(handler);
-            if (handler.getErrorCount() > errorCount) {
-                continue;
-            }
-            FieldMetadata frozenField = keyField.freeze(handler);
-            if (frozenField.isMany()) {
-                handler.error(frozenField,
-                        "Key field cannot be a repeatable element.",
-                        frozenField.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                        frozenField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                        frozenField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                        ValidationError.FIELD_KEY_CANNOT_BE_REPEATABLE);
-            }
-            if (!frozenField.isMandatory()) {
-                handler.error(frozenField,
-                        "Key field must be a mandatory element.",
-                        frozenField.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                        frozenField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                        frozenField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                        ValidationError.FIELD_KEY_MUST_BE_MANDATORY);
-            }
-        }
-        // Validate primary info
-        for (FieldMetadata pkInfo : primaryKeyInfo) {
-            // PK Info must be defined in the entity (can't reference other entity field).
-            if (!this.equals(pkInfo.getContainingType())) {
-                handler.error(this,
-                        "Primary key info must refer a field of the same entity.",
-                        pkInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                        pkInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                        pkInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                        ValidationError.PRIMARY_KEY_INFO_NOT_IN_ENTITY);
-                continue;
-            }
-            // Order matters here: check if field is correct (exists) before checking isMany().
-            int previousErrorCount = handler.getErrorCount();
-            pkInfo.validate(handler);
-            // No need to check isMany() if field definition is already wrong.
-            if (handler.getErrorCount() == previousErrorCount) {
-                if (pkInfo.isMany()) {
-                    handler.error(this,
-                            "Primary key info element cannot be a repeatable element.",
-                            pkInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                            pkInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                            pkInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                            ValidationError.PRIMARY_KEY_INFO_CANNOT_BE_REPEATABLE);
-                    continue;
-                }
-                if (!isPrimitiveTypeField(pkInfo)) {
-                    handler.warning(this,
-                            "Primary key info should refer to a field with a primitive XSD type.",
-                            pkInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                            pkInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                            pkInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                            ValidationError.PRIMARY_KEY_INFO_TYPE_NOT_PRIMITIVE);
-                }
-            }
-        }
-        // Validate lookup fields
-        for (FieldMetadata lookupField : lookupFields) {
-            int errorCount = handler.getErrorCount();
-            lookupField.validate(handler);
-            if (handler.getErrorCount() > errorCount) {
-                continue;
-            }
-            // Lookup field must be defined in the entity (can't reference other entity field).
-            ComplexTypeMetadata containingType = lookupField.freeze(handler).getContainingType();
-            while (containingType instanceof ContainedComplexTypeMetadata) {
-                containingType = ((ContainedComplexTypeMetadata) containingType).getContainerType();
-            }
-            if (!this.equals(containingType)) {
-                handler.error(this,
-                        "Lookup field info must refer a field of the same entity.",
-                        lookupField.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                        lookupField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                        lookupField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                        ValidationError.LOOKUP_FIELD_NOT_IN_ENTITY);
-                continue;
-            }
-            if (handler.getErrorCount() == originalErrorCount) {
-                containingType.freeze(handler);
-                if (lookupField.isKey()) {
-                    handler.error(this,
-                            "Lookup field cannot be in entity key.",
-                            lookupField.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                            lookupField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                            lookupField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                            ValidationError.LOOKUP_FIELD_CANNOT_BE_KEY);
-                    continue;
-                }
-                // Order matters here: check if field is correct (exists) before checking isMany().
-                lookupField.validate(handler);
-                if (!isPrimitiveTypeField(lookupField)) {
-                    handler.error(this,
-                            "Lookup field must be a simple typed element.",
-                            lookupField.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                            lookupField.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                            lookupField.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                            ValidationError.LOOKUP_FIELD_MUST_BE_SIMPLE_TYPE);
-                }
-            }
-        }
-        // Validation is done, mark this as validated (does not mean it's valid).
-        isValidated = true;
+    }
+
+    @Override
+    public ValidationRule createValidationRule() {
+        return ValidationFactory.getRule(this);
     }
 
     public void setInstantiable(boolean isInstantiable) {
@@ -337,7 +212,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
     public Collection<FieldMetadata> getFields() {
         if (!isFrozen) {
             DefaultValidationHandler validationHandler = new DefaultValidationHandler();
-            freeze(validationHandler);
+            freeze();
             validationHandler.end();
         }
         return Collections.unmodifiableCollection(fieldMetadata.values());
@@ -526,7 +401,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         subTypes.add(type);
     }
 
-    public TypeMetadata freeze(ValidationHandler handler) {
+    public TypeMetadata freeze() {
         if (isFrozen) {
             return this;
         }
@@ -538,13 +413,13 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
             superTypes.clear();
             for (TypeMetadata superType : thisSuperTypes) {
                 if (isInstantiable() == superType.isInstantiable()) {
-                    superType = superType.freeze(handler);
+                    superType = superType.freeze();
                     if (superType instanceof ComplexTypeMetadata) {
                         ((ComplexTypeMetadata) superType).registerSubType(this);
                     }
                     superTypes.add(superType);
                 } else {
-                    superType = superType.freeze(handler);
+                    superType = superType.freeze();
                 }
                 if (superType instanceof ComplexTypeMetadata) {
                     ((ComplexTypeMetadata) superType).registerSubType(this);
@@ -562,28 +437,33 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         // Freeze all fields.
         Collection<FieldMetadata> values = new LinkedList<FieldMetadata>(fieldMetadata.values());
         for (FieldMetadata value : values) {
-            try {
-                FieldMetadata frozenFieldDeclaration = value.freeze(handler);
-                fieldMetadata.put(value.getName(), frozenFieldDeclaration);
-                if (keyFields.containsKey(value.getName()) && !frozenFieldDeclaration.isKey()) {
-                    frozenFieldDeclaration.promoteToKey(handler);
-                }
-            } catch (Exception e) {
-                throw new RuntimeException("Could not process field '" + value.getName() + "' in type '" + getName() + "'", e);
+            FieldMetadata frozenFieldDeclaration = value.freeze();
+            fieldMetadata.put(value.getName(), frozenFieldDeclaration);
+            if (keyFields.containsKey(value.getName()) && !frozenFieldDeclaration.isKey()) {
+                frozenFieldDeclaration.promoteToKey();
             }
         }
         for (Map.Entry<String, FieldMetadata> keyField : keyFields.entrySet()) {
-            keyField.setValue(keyField.getValue().freeze(handler));
+            keyField.setValue(keyField.getValue().freeze());
         }
         // Freeze primary info
         List<FieldMetadata> frozenPrimaryKeyInfo = new LinkedList<FieldMetadata>();
         for (FieldMetadata pkInfo : primaryKeyInfo) {
-            FieldMetadata freeze = pkInfo.freeze(handler);
+            FieldMetadata freeze = pkInfo.freeze();
             if (freeze != null) {
                 frozenPrimaryKeyInfo.add(freeze);
             }
         }
         primaryKeyInfo = frozenPrimaryKeyInfo;
+        // Freeze lookup fields
+        List<FieldMetadata> frozenLookupFields = new LinkedList<FieldMetadata>();
+        for (FieldMetadata lookupField : lookupFields) {
+            FieldMetadata freeze = lookupField.freeze();
+            if (freeze != null) {
+                frozenLookupFields.add(freeze);
+            }
+        }
+        lookupFields = frozenLookupFields;
         return this;
     }
 

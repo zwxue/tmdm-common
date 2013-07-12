@@ -11,6 +11,8 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.talend.mdm.commmon.metadata.validation.ValidationRule;
+
 import java.util.List;
 
 /**
@@ -93,18 +95,16 @@ public interface FieldMetadata extends MetadataVisitable, MetadataExtensible {
     void setContainingType(ComplexTypeMetadata typeMetadata);
 
     /**
-     * Freezes all modifications that can be done to a field. Similar to {@link TypeMetadata#freeze(ValidationHandler)}.
+     * Freezes all modifications that can be done to a field. Similar to {@link TypeMetadata#freeze()}.
      * @return A frozen field metadata.
-     * @see TypeMetadata#freeze(ValidationHandler)
-     * @param handler A {@link ValidationHandler} to receive all data model errors and warnings (if any).
+     * @see TypeMetadata#freeze()
      */
-    FieldMetadata freeze(ValidationHandler handler);
+    FieldMetadata freeze();
 
     /**
      * Promotes this field to "key". After this method has been called, {@link #isKey()} must return <code>true</code>.
-     * @param handler A {@link ValidationHandler} to receive error if field can't be promoted to key.
      */
-    void promoteToKey(ValidationHandler handler);
+    void promoteToKey();
 
     /**
      * Validates the field: performs assertions on content specific to MDM (this method should not raise XSD compliance
@@ -113,4 +113,6 @@ public interface FieldMetadata extends MetadataVisitable, MetadataExtensible {
      * @see ValidationHandler#error(FieldMetadata, String, org.w3c.dom.Element, int, int, ValidationError)
      */
     void validate(ValidationHandler handler);
+
+    ValidationRule createValidationRule();
 }

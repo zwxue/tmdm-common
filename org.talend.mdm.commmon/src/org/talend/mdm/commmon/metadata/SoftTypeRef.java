@@ -14,6 +14,8 @@ package org.talend.mdm.commmon.metadata;
 import java.util.*;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
+import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 import org.w3c.dom.Element;
 
 /**
@@ -66,15 +68,6 @@ public class SoftTypeRef implements ComplexTypeMetadata {
                 type = repository.getType(namespace, typeName);
             } else {
                 type = repository.getNonInstantiableType(namespace, typeName);
-            }
-            if (type == null) {
-                if (instantiable) {
-                    throw new IllegalArgumentException("Entity type '" + typeName + "' (namespace: '" + namespace
-                            + "') is not present in type repository.");
-                } else {
-                    throw new IllegalArgumentException("Non entity type '" + typeName + "' (namespace: '" + namespace
-                            + "') is not present in type repository.");
-                }
             }
             return type;
         } else {
@@ -147,17 +140,26 @@ public class SoftTypeRef implements ComplexTypeMetadata {
 
     @Override
     public TypeMetadata copyShallow() {
-        throw new NotImplementedException(); // Not supported
+        return this;
     }
 
     @Override
-    public TypeMetadata freeze(ValidationHandler handler) {
+    public TypeMetadata freeze() {
         if (frozenType == null) {
-            frozenType = getType().freeze(handler);
-            Set<Map.Entry<String, Object>> data = additionalData.entrySet();
-            for (Map.Entry<String, Object> currentData : data) {
-                frozenType.setData(currentData.getKey(), currentData.getValue());
+            TypeMetadata type = getType();
+            if (type == null) {
+                UnresolvedTypeMetadata typeMetadata = new UnresolvedTypeMetadata(typeName);
+                Set<Map.Entry<String, Object>> data = additionalData.entrySet();
+                for (Map.Entry<String, Object> currentData : data) {
+                    typeMetadata.setData(currentData.getKey(), currentData.getValue());
+                }
+                return typeMetadata;
             }
+            frozenType = type.freeze();
+            Set<Map.Entry<String, Object>> data = additionalData.entrySet();
+                        for (Map.Entry<String, Object> currentData : data) {
+                            frozenType.setData(currentData.getKey(), currentData.getValue());
+                        }
         }
         return frozenType;
     }
@@ -222,6 +224,11 @@ public class SoftTypeRef implements ComplexTypeMetadata {
                         ValidationError.TYPE_DOES_NOT_EXIST);
             }
         }
+    }
+
+    @Override
+    public ValidationRule createValidationRule() {
+        return ValidationFactory.getRule(this);
     }
 
     @Override

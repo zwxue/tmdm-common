@@ -11,6 +11,8 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.talend.mdm.commmon.metadata.validation.ValidationRule;
+
 import java.util.Collection;
 
 /**
@@ -87,9 +89,8 @@ public interface TypeMetadata extends MetadataVisitable, MetadataExtensible {
      * You should call {@link #validate(ValidationHandler)} before calling this method to ensure type is valid.
      * </p>
      * @return A {@link TypeMetadata} that can't be modified afterwards.
-     * @param handler Handler to be used to report errors/warning during this operation.
      */
-    TypeMetadata freeze(ValidationHandler handler);
+    TypeMetadata freeze();
 
     /**
      * @return <code>true</code> if this type can be used to create an entity in MDM, <code>false</code> otherwise. A
@@ -105,7 +106,7 @@ public interface TypeMetadata extends MetadataVisitable, MetadataExtensible {
     void setInstantiable(boolean isInstantiable);
 
     /**
-     * @return <code>true</code> if type can not be modified ({@link #freeze(ValidationHandler)} was previously called), <code>false</code>
+     * @return <code>true</code> if type can not be modified ({@link #freeze()} was previously called), <code>false</code>
      * otherwise.
      */
     boolean isFrozen();
@@ -116,11 +117,13 @@ public interface TypeMetadata extends MetadataVisitable, MetadataExtensible {
      * issues).
      * </p>
      * <p>
-     * If <code>handler</code> did not receive any error during validation, {@link #freeze(ValidationHandler)} can be
+     * If <code>handler</code> did not receive any error during validation, {@link #freeze()} can be
      * safely called (it can't / shouldn't fail).
      * </p>
      * @param handler A {@link ValidationHandler} to be used for error / warning reporting.
      * @see ValidationHandler#error(TypeMetadata, String, org.w3c.dom.Element, int, int, ValidationError)
      */
     void validate(ValidationHandler handler);
+
+    ValidationRule createValidationRule();
 }

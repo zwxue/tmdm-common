@@ -92,11 +92,6 @@ public class ConsoleDumpMetadataVisitor extends DefaultMetadataVisitor<Void> {
         if (referenceField.isKey()) {
             log("[Field (FK) (Key)] " + referenceField.getName()); //$NON-NLS-1$
         } else {
-            TypeMetadata referencedType = referenceField.getReferencedType();
-            if (referencedType == null) {
-                throw new IllegalArgumentException("Field '" + referenceField.getName() + "' in type '" + referenceField.getContainingType().getName() + "' has invalid FK relation.");
-            }
-
             try {
                 log("[Field (FK -> " + referenceField.getDeclaringType().getName() + " to " + referenceField.getReferencedType().getName() + ")] " + referenceField.getName() + (referenceField.isMany() ? "*" : "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
             } catch (Exception e) {

@@ -11,6 +11,9 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
+import org.talend.mdm.commmon.metadata.validation.ValidationRule;
+
 import java.util.List;
 
 /**
@@ -51,9 +54,6 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
         if (fieldType == null) {
             throw new IllegalArgumentException("Field type cannot be null.");
         }
-        if (isKey && !isMandatory) {
-            throw new IllegalArgumentException("Key field must be mandatory (field '" + name + "' in type '" + containingType.getName() + "' is optional)");
-        }
         this.isMandatory = isMandatory;
         this.containingType = containingType;
         this.declaringType = containingType;
@@ -91,22 +91,27 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
         this.declaringType = declaringType;
     }
 
-    public FieldMetadata freeze(ValidationHandler handler) {
+    public FieldMetadata freeze() {
         if (isFrozen) {
             return this;
         }
         isFrozen = true;
-        fieldType = fieldType.freeze(handler);
+        fieldType = fieldType.freeze();
         return this;
     }
 
-    public void promoteToKey(ValidationHandler handler) {
+    public void promoteToKey() {
         isKey = true;
     }
 
     @Override
     public void validate(ValidationHandler handler) {
-        // Nothing to do for this type of field.
+        ValidationFactory.getRule(this).perform(handler);
+    }
+
+    @Override
+    public ValidationRule createValidationRule() {
+        return ValidationFactory.getRule(this);
     }
 
     public TypeMetadata getDeclaringType() {

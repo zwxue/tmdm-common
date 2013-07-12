@@ -11,6 +11,9 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
+import org.talend.mdm.commmon.metadata.validation.ValidationRule;
+
 import javax.xml.XMLConstants;
 import java.util.Arrays;
 import java.util.List;
@@ -59,19 +62,19 @@ public class CompoundFieldMetadata extends MetadataExtensions implements FieldMe
         throw new UnsupportedOperationException();
     }
 
-    public FieldMetadata freeze(ValidationHandler handler) {
+    public FieldMetadata freeze() {
         if (isFrozen) {
             return this;
         }
         isFrozen = true;
         int i = 0;
         for (FieldMetadata field : fields) {
-            fields[i++] = field.freeze(handler);
+            fields[i++] = field.freeze();
         }
         return this;
     }
 
-    public void promoteToKey(ValidationHandler handler) {
+    public void promoteToKey() {
         throw new UnsupportedOperationException();
     }
 
@@ -80,6 +83,11 @@ public class CompoundFieldMetadata extends MetadataExtensions implements FieldMe
         for (FieldMetadata field : fields) {
             field.validate(handler);
         }
+    }
+
+    @Override
+    public ValidationRule createValidationRule() {
+        return ValidationFactory.getRule(this);
     }
 
     public TypeMetadata getDeclaringType() {
