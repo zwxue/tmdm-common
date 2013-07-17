@@ -39,9 +39,9 @@ class SuperTypeValidationRule implements ValidationRule {
                             if (!((ComplexTypeMetadata) superType).hasField(thisTypeKeyField.getName())) {
                                 handler.error(superType, "Type '" + type.getName() + "' cannot add field(s) to its key because " +
                                         "super type '" + superType.getName() + "' already defines key.",
-                                        superType.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
-                                        superType.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
-                                        superType.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                                        type.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
+                                        type.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                                        type.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                                         ValidationError.TYPE_CANNOT_OVERRIDE_SUPER_TYPE_KEY);
                                 return false;
                             }

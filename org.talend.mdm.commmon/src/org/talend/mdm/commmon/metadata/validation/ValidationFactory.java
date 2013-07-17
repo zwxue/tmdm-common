@@ -25,7 +25,11 @@ public class ValidationFactory {
 
     public static ValidationRule getRule(FieldMetadata field) {
         if (isValidated(field)) {
-            return NoOpValidationRule.INSTANCE;
+            if (field instanceof UnresolvedFieldMetadata) {
+                return NoOpValidationRule.FAIL;
+            } else {
+                return NoOpValidationRule.SUCCESS;
+            }
         }
         field.setData("validation.validated", true);
         return field.createValidationRule();
@@ -74,7 +78,11 @@ public class ValidationFactory {
 
     public static ValidationRule getRule(TypeMetadata type) {
         if (isValidated(type)) {
-            return NoOpValidationRule.INSTANCE;
+            if (type instanceof UnresolvedTypeMetadata) {
+                return NoOpValidationRule.FAIL;
+            } else {
+                return NoOpValidationRule.SUCCESS;
+            }
         }
         type.setData("validation.validated", true);
         return type.createValidationRule();

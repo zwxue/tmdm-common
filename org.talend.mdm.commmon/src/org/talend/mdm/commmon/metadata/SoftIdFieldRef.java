@@ -103,25 +103,22 @@ public class SoftIdFieldRef implements FieldMetadata {
             for (Map.Entry<String, Object> currentData : data) {
                 containingType.setData(currentData.getKey(), currentData.getValue());
             }
-            UnresolvedFieldMetadata unresolvedFieldMetadata = new UnresolvedFieldMetadata(fieldName, true, containingType);
-            data = additionalData.entrySet();
-            for (Map.Entry<String, Object> currentData : data) {
-                unresolvedFieldMetadata.setData(currentData.getKey(), currentData.getValue());
-            }
-            return unresolvedFieldMetadata;
-        }
-        Collection<FieldMetadata> keyFields = type.getKeyFields();
-        if (fieldName == null) {
-            if (keyFields.size() == 1) {
-                frozenField = keyFields.iterator().next().freeze();
-            } else {
-                frozenField = new CompoundFieldMetadata(keyFields.toArray(new FieldMetadata[keyFields.size()]));
-            }
+            frozenField = new UnresolvedFieldMetadata(fieldName, true, containingType);
         } else {
-            if (!type.hasField(fieldName)) {
-                return new UnresolvedFieldMetadata(fieldName, true, type);
+            Collection<FieldMetadata> keyFields = type.getKeyFields();
+            if (fieldName == null) {
+                if (keyFields.size() == 1) {
+                    frozenField = keyFields.iterator().next().freeze();
+                } else {
+                    frozenField = new CompoundFieldMetadata(keyFields.toArray(new FieldMetadata[keyFields.size()]));
+                }
+            } else {
+                if (!type.hasField(fieldName)) {
+                    frozenField = new UnresolvedFieldMetadata(fieldName, true, type);
+                } else {
+                    frozenField = type.getField(fieldName);
+                }
             }
-            frozenField = type.getField(fieldName);
         }
         Set<Map.Entry<String, Object>> data = additionalData.entrySet();
         for (Map.Entry<String, Object> currentData : data) {

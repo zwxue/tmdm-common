@@ -92,31 +92,35 @@ public class SoftFieldRef implements FieldMetadata {
         if (frozenField != null) {
             return frozenField;
         }
-        ComplexTypeMetadata type;
+        ComplexTypeMetadata type = null;
         if (containingType != null) {
             type = repository.getComplexType(containingType.getName());
             if (type == null) {
                 TypeMetadata freeze = containingType.freeze();
-                return new UnresolvedFieldMetadata(fieldName,
+                frozenField = new UnresolvedFieldMetadata(fieldName,
                         true,
                         (ComplexTypeMetadata) freeze);
             }
         } else {
             FieldMetadata frozenContainingField = containingField.freeze();
             if (frozenContainingField instanceof UnresolvedFieldMetadata) {
-                return new UnresolvedFieldMetadata(fieldName,
+                frozenField = new UnresolvedFieldMetadata(fieldName,
                         true,
                         (ComplexTypeMetadata) containingField.getContainingType().freeze());
+            } else {
+                type = (ComplexTypeMetadata) containingField.getType();
             }
-            type = (ComplexTypeMetadata) containingField.getType();
         }
-        if (!type.hasField(fieldName)) {
-            return new UnresolvedFieldMetadata(fieldName,
-                    true,
-                    type);
+        if (type != null) {
+            if (!type.hasField(fieldName)) {
+                frozenField = new UnresolvedFieldMetadata(fieldName,
+                        true,
+                        type);
+            } else {
+                frozenField = type.getField(fieldName).copy(repository).freeze();
+            }
         }
-        frozenField = type.getField(fieldName);
-        
+        // Add additional data (line number...).
         Set<Map.Entry<String,Object>> data = additionalData.entrySet();
         for (Map.Entry<String, Object> currentData : data) {
             frozenField.setData(currentData.getKey(), currentData.getValue());
