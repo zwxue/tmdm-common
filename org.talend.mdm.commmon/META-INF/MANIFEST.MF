@@ -16,6 +16,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.talend.mdm.commmon,
  org.talend.mdm.commmon.metadata,
+ org.talend.mdm.commmon.metadata.validation,
  org.talend.mdm.commmon.util.core,
  org.talend.mdm.commmon.util.hash,
  org.talend.mdm.commmon.util.hash.impl,
