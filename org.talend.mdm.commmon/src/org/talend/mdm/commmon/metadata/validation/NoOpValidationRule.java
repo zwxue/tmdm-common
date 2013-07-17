@@ -15,15 +15,26 @@ import org.talend.mdm.commmon.metadata.ValidationHandler;
 
 class NoOpValidationRule implements ValidationRule {
 
-    public static ValidationRule INSTANCE = new NoOpValidationRule();
+    /**
+     * A rule that always <b>succeeds</b>.
+     */
+    public static ValidationRule SUCCESS = new NoOpValidationRule(true);
 
-    private NoOpValidationRule() {
+    /**
+     * A rule that always <b>fails</b>.
+     */
+    public static ValidationRule FAIL = new NoOpValidationRule(false);
+
+    private final boolean value;
+
+    private NoOpValidationRule(boolean value) {
+        this.value = value;
     }
 
     @Override
     public boolean perform(ValidationHandler handler) {
         // No op
-        return true;
+        return value;
     }
 
     @Override

@@ -34,7 +34,7 @@ public class UnresolvedFieldMetadata implements FieldMetadata {
 
     public UnresolvedFieldMetadata(String fieldName, boolean key, ComplexTypeMetadata containingType) {
         this.fieldName = fieldName;
-        isKey = key;
+        this.isKey = key;
         this.containingType = containingType;
         this.declaringType = containingType;
     }

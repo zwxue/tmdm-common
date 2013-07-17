@@ -430,12 +430,12 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
                 }
             }
             // Id fields
-            List<String> idFields = new LinkedList<String>();
+            Map<String, XSDXPathDefinition> idFields = new HashMap<String, XSDXPathDefinition>();
             EList<XSDIdentityConstraintDefinition> constraints = element.getIdentityConstraintDefinitions();
             for (XSDIdentityConstraintDefinition constraint : constraints) {
                 EList<XSDXPathDefinition> fields = constraint.getFields();
                 for (XSDXPathDefinition field : fields) {
-                    idFields.add(field.getValue());
+                    idFields.put(field.getValue(), field);
                 }
             }
             ComplexTypeMetadata type = getComplexType(typeName); // Take type from repository if already built
@@ -491,8 +491,13 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
                 }
             }
             // Register keys (TMDM-4470).
-            for (String unresolvedId : idFields) {
-                type.registerKey(new SoftIdFieldRef(this, type.getName(), unresolvedId));
+            for (Map.Entry<String, XSDXPathDefinition> unresolvedId : idFields.entrySet()) {
+                SoftIdFieldRef keyField = new SoftIdFieldRef(this, type.getName(), unresolvedId.getKey());
+                // Keep line and column of definition
+                keyField.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(unresolvedId.getValue().getElement()));
+                keyField.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(unresolvedId.getValue().getElement()));
+                keyField.setData(XSD_DOM_ELEMENT, unresolvedId.getValue().getElement());
+                type.registerKey(keyField);
             }
         } else { // Non "top level" elements means fields for the MDM entity type being parsed
             FieldMetadata fieldMetadata = createFieldMetadata(element, currentTypeStack.peek());
