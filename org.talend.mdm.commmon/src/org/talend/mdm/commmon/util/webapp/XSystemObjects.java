@@ -9,9 +9,9 @@ public enum XSystemObjects {
     // Data Clusters
     DC_JCAADAPTERS(XObjectType.DATA_CLUSTER, "JCAAdapters", true), //$NON-NLS-1$
     DC_INBOX(XObjectType.DATA_CLUSTER, "Inbox", false), //$NON-NLS-1$
-    DC_CONF(XObjectType.DATA_CLUSTER, "CONF", false),  //$NON-NLS-1$
-    DC_PROVISIONING(XObjectType.DATA_CLUSTER, "PROVISIONING", true),  //$NON-NLS-1$
-    DC_UPDATE_PREPORT(XObjectType.DATA_CLUSTER, "UpdateReport", false),  //$NON-NLS-1$
+    DC_CONF(XObjectType.DATA_CLUSTER, "CONF", false), //$NON-NLS-1$
+    DC_PROVISIONING(XObjectType.DATA_CLUSTER, "PROVISIONING", true), //$NON-NLS-1$
+    DC_UPDATE_PREPORT(XObjectType.DATA_CLUSTER, "UpdateReport", false), //$NON-NLS-1$
     DC_XTENTIS_COMMON_REPORTING(XObjectType.DATA_CLUSTER, "Reporting", false), //$NON-NLS-1$
     DC_MDMITEMSTRASH(XObjectType.DATA_CLUSTER, "MDMItemsTrash", false), //$NON-NLS-1$
     DC_SEARCHTEMPLATE(XObjectType.DATA_CLUSTER, "SearchTemplate", true), //$NON-NLS-1$
@@ -20,15 +20,16 @@ public enum XSystemObjects {
     DC_REVISION(XObjectType.DATA_CLUSTER, "Revision", true), //$NON-NLS-1$
     DC_MDMItemImages(XObjectType.DATA_CLUSTER, "MDMItemImages", false), //$NON-NLS-1$
     DC_MDMMigration(XObjectType.DATA_CLUSTER, "MDMMigration", false), //$NON-NLS-1$
-    //Role
+    // Role
     ROLE_DEFAULT_ADMIN(XObjectType.ROLE, ICoreConstants.SYSTEM_ADMIN_ROLE, false),
     ROLE_DEFAULT_USER(XObjectType.ROLE, ICoreConstants.SYSTEM_INTERACTIVE_ROLE, false),
     ROLE_DEFAULT_WEB(XObjectType.ROLE, ICoreConstants.SYSTEM_WEB_ROLE, false),
-    ROLE_DEFAULT_VIEWER(XObjectType.ROLE, ICoreConstants.SYSTEM_VIEW_ROLE, true), //readonly for everything, can't be modified
+    ROLE_DEFAULT_VIEWER(XObjectType.ROLE, ICoreConstants.SYSTEM_VIEW_ROLE, true), // readonly for everything, can't be
+                                                                                  // modified
     // Data Models
-    DM_CONF(XObjectType.DATA_MODEL, "CONF", false),  //$NON-NLS-1$
-    DM_PROVISIONING(XObjectType.DATA_MODEL, "PROVISIONING", true),  //$NON-NLS-1$
-    DM_UPDATEREPORT(XObjectType.DATA_MODEL, "UpdateReport", false),  //$NON-NLS-1$
+    DM_CONF(XObjectType.DATA_MODEL, "CONF", false), //$NON-NLS-1$
+    DM_PROVISIONING(XObjectType.DATA_MODEL, "PROVISIONING", true), //$NON-NLS-1$
+    DM_UPDATEREPORT(XObjectType.DATA_MODEL, "UpdateReport", false), //$NON-NLS-1$
     DM_XTENTIS_COMMON_REPORTING(XObjectType.DATA_MODEL, "Reporting", false), //$NON-NLS-1$
     DM_SEARCHTEMPLATE(XObjectType.DATA_MODEL, "SearchTemplate", true), //$NON-NLS-1$
     Dm_CROSSREFERENCING(XObjectType.DATA_MODEL, ICoreConstants.CrossReferencing_datamodel, true),
@@ -60,7 +61,8 @@ public enum XSystemObjects {
     M_WORKFLOWTASKS(XObjectType.MENU, "WorkflowTasks", true), //$NON-NLS-1$
     M_DATASTEWARDSHIP(XObjectType.MENU, "Datastewardship", true), //$NON-NLS-1$
     M_WELCOME(XObjectType.MENU, "Welcome", false), //$NON-NLS-1$
-    M_STAGINGAREA(XObjectType.MENU, "StagingArea", false); //$NON-NLS-1$
+    M_STAGINGAREA(XObjectType.MENU, "StagingArea", false), //$NON-NLS-1$
+    M_BROWSE_RECORDS_STAGING(XObjectType.MENU, "BrowseRecordsInStaging", false); //$NON-NLS-1$
 
     private String name;
 
@@ -96,7 +98,7 @@ public enum XSystemObjects {
 
     /**
      * get all the elements
-     *
+     * 
      * @return map
      */
     public static Map<String, XSystemObjects> getXSystemObjects() {
