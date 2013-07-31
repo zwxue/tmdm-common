@@ -121,9 +121,12 @@ public interface TypeMetadata extends MetadataVisitable, MetadataExtensible {
      * safely called (it can't / shouldn't fail).
      * </p>
      * @param handler A {@link ValidationHandler} to be used for error / warning reporting.
-     * @see ValidationHandler#error(TypeMetadata, String, org.w3c.dom.Element, int, int, ValidationError)
+     * @see ValidationHandler#error(TypeMetadata, String, org.w3c.dom.Element, Integer, Integer, ValidationError)
      */
     void validate(ValidationHandler handler);
 
+    /**
+     * @return A {@link ValidationRule} implementation for this type.
+     */
     ValidationRule createValidationRule();
 }

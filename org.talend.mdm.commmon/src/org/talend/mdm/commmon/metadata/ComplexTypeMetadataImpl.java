@@ -15,9 +15,7 @@ import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
-import org.w3c.dom.Element;
 
-import javax.xml.XMLConstants;
 import java.util.*;
 
 /**
@@ -134,12 +132,12 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         if (currentField == null) { // Look in super types if it wasn't found in current type.
             for (TypeMetadata superType : superTypes) {
                 if (superType instanceof ComplexTypeMetadata) {
-                    currentField = ((ComplexTypeMetadata) superType).getField(firstFieldName);
-                    if (currentField != null) {
+                    if (((ComplexTypeMetadata) superType).hasField(firstFieldName)) {
+                        currentField = ((ComplexTypeMetadata) superType).getField(firstFieldName);
                         break;
                     }
                 } else {
-                    throw new NotImplementedException("No support for look up of fields in simple types.");
+                    throw new IllegalStateException("No support for look up of fields in simple types.");
                 }
             }
         }
@@ -187,22 +185,6 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
             throw new IllegalStateException("Type '" + name + "' is frozen and can not be modified.");
         }
         this.isInstantiable = isInstantiable;
-    }
-
-    private static boolean isPrimitiveTypeField(FieldMetadata lookupField) {
-        TypeMetadata currentType = lookupField.getType();
-        if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace())) {
-            while (!currentType.getSuperTypes().isEmpty()) {
-                TypeMetadata superType = currentType.getSuperTypes().iterator().next();
-                if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(superType.getNamespace())
-                        && ("anyType".equals(superType.getName()) //$NON-NLS-1$
-                        || "anySimpleType".equals(superType.getName()))) { //$NON-NLS-1$
-                    break;
-                }
-                currentType = superType;
-            }
-        }
-        return XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace());
     }
 
     public Collection<FieldMetadata> getKeyFields() {

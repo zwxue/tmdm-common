@@ -51,7 +51,7 @@ public class CompoundFieldMetadata extends MetadataExtensions implements FieldMe
          * Compound / Composite keys are always represented as strings the [id0][id1] format.
          * So this method can return "string" as type even if fields are not all string.
          */
-        return new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, "string"); //$NON-NLS-1$ // TODO Constant
+        return new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.STRING); //$NON-NLS-1$
     }
 
     public ComplexTypeMetadata getContainingType() {

@@ -41,6 +41,7 @@ public interface Types {
     String UNSIGNED_SHORT = "unsignedShort"; //$NON-NLS-1$
     String UNSIGNED_BYTE = "unsignedByte"; //$NON-NLS-1$
     String UNSIGNED_LONG = "unsignedLong"; //$NON-NLS-1$
+    String UNSIGNED_DOUBLE = "unsignedDouble"; //$NON-NLS-1$
     String MULTI_LINGUAL = "MULTI_LINGUAL"; //$NON-NLS-1$
     String UUID = "UUID"; //$NON-NLS-1$
     String G_YEAR_MONTH = "gYearMonth"; //$NON-NLS-1$

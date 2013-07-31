@@ -24,8 +24,6 @@ public class ContainedComplexTypeRef extends ContainedComplexTypeMetadata {
 
     private ComplexTypeMetadata reference;
 
-    private boolean isFrozen = false;
-
     public ContainedComplexTypeRef(ComplexTypeMetadata containerType, String nameSpace, String name, ComplexTypeMetadata reference) {
         super(containerType, nameSpace, name);
         this.reference = reference;

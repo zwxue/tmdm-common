@@ -14,10 +14,15 @@ package org.talend.mdm.commmon.metadata;
 import org.w3c.dom.Element;
 
 public class LocationOverride implements ValidationHandler {
+
     private final ValidationHandler handler;
+
     private final Element xmlElement;
+
     private final Integer line;
+
     private final Integer column;
+
     private FieldMetadata fieldMetadata;
 
     public LocationOverride(FieldMetadata fieldMetadata, ValidationHandler handler, Element xmlElement, Integer line, Integer column) {
