@@ -35,6 +35,8 @@
         <mdm.build.dir>${basedir}/target</mdm.build.dir>
         <mdm.reports.dir>${project.build.directory}/surefire-reports</mdm.reports.dir>
         <tom.location>${basedir}/..</tom.location>
+        <tos.location>${basedir}/..</tos.location>
+        <top.location>${basedir}/..</top.location>
         <jboss.dir>${mdm.build.dir}/jboss-4.2.2.GA</jboss.dir>
         <jboss.bin.dir>${jboss.dir}/bin</jboss.bin.dir>
         <jboss.endorsed.dir>${jboss.dir}/lib/endorsed</jboss.endorsed.dir>
@@ -576,6 +578,16 @@
             </dependency>
 
             <!-- MDM dependencies -->
+            <dependency>
+                <groupId>org.talend.dataquality</groupId>
+                <artifactId>org.talend.dataquality.matchmerge</artifactId>
+                <version>5.4.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.talend.dataquality</groupId>
+                <artifactId>org.talend.dataquality.record.linkage</artifactId>
+                <version>5.4.0-SNAPSHOT</version>
+            </dependency>
             <dependency>
                 <groupId>org.talend.mdm</groupId>
                 <artifactId>org.talend.mdm.webapp.core</artifactId>
