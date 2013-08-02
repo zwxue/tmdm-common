@@ -611,10 +611,10 @@
                 <classifier>ejbs</classifier>
             </dependency>
             <dependency>
-	            <groupId>org.talend.mdm</groupId>
-	            <artifactId>org.talend.mdm.core</artifactId>
-	            <version>${project.version}</version>
-	            <classifier>lib</classifier>
+                <groupId>org.talend.mdm</groupId>
+                <artifactId>org.talend.mdm.core</artifactId>
+                <version>${project.version}</version>
+                <classifier>lib</classifier>
             </dependency>
             <dependency>
                 <groupId>org.talend.mdm</groupId>
