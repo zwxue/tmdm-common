@@ -53,9 +53,9 @@ public final class MDMConfiguration {
         file = new File(currentDir, MDM_CONF);
         // try the current dir
         if (!file.exists()) {
-            // if not found, try appending "bin"
+            // if not found, try appending "server/default/conf"
             logger.info("MDM Configuration: unable to find the configuration in '" + file.getAbsolutePath() + "'.");
-            file = new File(currentDir, "bin/" + MDM_CONF);
+            file = new File(currentDir, "server/default/conf/" + MDM_CONF);
             logger.info("MDM Configuration: trying in '" + file.getAbsolutePath() + "'.");
         }
         if (file.exists()) {
