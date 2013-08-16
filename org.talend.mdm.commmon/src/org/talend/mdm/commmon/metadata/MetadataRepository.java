@@ -334,8 +334,8 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
                 for (XSDConstrainingFacet currentFacet : facets) {
                     if (currentFacet instanceof XSDMaxLengthFacet) {
                         typeMetadata.setData(MetadataRepository.DATA_MAX_LENGTH, String.valueOf(((XSDMaxLengthFacet) currentFacet).getValue()));
-                    } else if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Ignore simple type facet on type '" + typeName + "': " + currentFacet);
+                    } else if (LOGGER.isTraceEnabled()) {
+                        LOGGER.trace("Ignore simple type facet on type '" + typeName + "': " + currentFacet);
                     }
                 }
             }
@@ -574,8 +574,8 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
                     for (XSDConstrainingFacet currentFacet : facets) {
                         if (currentFacet instanceof XSDMaxLengthFacet) {
                             fieldType.setData(MetadataRepository.DATA_MAX_LENGTH, String.valueOf(((XSDMaxLengthFacet) currentFacet).getValue()));
-                        } else if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("Ignore simple type facet on type '" + fieldName + "': " + currentFacet);
+                        } else if (LOGGER.isTraceEnabled()) {
+                            LOGGER.trace("Ignore simple type facet on type '" + fieldName + "': " + currentFacet);
                         }
                     }
                 }
