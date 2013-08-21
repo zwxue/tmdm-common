@@ -22,6 +22,7 @@ public enum NoSupportTypes {
     G_IDREFS("IDREFS"), //$NON-NLS-1$
     G_ENTITIES("ENTITIES"), //$NON-NLS-1$
     G_NMTOKEN("NMTOKEN"), //$NON-NLS-1$
+    G_QNAME("QName"), //$NON-NLS-1$
     G_NAME("Name"), //$NON-NLS-1$
     G_YEAR_MONTH("gYearMonth"), //$NON-NLS-1$
     G_YEAR("gYear"), //$NON-NLS-1$
