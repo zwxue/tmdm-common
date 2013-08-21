@@ -194,7 +194,12 @@ public class SoftIdFieldRef implements FieldMetadata {
 
     @Override
     public List<String> getWriteUsers() {
-        return getField().getHideUsers();
+        return getField().getWriteUsers();
+    }
+    
+    @Override
+    public List<String> getWorkflowAccessRights() {
+        return getField().getWorkflowAccessRights();
     }
 
     @Override

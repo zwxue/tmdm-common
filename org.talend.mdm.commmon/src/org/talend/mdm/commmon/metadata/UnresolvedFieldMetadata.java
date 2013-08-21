@@ -75,6 +75,11 @@ public class UnresolvedFieldMetadata implements FieldMetadata {
     }
 
     @Override
+    public List<String> getWorkflowAccessRights() {
+        return Collections.emptyList();
+    }
+
+    @Override
     public boolean isMany() {
         return false;
     }

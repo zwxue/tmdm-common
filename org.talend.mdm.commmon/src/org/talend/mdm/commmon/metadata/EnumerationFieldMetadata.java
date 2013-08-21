@@ -28,6 +28,8 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
     private final List<String> allowWriteUsers;
 
     private final List<String> hideUsers;
+    
+    private final List<String> workflowAccessRights;
 
     private TypeMetadata declaringType;
 
@@ -48,7 +50,8 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
                                     boolean isMany, boolean isMandatory, String name,
                                     TypeMetadata fieldType,
                                     List<String> allowWriteUsers,
-                                    List<String> hideUsers) {
+                                    List<String> hideUsers,
+                                    List<String> workflowAccessRights) {
         this.containingType = containingType;
         this.declaringType = containingType;
         this.isKey = isKey;
@@ -58,6 +61,7 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
         this.fieldType = fieldType;
         this.allowWriteUsers = allowWriteUsers;
         this.hideUsers = hideUsers;
+        this.workflowAccessRights = workflowAccessRights;
     }
 
     public String getName() {
@@ -114,7 +118,7 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
     }
 
     public FieldMetadata copy(MetadataRepository repository) {
-        return new EnumerationFieldMetadata(containingType, isKey(), isMany, isMandatory, name, fieldType, allowWriteUsers, hideUsers);
+        return new EnumerationFieldMetadata(containingType, isKey(), isMany, isMandatory, name, fieldType, allowWriteUsers, hideUsers, workflowAccessRights);
     }
 
     public List<String> getHideUsers() {
@@ -125,6 +129,10 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
         return allowWriteUsers;
     }
 
+    public List<String> getWorkflowAccessRights() {
+        return this.workflowAccessRights;
+    }
+    
     public boolean isMany() {
         return isMany;
     }
@@ -171,6 +179,7 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
         if (fieldType != null ? !fieldType.equals(that.fieldType) : that.fieldType != null) return false;
         if (hideUsers != null ? !hideUsers.equals(that.hideUsers) : that.hideUsers != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (workflowAccessRights != null ? !workflowAccessRights.equals(that.workflowAccessRights) : that.workflowAccessRights != null) return false;
 
         return true;
     }
@@ -189,6 +198,7 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
         result = 31 * result + (isMandatory ? 1 : 0);
         result = 31 * result + (containingType != null ? containingType.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (workflowAccessRights != null ? workflowAccessRights.hashCode() : 0);
         cachedHashCode = result;
         return result;
     }

@@ -135,6 +135,11 @@ public class UnresolvedTypeMetadata extends MetadataExtensions implements Comple
     public List<String> getHideUsers() {
         return Collections.emptyList();
     }
+    
+    @Override
+    public List<String> getWorkflowAccessRights() {
+        return Collections.emptyList();
+    }
 
     @Override
     public List<String> getDenyCreate() {

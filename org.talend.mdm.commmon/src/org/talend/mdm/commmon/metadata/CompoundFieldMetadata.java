@@ -159,4 +159,8 @@ public class CompoundFieldMetadata extends MetadataExtensions implements FieldMe
         cachedHashCode = result;
         return result;
     }
+
+    public List<String> getWorkflowAccessRights() {
+        throw new UnsupportedOperationException();
+    }
 }

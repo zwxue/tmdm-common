@@ -83,6 +83,12 @@ public interface ComplexTypeMetadata extends TypeMetadata {
      * @return The {@link List} of users that can't delete an instance of this type.
      */
     List<String> getDenyDelete(DeleteType type);
+    
+    /**
+     * @return The {@link List} of workflow roles (including writable, read-only and hidden roles. format: role
+     * name#processId+processVersion#access rights).
+     */
+    List<String> getWorkflowAccessRights();
 
     /**
      * @return Schematron validation rules for this type ready for immediate use (no need to un-escape XML characters).

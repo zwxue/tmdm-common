@@ -28,6 +28,8 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
     private final List<String> hideUsers;
 
     private final List<String> writeUsers;
+    
+    private final List<String> workflowAccessRights;
 
     private final boolean isMandatory;
 
@@ -50,7 +52,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
     private boolean isFrozen;
 
     private int cachedHashCode;
-
+    
     public ReferenceFieldMetadata(ComplexTypeMetadata containingType,
                                   boolean isKey,
                                   boolean isMany,
@@ -64,6 +66,23 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                                   TypeMetadata fieldType,
                                   List<String> allowWriteUsers,
                                   List<String> hideUsers) {
+        this(containingType, isKey, isMany, isMandatory, name, referencedType, referencedField, foreignKeyInfo, fkIntegrity, allowFKIntegrityOverride, fieldType, allowWriteUsers, hideUsers, Collections.<String>emptyList());
+    }
+
+    public ReferenceFieldMetadata(ComplexTypeMetadata containingType,
+                                  boolean isKey,
+                                  boolean isMany,
+                                  boolean isMandatory,
+                                  String name,
+                                  ComplexTypeMetadata referencedType,
+                                  FieldMetadata referencedField,
+                                  List<FieldMetadata> foreignKeyInfo,
+                                  boolean fkIntegrity,
+                                  boolean allowFKIntegrityOverride,
+                                  TypeMetadata fieldType,
+                                  List<String> allowWriteUsers,
+                                  List<String> hideUsers,
+                                  List<String> workflowAccessRights) {
         this.isMandatory = isMandatory;
         this.name = name;
         this.referencedField = referencedField;
@@ -79,6 +98,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         this.fieldType = fieldType;
         this.writeUsers = allowWriteUsers;
         this.hideUsers = hideUsers;
+        this.workflowAccessRights = workflowAccessRights;
     }
 
     public FieldMetadata getReferencedField() {
@@ -206,7 +226,8 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                 allowFKIntegrityOverride,
                 fieldType,
                 writeUsers,
-                hideUsers);
+                hideUsers,
+                workflowAccessRights);
     }
 
     @Override
@@ -240,6 +261,10 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
     public List<String> getWriteUsers() {
         return writeUsers;
     }
+    
+    public List<String> getWorkflowAccessRights() {
+        return this.workflowAccessRights;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -262,6 +287,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         if (hideUsers != null ? !hideUsers.equals(that.hideUsers) : that.hideUsers != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (writeUsers != null ? !writeUsers.equals(that.writeUsers) : that.writeUsers != null) return false;
+        if (workflowAccessRights != null ? !workflowAccessRights.equals(that.workflowAccessRights) : that.workflowAccessRights != null) return false;
 
         return true;
     }

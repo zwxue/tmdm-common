@@ -39,6 +39,8 @@ public interface ICoreConstants {
      * Item pk split
      */
     public static final String ITEM_PK_SPLIT = ".."; //$NON-NLS-1$
+    
+    public static final String TALEND_NAMESPACE = "http://www.talend.com/mdm"; //$NON-NLS-1$
 
 	public static class rolesConvert {
 

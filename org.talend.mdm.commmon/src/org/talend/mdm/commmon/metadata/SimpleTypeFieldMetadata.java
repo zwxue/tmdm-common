@@ -14,6 +14,7 @@ package org.talend.mdm.commmon.metadata;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,6 +29,8 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
     private final List<String> allowWriteUsers;
 
     private final List<String> hideUsers;
+    
+    private final List<String> workflowAccessRights;
 
     private final boolean isMandatory;
 
@@ -42,7 +45,7 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
     private boolean isFrozen;
 
     private int cachedHashCode;
-
+    
     public SimpleTypeFieldMetadata(ComplexTypeMetadata containingType,
                                    boolean isKey,
                                    boolean isMany,
@@ -51,6 +54,18 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
                                    TypeMetadata fieldType,
                                    List<String> allowWriteUsers,
                                    List<String> hideUsers) {
+        this(containingType, isKey, isMany, isMandatory, name, fieldType, allowWriteUsers, hideUsers, Collections.<String>emptyList());
+    }
+
+    public SimpleTypeFieldMetadata(ComplexTypeMetadata containingType,
+                                   boolean isKey,
+                                   boolean isMany,
+                                   boolean isMandatory,
+                                   String name,
+                                   TypeMetadata fieldType,
+                                   List<String> allowWriteUsers,
+                                   List<String> hideUsers,
+                                   List<String> workflowAccessRights) {
         if (fieldType == null) {
             throw new IllegalArgumentException("Field type cannot be null.");
         }
@@ -63,6 +78,7 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
         this.fieldType = fieldType;
         this.allowWriteUsers = allowWriteUsers;
         this.hideUsers = hideUsers;
+        this.workflowAccessRights = workflowAccessRights;
     }
 
     public String getName() {
@@ -125,7 +141,7 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
     }
 
     public FieldMetadata copy(MetadataRepository repository) {
-        return new SimpleTypeFieldMetadata(containingType, isKey, isMany, isMandatory, name, fieldType, allowWriteUsers, hideUsers);
+        return new SimpleTypeFieldMetadata(containingType, isKey, isMany, isMandatory, name, fieldType, allowWriteUsers, hideUsers, workflowAccessRights);
     }
 
     public List<String> getHideUsers() {
@@ -134,6 +150,10 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
 
     public List<String> getWriteUsers() {
         return allowWriteUsers;
+    }
+    
+    public List<String> getWorkflowAccessRights() {
+        return this.workflowAccessRights;
     }
 
     public boolean isMany() {
@@ -183,6 +203,7 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
         if (fieldType != null ? !fieldType.equals(that.fieldType) : that.fieldType != null) return false;
         if (hideUsers != null ? !hideUsers.equals(that.hideUsers) : that.hideUsers != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (workflowAccessRights != null ? !workflowAccessRights.equals(that.workflowAccessRights) : that.workflowAccessRights != null) return false;
 
         return true;
     }
@@ -200,6 +221,7 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
         result = 31 * result + (hideUsers != null ? hideUsers.hashCode() : 0);
         result = 31 * result + (isKey ? 1 : 0);
         result = 31 * result + (isMandatory ? 1 : 0);
+        result = 31 * result + (workflowAccessRights != null ? workflowAccessRights.hashCode() : 0);
         cachedHashCode = result;
         return result;
     }

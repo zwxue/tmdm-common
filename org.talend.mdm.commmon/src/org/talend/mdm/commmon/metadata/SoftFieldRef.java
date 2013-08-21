@@ -212,6 +212,11 @@ public class SoftFieldRef implements FieldMetadata {
     public List<String> getWriteUsers() {
         return getField().getWriteUsers();
     }
+    
+    @Override
+    public List<String> getWorkflowAccessRights() {
+        return getField().getWorkflowAccessRights();
+    }
 
     @Override
     public boolean isMany() {

@@ -53,6 +53,8 @@ public class XmlSchemaAnnotationProcessorState {
     private List<FieldMetadata> primaryKeyInfo = Collections.emptyList();
 
     private List<FieldMetadata> lookupFields = Collections.emptyList();
+    
+    private final List<String> workflowAccessRights = new LinkedList<String>();
 
     public void setFkIntegrity(boolean fkIntegrity) {
         this.fkIntegrity = fkIntegrity;
@@ -152,5 +154,9 @@ public class XmlSchemaAnnotationProcessorState {
 
     public List<FieldMetadata> getLookupFields() {
         return lookupFields;
+    }
+
+    public List<String> getWorkflowAccessRights() {
+        return this.workflowAccessRights;
     }
 }

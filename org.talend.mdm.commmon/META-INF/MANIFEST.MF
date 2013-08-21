@@ -10,13 +10,15 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.intro,
  org.talend.libraries.apache,
  org.apache.commons.lang,
- org.apache.commons.collections
+ org.apache.commons.collections,
+ org.apache.commons.jxpath
 Import-Package: org.apache.log4j
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.talend.mdm.commmon,
  org.talend.mdm.commmon.metadata,
  org.talend.mdm.commmon.metadata.validation,
+ org.talend.mdm.commmon.util.bean,
  org.talend.mdm.commmon.util.core,
  org.talend.mdm.commmon.util.hash,
  org.talend.mdm.commmon.util.hash.impl,

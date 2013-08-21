@@ -35,7 +35,8 @@ public class ContainedComplexTypeMetadata extends ComplexTypeMetadataImpl {
                 StringUtils.EMPTY,
                 Collections.<FieldMetadata>emptyList(),
                 Collections.<FieldMetadata>emptyList(),
-                false);
+                false,
+                containerType.getWorkflowAccessRights());
         this.containerType = containerType;
     }
 

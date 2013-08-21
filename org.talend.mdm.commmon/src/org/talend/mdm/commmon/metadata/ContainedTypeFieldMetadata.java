@@ -28,6 +28,8 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
     private final List<String> allowWriteUsers;
 
     private final List<String> hideUsers;
+    
+    private final List<String> workflowAccessRights;
 
     private final boolean isMandatory;
 
@@ -41,7 +43,8 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
 
     private int cachedHashCode;
 
-    public ContainedTypeFieldMetadata(ComplexTypeMetadata containingType, boolean isMany, boolean isMandatory, String name, ContainedComplexTypeMetadata fieldType, List<String> allowWriteUsers, List<String> hideUsers) {
+    public ContainedTypeFieldMetadata(ComplexTypeMetadata containingType, boolean isMany, boolean isMandatory, String name, ContainedComplexTypeMetadata fieldType, List<String> allowWriteUsers, List<String> hideUsers,
+            List<String> workflowAccessRights) {
         if (fieldType == null) {
             throw new IllegalArgumentException("Contained type cannot be null.");
         }
@@ -54,6 +57,7 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
         this.name = name;
         this.allowWriteUsers = allowWriteUsers;
         this.hideUsers = hideUsers;
+        this.workflowAccessRights = workflowAccessRights;
     }
 
     public String getName() {
@@ -110,11 +114,15 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
     }
 
     public FieldMetadata copy(MetadataRepository repository) {
-        return new ContainedTypeFieldMetadata(containingType, isMany, isMandatory, name, fieldType, allowWriteUsers, hideUsers);
+        return new ContainedTypeFieldMetadata(containingType, isMany, isMandatory, name, fieldType, allowWriteUsers, hideUsers, workflowAccessRights);
     }
 
     public List<String> getHideUsers() {
         return hideUsers;
+    }
+
+    public List<String> getWorkflowAccessRights() {
+        return this.workflowAccessRights;
     }
 
     public List<String> getWriteUsers() {
@@ -170,7 +178,8 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
         if (fieldType != null ? !fieldType.equals(that.fieldType) : that.fieldType != null) return false;
         if (hideUsers != null ? !hideUsers.equals(that.hideUsers) : that.hideUsers != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
-
+        if (workflowAccessRights != null ? !workflowAccessRights.equals(that.workflowAccessRights) : that.workflowAccessRights != null) return false;
+        
         return true;
     }
 
@@ -187,6 +196,7 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
         result = 31 * result + (containingType != null ? containingType.hashCode() : 0);
         result = 31 * result + (fieldType != null ? fieldType.hashCode() : 0);
         result = 31 * result + (isMandatory ? 1 : 0);
+        result = 31 * result + (workflowAccessRights != null ? workflowAccessRights.hashCode() : 0);
         cachedHashCode = result;
         return result;
     }

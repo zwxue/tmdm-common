@@ -32,7 +32,9 @@ import java.util.*;
 /**
  *
  */
-public class MetadataRepository implements MetadataVisitable, XSDVisitor {
+public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serializable {
+
+    private static final long serialVersionUID = 239525645052486072L;
 
     public static final String COMPLEX_TYPE_NAME = "metadata.complex.type.name"; //$NON-NLS-1$
 
@@ -464,7 +466,8 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
                         state.getSchematron(),
                         state.getPrimaryKeyInfo(),
                         state.getLookupFields(),
-                        true);
+                        true,
+                        state.getWorkflowAccessRights());
                 // Keep line and column of definition
                 type.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
                 type.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
@@ -537,6 +540,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
         TypeMetadata referencedType = state.getReferencedType();
         List<String> hideUsers = state.getHide();
         List<String> allowWriteUsers = state.getAllowWrite();
+        List<String> workflowAccessRights = state.getWorkflowAccessRights();
         // TODO If allowWriteUsers is empty, put ICoreConstants.admin???
         XSDTypeDefinition schemaType = element.getType();
         if (schemaType instanceof XSDSimpleTypeDefinition) {
@@ -561,7 +565,8 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
                         fkIntegrityOverride,
                         fieldType,
                         allowWriteUsers,
-                        hideUsers);
+                        hideUsers,
+                        workflowAccessRights);
                 referenceField.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
                 referenceField.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
                 referenceField.setData(XSD_DOM_ELEMENT, element.getElement());
@@ -588,20 +593,20 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
                         }
                     }
                     if (isEnumeration) {
-                        EnumerationFieldMetadata enumField = new EnumerationFieldMetadata(containingType, false, isMany, isMandatory, fieldName, fieldType, allowWriteUsers, hideUsers);
+                        EnumerationFieldMetadata enumField = new EnumerationFieldMetadata(containingType, false, isMany, isMandatory, fieldName, fieldType, allowWriteUsers, hideUsers, workflowAccessRights);
                         enumField.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
                         enumField.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
                         enumField.setData(XSD_DOM_ELEMENT, element.getElement());
                         return enumField;
                     } else {
-                        FieldMetadata field = new SimpleTypeFieldMetadata(containingType, false, isMany, isMandatory, fieldName, fieldType, allowWriteUsers, hideUsers);
+                        FieldMetadata field = new SimpleTypeFieldMetadata(containingType, false, isMany, isMandatory, fieldName, fieldType, allowWriteUsers, hideUsers, workflowAccessRights);
                         field.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
                         field.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
                         field.setData(XSD_DOM_ELEMENT, element.getElement());
                         return field;
                     }
                 } else {
-                    FieldMetadata field = new SimpleTypeFieldMetadata(containingType, false, isMany, isMandatory, fieldName, fieldType, allowWriteUsers, hideUsers);
+                    FieldMetadata field = new SimpleTypeFieldMetadata(containingType, false, isMany, isMandatory, fieldName, fieldType, allowWriteUsers, hideUsers, workflowAccessRights);
                     field.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
                     field.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
                     field.setData(XSD_DOM_ELEMENT, element.getElement());
@@ -657,13 +662,14 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
                     fieldName,
                     (ContainedComplexTypeMetadata) referencedType,
                     allowWriteUsers,
-                    hideUsers);
+                    hideUsers,
+                    workflowAccessRights);
             containedField.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
             containedField.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
             containedField.setData(XSD_DOM_ELEMENT, element.getElement());
             return containedField;
         } else {
-            FieldMetadata field = new SimpleTypeFieldMetadata(containingType, false, isMany, isMandatory, fieldName, fieldType, allowWriteUsers, hideUsers);
+            FieldMetadata field = new SimpleTypeFieldMetadata(containingType, false, isMany, isMandatory, fieldName, fieldType, allowWriteUsers, hideUsers, workflowAccessRights);
             field.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
             field.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
             field.setData(XSD_DOM_ELEMENT, element.getElement());

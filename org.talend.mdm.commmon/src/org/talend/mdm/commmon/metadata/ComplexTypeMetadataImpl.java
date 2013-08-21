@@ -56,6 +56,8 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
     private MetadataRepository repository;
 
     private boolean isFrozen;
+    
+    private final List<String> workflowAccessRights;
 
     public ComplexTypeMetadataImpl(String nameSpace, String name, boolean instantiable) {
         this(nameSpace,
@@ -68,7 +70,8 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
                 StringUtils.EMPTY,
                 Collections.<FieldMetadata>emptyList(),
                 Collections.<FieldMetadata>emptyList(),
-                instantiable);
+                instantiable,
+                Collections.<String>emptyList());
     }
 
     public ComplexTypeMetadataImpl(String nameSpace,
@@ -81,7 +84,8 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
                                    String schematron,
                                    List<FieldMetadata> primaryKeyInfo,
                                    List<FieldMetadata> lookupFields,
-                                   boolean instantiable) {
+                                   boolean instantiable,
+                                   List<String> workflowAccessRights) {
         this.name = name;
         this.nameSpace = nameSpace;
         this.allowWrite = allowWrite;
@@ -93,6 +97,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         this.primaryKeyInfo = primaryKeyInfo;
         this.lookupFields = lookupFields;
         this.isInstantiable = instantiable;
+        this.workflowAccessRights = workflowAccessRights;
     }
 
     public void addSuperType(TypeMetadata superType, MetadataRepository repository) {
@@ -129,6 +134,10 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         StringTokenizer tokenizer = new StringTokenizer(fieldName, "/"); //$NON-NLS-1$
         String firstFieldName = tokenizer.nextToken();
         FieldMetadata currentField = fieldMetadata.get(firstFieldName);
+        // think about reusable type, e.g: Employee/Address[@xsi:type="CNAddressType"]/Province
+        if (firstFieldName.contains("xsi:type")) { //$NON-NLS-1$
+            currentField = fieldMetadata.get(StringUtils.substringBefore(firstFieldName, "[@xsi:type")); //$NON-NLS-1$
+        }
         if (currentField == null) { // Look in super types if it wasn't found in current type.
             for (TypeMetadata superType : superTypes) {
                 if (superType instanceof ComplexTypeMetadata) {
@@ -146,6 +155,25 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         }
         if (tokenizer.hasMoreTokens()) {
             ComplexTypeMetadata currentType = (ComplexTypeMetadata) currentField.getType();
+            if (firstFieldName.contains("xsi:type")) { //$NON-NLS-1$
+                String reusableTypeName = StringUtils.substringAfter(firstFieldName, "@xsi:type").replace('=', ' ').replace(']', ' ').trim(); //$NON-NLS-1$
+                if (reusableTypeName == null || reusableTypeName.isEmpty()) {
+                    throw new IllegalArgumentException("Reusable type could not be null for fieldName '" + fieldName + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+                if (reusableTypeName != null && !reusableTypeName.isEmpty() && !currentType.getName().equals(reusableTypeName)) { // Look real type in sub types
+                    boolean isFindRealType = false;
+                    for (TypeMetadata subType : currentType.getSubTypes()) {
+                        if (subType instanceof ComplexTypeMetadata && subType.getName().equals(reusableTypeName)) {
+                            currentType = (ComplexTypeMetadata) subType;
+                            isFindRealType = true;
+                            break;
+                        }
+                    }
+                    if (!isFindRealType) {
+                        throw new IllegalArgumentException("Type '" + reusableTypeName + "' could not be found."); //$NON-NLS-1$ //$NON-NLS-2$
+                    }
+                }    
+            }
             while (tokenizer.hasMoreTokens()) {
                 String currentFieldName = tokenizer.nextToken();
                 currentField = currentType.getField(currentFieldName);
@@ -270,7 +298,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
                 physicalDelete,
                 logicalDelete,
                 schematron,
-                primaryKeyInfo, Collections.<FieldMetadata>emptyList(), isInstantiable);
+                primaryKeyInfo, Collections.<FieldMetadata>emptyList(), isInstantiable, workflowAccessRights);
         repository.addTypeMetadata(copy);
 
         Collection<FieldMetadata> fields = getFields();
@@ -299,7 +327,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
                 logicalDelete,
                 schematron,
                 primaryKeyInfo,
-                Collections.<FieldMetadata>emptyList(), isInstantiable);
+                Collections.<FieldMetadata>emptyList(), isInstantiable, workflowAccessRights);
     }
 
     public List<String> getWriteUsers() {
@@ -312,6 +340,10 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
 
     public List<String> getHideUsers() {
         return hideUsers;
+    }
+    
+    public List<String> getWorkflowAccessRights() {
+        return this.workflowAccessRights;
     }
 
     public List<String> getDenyDelete(DeleteType type) {
