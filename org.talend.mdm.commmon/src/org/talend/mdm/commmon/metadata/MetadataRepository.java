@@ -445,7 +445,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
                     XSDAnnotation annotation = element.getAnnotation();
                     state = new XmlSchemaAnnotationProcessorState();
                     for (XmlSchemaAnnotationProcessor processor : XML_ANNOTATIONS_PROCESSORS) {
-                        processor.process(this, type, annotation, state);
+                        processor.process(this, null, annotation, state);
                     }
                 } catch (Exception e) {
                     throw new RuntimeException("Annotation processing exception while parsing info for type '" + typeName + "'.", e);
@@ -481,7 +481,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
             XSDElementDeclaration substitutionGroup = element.getSubstitutionGroupAffiliation();
             if (substitutionGroup != null
                     && !XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(substitutionGroup.getTargetNamespace())
-                    && !"anyType".equals(substitutionGroup.getName())) {
+                    && !Types.ANY_TYPE.equals(substitutionGroup.getName())) {
                 if (!substitutionGroup.getResolvedElementDeclaration().equals(element)) {
                     SoftTypeRef superType = new SoftTypeRef(this,
                             substitutionGroup.getTargetNamespace(),
@@ -499,17 +499,40 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor {
                 keyField.setData(XSD_DOM_ELEMENT, unresolvedId.getValue().getElement());
                 type.registerKey(keyField);
             }
+            // TMDM-6264: An entity type without any key info is a element maybe referenced by others, but never an
+            // entity.
+            if (type.getKeyFields().isEmpty() && type.getSuperTypes().isEmpty()) {
+                Map<String, TypeMetadata> userEntityTypes = entityTypes.get(getUserNamespace());
+                if (userEntityTypes != null) {
+                    userEntityTypes.remove(type.getName());
+                }
+            }
         } else { // Non "top level" elements means fields for the MDM entity type being parsed
-            FieldMetadata fieldMetadata = createFieldMetadata(element, currentTypeStack.peek());
+            FieldMetadata fieldMetadata;
+            int minOccurs = ((XSDParticle) element.getContainer()).getMinOccurs();
+            int maxOccurs = ((XSDParticle) element.getContainer()).getMaxOccurs();
+            if (element.getResolvedElementDeclaration() != null
+                    && element.getResolvedElementDeclaration().getTargetNamespace() == null) {
+                fieldMetadata = createFieldMetadata(element.getResolvedElementDeclaration(),
+                        currentTypeStack.peek(),
+                        minOccurs,
+                        maxOccurs);
+            } else {
+                fieldMetadata = createFieldMetadata(element,
+                        currentTypeStack.peek(),
+                        minOccurs,
+                        maxOccurs);
+            }
             currentTypeStack.peek().addField(fieldMetadata);
         }
     }
 
     // TODO To refactor once test coverage is good.
-    private FieldMetadata createFieldMetadata(XSDElementDeclaration element, ComplexTypeMetadata containingType) {
+    private FieldMetadata createFieldMetadata(XSDElementDeclaration element,
+                                              ComplexTypeMetadata containingType,
+                                              int minOccurs,
+                                              int maxOccurs) {
         String fieldName = element.getName();
-        int minOccurs = ((XSDParticle) element.getContainer()).getMinOccurs();
-        int maxOccurs = ((XSDParticle) element.getContainer()).getMaxOccurs();
         if (maxOccurs > 0 && minOccurs > maxOccurs) { // Eclipse XSD does not check this
             throw new IllegalArgumentException("Can not parse information on field '"
                     + element.getQName()
