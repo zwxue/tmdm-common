@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2012 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2013 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -21,8 +21,6 @@ import org.apache.log4j.Logger;
 
 /**
  * Handles the mdm.conf file
- *
- * @author bgrieder
  */
 public final class MDMConfiguration {
 
@@ -49,25 +47,28 @@ public final class MDMConfiguration {
             return CONFIGURATION;
         }
         CONFIGURATION = new Properties();
+
+        // try the current dir
         String currentDir = System.getProperty("user.dir"); //$NON-NLS-1$
         file = new File(currentDir, MDM_CONF);
-        // try the current dir
         if (!file.exists()) {
-            // if not found, try appending "server/default/conf"
-            logger.info("MDM Configuration: unable to find the configuration in '" + file.getAbsolutePath() + "'.");
-            file = new File(currentDir, "server/default/conf/" + MDM_CONF);
-            logger.info("MDM Configuration: trying in '" + file.getAbsolutePath() + "'.");
+            // if not found, try the JBoss configuration directory
+            String jbossServerDir = System.getProperty("jboss.server.home.dir"); //$NON-NLS-1$
+            if (jbossServerDir != null) {
+                file = new File(jbossServerDir + File.separator + "conf", MDM_CONF); //$NON-NLS-1$
+            }
         }
         if (file.exists()) {
-            logger.info("MDM Configuration: found in '" + file.getAbsolutePath() + "'.");
+            logger.info("MDM Configuration: found in '" + file.getAbsolutePath() + "'."); //$NON-NLS-1$ //$NON-NLS-2$
             try {
                 CONFIGURATION.load(new FileInputStream(file));
             } catch (Exception e) {
-                logger.warn("MDM Configuration: unable to load the configuration in '" + file.getAbsolutePath() + "' :" + e.getMessage() + ". The default configurations will be used.");
+                logger.warn("MDM Configuration: unable to load the configuration from '" + file.getAbsolutePath() + "' :" //$NON-NLS-1$ //$NON-NLS-2$
+                        + e.getMessage() + ". The default configurations will be used."); //$NON-NLS-1$ 
             }
         } else {
-            logger.warn("MDM Configuration: unable to load the configuration in '" + file.getAbsolutePath()
-                    + ". The default configurations will be used.");
+            logger.warn("MDM Configuration: unable to load the configuration from '" + file.getAbsolutePath() //$NON-NLS-1$ 
+                    + ". The default configurations will be used."); //$NON-NLS-1$ 
         }
         checkupPropertiesForXDBConf();
         return CONFIGURATION;
@@ -125,7 +126,7 @@ public final class MDMConfiguration {
                     out.close();
                 } catch (Exception e2) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Error occurred during close() operation during configuration save.", e2);
+                        logger.debug("Error occurred during close() operation during configuration save.", e2); //$NON-NLS-1$
                     }
                 }
             }
@@ -179,13 +180,12 @@ public final class MDMConfiguration {
     }
 
     /**
-     * It can be only called when MDM applies on user data containers.
-     * <li>DispatchWrapper is Hybrid configuration,</li>
+     * It can be only called when MDM applies on user data containers. <li>DispatchWrapper is Hybrid configuration,</li>
      * <li>SQLWrapper is Full SQL</li>
      */
     public static boolean isSqlDataBase() {
         String xmlServerClass = getConfiguration().getProperty("xmlserver.class"); //$NON-NLS-1$
-        return "com.amalto.core.storage.DispatchWrapper".equals(xmlServerClass)  //$NON-NLS-1$
+        return "com.amalto.core.storage.DispatchWrapper".equals(xmlServerClass) //$NON-NLS-1$
                 || "com.amalto.core.storage.SQLWrapper".equals(xmlServerClass); //$NON-NLS-1$
     }
 }
