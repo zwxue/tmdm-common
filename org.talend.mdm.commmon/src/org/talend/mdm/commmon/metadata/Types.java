@@ -15,6 +15,24 @@ package org.talend.mdm.commmon.metadata;
  *
  */
 public interface Types {
+    String[] NUMBERS = new String[]{Types.INT,
+            Types.UNSIGNED_INT,
+            Types.INTEGER,
+            Types.NEGATIVE_INTEGER,
+            Types.POSITIVE_INTEGER,
+            Types.NON_NEGATIVE_INTEGER,
+            Types.NON_POSITIVE_INTEGER,
+            Types.DECIMAL,
+            Types.DOUBLE,
+            Types.UNSIGNED_DOUBLE,
+            Types.BYTE,
+            Types.UNSIGNED_BYTE,
+            Types.LONG,
+            Types.UNSIGNED_LONG,
+            Types.SHORT,
+            Types.UNSIGNED_SHORT,
+            Types.FLOAT};
+
     String LONG = "long"; //$NON-NLS-1$
     String DECIMAL = "decimal"; //$NON-NLS-1$
     String BOOLEAN = "boolean"; //$NON-NLS-1$
