@@ -33,6 +33,10 @@ public interface Types {
             Types.UNSIGNED_SHORT,
             Types.FLOAT};
 
+    String[] DATES = new String[]{Types.DATE,
+                Types.DATETIME,
+                Types.TIME};
+
     String LONG = "long"; //$NON-NLS-1$
     String DECIMAL = "decimal"; //$NON-NLS-1$
     String BOOLEAN = "boolean"; //$NON-NLS-1$
