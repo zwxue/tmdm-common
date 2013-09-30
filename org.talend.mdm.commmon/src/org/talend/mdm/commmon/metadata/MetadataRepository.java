@@ -182,16 +182,15 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
         Map<String, Object> options = new HashMap<String, Object>();
         options.put(Resource.OPTION_SAVE_ONLY_IF_CHANGED, Resource.OPTION_SAVE_ONLY_IF_CHANGED_MEMORY_BUFFER);
         XSDParser parse = new XSDParser(options);
-        parse.setDocumentLocator(new LocatorImpl());
         parse.parse(inputStream);
         XSDSchema schema = parse.getSchema();
         schema.validate();
         EList<XSDDiagnostic> diagnostics = schema.getDiagnostics();
         for (XSDDiagnostic diagnostic : diagnostics) {
             XSDDiagnosticSeverity severity = diagnostic.getSeverity();
-            if (severity.equals(XSDDiagnosticSeverity.ERROR_LITERAL)) {
+            if (XSDDiagnosticSeverity.ERROR_LITERAL.equals(severity)) {
                 handler.error((TypeMetadata) null, "XSD validation error: " + diagnostic.getMessage(), null, -1, -1, ValidationError.XML_SCHEMA);
-            } else if (severity.equals(XSDDiagnosticSeverity.WARNING_LITERAL)) {
+            } else if (XSDDiagnosticSeverity.WARNING_LITERAL.equals(severity)) {
                 handler.error((TypeMetadata) null, "XSD validation warning: " + diagnostic.getMessage(), null, -1, -1, ValidationError.XML_SCHEMA);
             }
         }

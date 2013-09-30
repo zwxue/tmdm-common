@@ -98,6 +98,7 @@ public class ValidationFactory {
         rules.add(new KeyFieldsValidationRule(type));
         rules.add(new LookupFieldsValidationRule(type));
         rules.add(new PrimaryKeyInfoValidationRule(type));
+        rules.add(new XSDAttributeValidationRule(type));
         return new CompositeValidationRule(rules.toArray(new ValidationRule[rules.size()]));
     }
 
