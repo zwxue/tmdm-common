@@ -11,6 +11,7 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 
@@ -33,6 +34,8 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
 
     private final boolean isMandatory;
 
+    private final String path;
+
     private TypeMetadata declaringType;
 
     private ContainedComplexTypeMetadata fieldType;
@@ -43,12 +46,18 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
 
     private int cachedHashCode;
 
-    public ContainedTypeFieldMetadata(ComplexTypeMetadata containingType, boolean isMany, boolean isMandatory, String name, ContainedComplexTypeMetadata fieldType, List<String> allowWriteUsers, List<String> hideUsers,
-            List<String> workflowAccessRights) {
+    public ContainedTypeFieldMetadata(ComplexTypeMetadata containingType,
+                                      boolean isMany,
+                                      boolean isMandatory,
+                                      String name,
+                                      ContainedComplexTypeMetadata fieldType,
+                                      List<String> allowWriteUsers,
+                                      List<String> hideUsers,
+                                      List<String> workflowAccessRights,
+                                      String path) {
         if (fieldType == null) {
             throw new IllegalArgumentException("Contained type cannot be null.");
         }
-
         this.isMandatory = isMandatory;
         this.fieldType = fieldType;
         this.containingType = containingType;
@@ -58,6 +67,7 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
         this.allowWriteUsers = allowWriteUsers;
         this.hideUsers = hideUsers;
         this.workflowAccessRights = workflowAccessRights;
+        this.path = path;
     }
 
     public String getName() {
@@ -103,6 +113,16 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
         return ValidationFactory.getRule(this);
     }
 
+    @Override
+    public String getPath() {
+        return StringUtils.substringAfter(path, "/"); //$NON-NLS-1$
+    }
+
+    @Override
+    public String getEntityTypeName() {
+        return StringUtils.substringBefore(path, "/"); //$NON-NLS-1$
+    }
+
     public TypeMetadata getDeclaringType() {
         return declaringType;
     }
@@ -114,7 +134,15 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
     }
 
     public FieldMetadata copy(MetadataRepository repository) {
-        return new ContainedTypeFieldMetadata(containingType, isMany, isMandatory, name, fieldType, allowWriteUsers, hideUsers, workflowAccessRights);
+        return new ContainedTypeFieldMetadata(containingType,
+                isMany,
+                isMandatory,
+                name,
+                fieldType,
+                allowWriteUsers,
+                hideUsers,
+                workflowAccessRights,
+                path);
     }
 
     public List<String> getHideUsers() {

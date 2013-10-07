@@ -11,6 +11,7 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 
@@ -37,6 +38,8 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
 
     private final boolean isMandatory;
 
+    private final String path;
+
     private ComplexTypeMetadata containingType;
 
     private String name;
@@ -51,7 +54,8 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
                                     TypeMetadata fieldType,
                                     List<String> allowWriteUsers,
                                     List<String> hideUsers,
-                                    List<String> workflowAccessRights) {
+                                    List<String> workflowAccessRights,
+                                    String path) {
         this.containingType = containingType;
         this.declaringType = containingType;
         this.isKey = isKey;
@@ -62,6 +66,7 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
         this.allowWriteUsers = allowWriteUsers;
         this.hideUsers = hideUsers;
         this.workflowAccessRights = workflowAccessRights;
+        this.path = path;
     }
 
     public String getName() {
@@ -107,6 +112,16 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
         return ValidationFactory.getRule(this);
     }
 
+    @Override
+    public String getPath() {
+        return StringUtils.substringAfter(path, "/"); //$NON-NLS-1$
+    }
+
+    @Override
+    public String getEntityTypeName() {
+        return StringUtils.substringBefore(path, "/"); //$NON-NLS-1$
+    }
+
     public TypeMetadata getDeclaringType() {
         return declaringType;
     }
@@ -118,7 +133,16 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
     }
 
     public FieldMetadata copy(MetadataRepository repository) {
-        return new EnumerationFieldMetadata(containingType, isKey(), isMany, isMandatory, name, fieldType, allowWriteUsers, hideUsers, workflowAccessRights);
+        return new EnumerationFieldMetadata(containingType,
+                isKey(),
+                isMany,
+                isMandatory,
+                name,
+                fieldType,
+                allowWriteUsers,
+                hideUsers,
+                workflowAccessRights,
+                path);
     }
 
     public List<String> getHideUsers() {

@@ -187,6 +187,16 @@ public class SoftFieldRef implements FieldMetadata {
     }
 
     @Override
+    public String getPath() {
+        return getField().getPath();
+    }
+
+    @Override
+    public String getEntityTypeName() {
+        return getField().getEntityTypeName();
+    }
+
+    @Override
     public TypeMetadata getDeclaringType() {
         return getField().getDeclaringType();
     }

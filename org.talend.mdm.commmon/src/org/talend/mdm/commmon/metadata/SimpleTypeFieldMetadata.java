@@ -11,6 +11,7 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 
@@ -34,6 +35,8 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
 
     private final boolean isMandatory;
 
+    private final String path;
+
     private TypeMetadata fieldType;
 
     private boolean isKey;
@@ -45,17 +48,6 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
     private boolean isFrozen;
 
     private int cachedHashCode;
-    
-    public SimpleTypeFieldMetadata(ComplexTypeMetadata containingType,
-                                   boolean isKey,
-                                   boolean isMany,
-                                   boolean isMandatory,
-                                   String name,
-                                   TypeMetadata fieldType,
-                                   List<String> allowWriteUsers,
-                                   List<String> hideUsers) {
-        this(containingType, isKey, isMany, isMandatory, name, fieldType, allowWriteUsers, hideUsers, Collections.<String>emptyList());
-    }
 
     public SimpleTypeFieldMetadata(ComplexTypeMetadata containingType,
                                    boolean isKey,
@@ -65,7 +57,8 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
                                    TypeMetadata fieldType,
                                    List<String> allowWriteUsers,
                                    List<String> hideUsers,
-                                   List<String> workflowAccessRights) {
+                                   List<String> workflowAccessRights,
+                                   String path) {
         if (fieldType == null) {
             throw new IllegalArgumentException("Field type cannot be null.");
         }
@@ -79,6 +72,7 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
         this.allowWriteUsers = allowWriteUsers;
         this.hideUsers = hideUsers;
         this.workflowAccessRights = workflowAccessRights;
+        this.path = path;
     }
 
     public String getName() {
@@ -130,6 +124,16 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
         return ValidationFactory.getRule(this);
     }
 
+    @Override
+    public String getPath() {
+        return StringUtils.substringAfter(path, "/"); //$NON-NLS-1$
+    }
+
+    @Override
+    public String getEntityTypeName() {
+        return StringUtils.substringBefore(path, "/"); //$NON-NLS-1$
+    }
+
     public TypeMetadata getDeclaringType() {
         return declaringType;
     }
@@ -141,7 +145,15 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
     }
 
     public FieldMetadata copy(MetadataRepository repository) {
-        return new SimpleTypeFieldMetadata(containingType, isKey, isMany, isMandatory, name, fieldType, allowWriteUsers, hideUsers, workflowAccessRights);
+        return new SimpleTypeFieldMetadata(containingType,
+                isKey,
+                isMany,
+                isMandatory,
+                name,
+                fieldType,
+                allowWriteUsers,
+                hideUsers,
+                workflowAccessRights, path);
     }
 
     public List<String> getHideUsers() {

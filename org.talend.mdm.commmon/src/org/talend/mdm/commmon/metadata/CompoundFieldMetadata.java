@@ -90,6 +90,16 @@ public class CompoundFieldMetadata extends MetadataExtensions implements FieldMe
         return ValidationFactory.getRule(this);
     }
 
+    @Override
+    public String getPath() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getEntityTypeName() {
+        throw new UnsupportedOperationException();
+    }
+
     public TypeMetadata getDeclaringType() {
         return fields[0].getDeclaringType();
     }

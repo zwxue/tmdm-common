@@ -12,23 +12,32 @@ package org.talend.mdm.commmon.metadata;
 
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 
-import java.util.Collections;
 import java.util.List;
 
 public class AliasedFieldMetadata extends SimpleTypeFieldMetadata {
 
     private final String realFieldName;
-    
-    public AliasedFieldMetadata(ComplexTypeMetadata containingType, boolean isKey, boolean isMany, boolean isMandatory,
-            String name, TypeMetadata fieldType, List<String> allowWriteUsers, List<String> hideUsers, String realFieldName) {
-        this(containingType, isKey, isMany, isMandatory, name, fieldType, allowWriteUsers, hideUsers, realFieldName, Collections.<String>emptyList());
-    }
 
-    public AliasedFieldMetadata(ComplexTypeMetadata containingType, boolean isKey, boolean isMany, boolean isMandatory,
-                                String name, TypeMetadata fieldType, List<String> allowWriteUsers, List<String> hideUsers, String realFieldName, 
-                                List<String> workflowAccessRights) {
-        super(containingType, isKey, isMany, isMandatory, name, fieldType, allowWriteUsers, hideUsers, workflowAccessRights);
-        this.realFieldName = realFieldName;
+    public AliasedFieldMetadata(ComplexTypeMetadata containingType,
+                                boolean isKey,
+                                boolean isMany,
+                                boolean isMandatory,
+                                String name,
+                                TypeMetadata fieldType,
+                                List<String> allowWriteUsers,
+                                List<String> hideUsers,
+                                FieldMetadata aliasedField) {
+        super(containingType,
+                isKey,
+                isMany,
+                isMandatory,
+                name,
+                fieldType,
+                allowWriteUsers,
+                hideUsers,
+                aliasedField.getWorkflowAccessRights(),
+                aliasedField.getPath());
+        this.realFieldName = aliasedField.getName();
     }
 
     @Override

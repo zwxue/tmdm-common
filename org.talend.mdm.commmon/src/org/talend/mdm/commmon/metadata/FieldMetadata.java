@@ -124,5 +124,23 @@ public interface FieldMetadata extends MetadataVisitable, MetadataExtensible {
      */
     void validate(ValidationHandler handler);
 
+    /**
+     * @return A {@link ValidationRule} for this field.
+     * @see org.talend.mdm.commmon.metadata.validation.ValidationFactory
+     */
     ValidationRule createValidationRule();
+
+    /**
+     * @return A XPath-like path from the top level entity type down to this field. Path <b>DOES NOT</b> include the
+     * MDM entity type name. Returned values look like "address/address/street" or "id".
+     * @since 5.4
+     */
+    String getPath();
+
+    /**
+     * @return The MDM entity type name. In fact, this method is a shortcut to a substring on {@link #getPath()} to get
+     * only the MDM entity type name.
+     * @since 5.4
+     */
+    String getEntityTypeName();
 }

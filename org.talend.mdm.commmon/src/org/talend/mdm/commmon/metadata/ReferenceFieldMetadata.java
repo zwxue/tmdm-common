@@ -11,6 +11,7 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 import org.w3c.dom.Element;
@@ -37,6 +38,8 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
 
     private final TypeMetadata declaringType;
 
+    private final String path;
+
     private TypeMetadata fieldType;
 
     private boolean isKey;
@@ -52,7 +55,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
     private boolean isFrozen;
 
     private int cachedHashCode;
-    
+
     public ReferenceFieldMetadata(ComplexTypeMetadata containingType,
                                   boolean isKey,
                                   boolean isMany,
@@ -65,8 +68,23 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                                   boolean allowFKIntegrityOverride,
                                   TypeMetadata fieldType,
                                   List<String> allowWriteUsers,
-                                  List<String> hideUsers) {
-        this(containingType, isKey, isMany, isMandatory, name, referencedType, referencedField, foreignKeyInfo, fkIntegrity, allowFKIntegrityOverride, fieldType, allowWriteUsers, hideUsers, Collections.<String>emptyList());
+                                  List<String> hideUsers,
+                                  String path) {
+        this(containingType,
+                isKey,
+                isMany,
+                isMandatory,
+                name,
+                referencedType,
+                referencedField,
+                foreignKeyInfo,
+                fkIntegrity,
+                allowFKIntegrityOverride,
+                fieldType,
+                allowWriteUsers,
+                hideUsers,
+                Collections.<String>emptyList(),
+                path);
     }
 
     public ReferenceFieldMetadata(ComplexTypeMetadata containingType,
@@ -82,7 +100,8 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                                   TypeMetadata fieldType,
                                   List<String> allowWriteUsers,
                                   List<String> hideUsers,
-                                  List<String> workflowAccessRights) {
+                                  List<String> workflowAccessRights,
+                                  String path) {
         this.isMandatory = isMandatory;
         this.name = name;
         this.referencedField = referencedField;
@@ -99,6 +118,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         this.writeUsers = allowWriteUsers;
         this.hideUsers = hideUsers;
         this.workflowAccessRights = workflowAccessRights;
+        this.path = path;
     }
 
     public FieldMetadata getReferencedField() {
@@ -171,6 +191,16 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         return ValidationFactory.getRule(this);
     }
 
+    @Override
+    public String getPath() {
+        return StringUtils.substringAfter(path, "/"); //$NON-NLS-1$
+    }
+
+    @Override
+    public String getEntityTypeName() {
+        return StringUtils.substringBefore(path, "/"); //$NON-NLS-1$
+    }
+
     public TypeMetadata getDeclaringType() {
         return containingType;
     }
@@ -227,7 +257,8 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                 fieldType,
                 writeUsers,
                 hideUsers,
-                workflowAccessRights);
+                workflowAccessRights,
+                path);
     }
 
     @Override

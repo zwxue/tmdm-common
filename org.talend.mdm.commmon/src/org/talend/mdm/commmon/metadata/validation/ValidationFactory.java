@@ -19,8 +19,8 @@ import java.util.List;
 public class ValidationFactory {
 
     private static boolean isValidated(MetadataExtensible metadataElement) {
-        return metadataElement.getData("validation.validated") != null
-                && metadataElement.<Boolean>getData("validation.validated");
+        return metadataElement.getData("validation.validated") != null //$NON-NLS-1$
+                && metadataElement.<Boolean>getData("validation.validated"); //$NON-NLS-1$
     }
 
     public static ValidationRule getRule(FieldMetadata field) {
@@ -31,7 +31,7 @@ public class ValidationFactory {
                 return NoOpValidationRule.SUCCESS;
             }
         }
-        field.setData("validation.validated", true);
+        field.setData("validation.validated", true); //$NON-NLS-1$
         return field.createValidationRule();
     }
 
@@ -84,7 +84,7 @@ public class ValidationFactory {
                 return NoOpValidationRule.SUCCESS;
             }
         }
-        type.setData("validation.validated", true);
+        type.setData("validation.validated", true); //$NON-NLS-1$
         return type.createValidationRule();
     }
 

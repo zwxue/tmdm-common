@@ -124,6 +124,16 @@ public class UnresolvedFieldMetadata implements FieldMetadata {
     }
 
     @Override
+    public String getPath() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getEntityTypeName() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void setData(String key, Object data) {
         additionalData.put(key, data);
     }

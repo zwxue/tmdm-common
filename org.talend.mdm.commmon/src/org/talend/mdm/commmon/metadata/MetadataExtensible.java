@@ -10,9 +10,6 @@
  */
 package org.talend.mdm.commmon.metadata;
 
-import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
-import org.talend.mdm.commmon.metadata.validation.ValidationRule;
-
 public interface MetadataExtensible {
 
     /**

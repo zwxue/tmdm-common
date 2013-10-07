@@ -23,7 +23,6 @@ import org.eclipse.xsd.*;
 import org.eclipse.xsd.util.XSDParser;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
 import org.w3c.dom.Element;
-import org.xml.sax.helpers.LocatorImpl;
 
 import javax.xml.XMLConstants;
 import java.io.*;
@@ -65,6 +64,8 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
     private final Map<String, Map<String, TypeMetadata>> nonInstantiableTypes = new TreeMap<String, Map<String, TypeMetadata>>();
 
     private final Stack<ComplexTypeMetadata> currentTypeStack = new Stack<ComplexTypeMetadata>();
+
+    private final Stack<String> currentPath = new Stack<String>();
 
     private String targetNamespace;
 
@@ -235,6 +236,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
             if (complexTypeName != null) {
                 TypeMetadata nonInstantiableType = repository.getNonInstantiableType(USER_NAMESPACE, complexTypeName);
                 if (!nonInstantiableType.getSuperTypes().isEmpty()) {
+                    // TODO Move to validation rule
                     if (nonInstantiableType.getSuperTypes().size() > 1) {
                         handler.error(nonInstantiableType,
                                 "Multiple inheritance is not supported.",
@@ -393,7 +395,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
         XSDTypeDefinition contentModel = type.getBaseTypeDefinition();
         if (contentModel != null) {
             if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(contentModel.getTargetNamespace())
-                    && !"anyType".equals(contentModel.getName())) {
+                    && !Types.ANY_TYPE.equals(contentModel.getName())) {
                 SoftTypeRef superType = new SoftTypeRef(this,
                         contentModel.getTargetNamespace(),
                         contentModel.getName(),
@@ -422,6 +424,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
 
     @Override
     public void visitElement(XSDElementDeclaration element) {
+        currentPath.push(element.getName());
         if (currentTypeStack.isEmpty()) { // "top level" elements means new MDM entity type
             String typeName = element.getName();
             if (entityTypes.get(getUserNamespace()) != null) {
@@ -527,6 +530,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
             }
             currentTypeStack.peek().addField(fieldMetadata);
         }
+        currentPath.pop();
     }
 
     // TODO To refactor once test coverage is good.
@@ -588,7 +592,8 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
                         fieldType,
                         allowWriteUsers,
                         hideUsers,
-                        workflowAccessRights);
+                        workflowAccessRights,
+                        getCurrentPath());
                 referenceField.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
                 referenceField.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
                 referenceField.setData(XSD_DOM_ELEMENT, element.getElement());
@@ -615,20 +620,47 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
                         }
                     }
                     if (isEnumeration) {
-                        EnumerationFieldMetadata enumField = new EnumerationFieldMetadata(containingType, false, isMany, isMandatory, fieldName, fieldType, allowWriteUsers, hideUsers, workflowAccessRights);
+                        EnumerationFieldMetadata enumField = new EnumerationFieldMetadata(containingType,
+                                false,
+                                isMany,
+                                isMandatory,
+                                fieldName,
+                                fieldType,
+                                allowWriteUsers,
+                                hideUsers,
+                                workflowAccessRights,
+                                getCurrentPath());
                         enumField.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
                         enumField.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
                         enumField.setData(XSD_DOM_ELEMENT, element.getElement());
                         return enumField;
                     } else {
-                        FieldMetadata field = new SimpleTypeFieldMetadata(containingType, false, isMany, isMandatory, fieldName, fieldType, allowWriteUsers, hideUsers, workflowAccessRights);
+                        FieldMetadata field = new SimpleTypeFieldMetadata(containingType,
+                                false,
+                                isMany,
+                                isMandatory,
+                                fieldName,
+                                fieldType,
+                                allowWriteUsers,
+                                hideUsers,
+                                workflowAccessRights,
+                                getCurrentPath());
                         field.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
                         field.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
                         field.setData(XSD_DOM_ELEMENT, element.getElement());
                         return field;
                     }
                 } else {
-                    FieldMetadata field = new SimpleTypeFieldMetadata(containingType, false, isMany, isMandatory, fieldName, fieldType, allowWriteUsers, hideUsers, workflowAccessRights);
+                    FieldMetadata field = new SimpleTypeFieldMetadata(containingType,
+                            false,
+                            isMany,
+                            isMandatory,
+                            fieldName,
+                            fieldType,
+                            allowWriteUsers,
+                            hideUsers,
+                            workflowAccessRights,
+                            getCurrentPath());
                     field.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
                     field.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
                     field.setData(XSD_DOM_ELEMENT, element.getElement());
@@ -685,18 +717,40 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
                     (ContainedComplexTypeMetadata) referencedType,
                     allowWriteUsers,
                     hideUsers,
-                    workflowAccessRights);
+                    workflowAccessRights,
+                    getCurrentPath());
             containedField.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
             containedField.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
             containedField.setData(XSD_DOM_ELEMENT, element.getElement());
             return containedField;
         } else {
-            FieldMetadata field = new SimpleTypeFieldMetadata(containingType, false, isMany, isMandatory, fieldName, fieldType, allowWriteUsers, hideUsers, workflowAccessRights);
+            FieldMetadata field = new SimpleTypeFieldMetadata(containingType,
+                    false,
+                    isMany,
+                    isMandatory,
+                    fieldName,
+                    fieldType,
+                    allowWriteUsers,
+                    hideUsers,
+                    workflowAccessRights,
+                    getCurrentPath());
             field.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
             field.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
             field.setData(XSD_DOM_ELEMENT, element.getElement());
             return field;
         }
+    }
+
+    private String getCurrentPath() {
+        StringBuilder path = new StringBuilder();
+        Iterator<String> iterator = currentPath.iterator();
+        while (iterator.hasNext()) {
+            path.append(iterator.next());
+            if (iterator.hasNext()) {
+                path.append('/');
+            }
+        }
+        return path.toString();
     }
 
     private static class NoOpValidationHandler implements ValidationHandler {
