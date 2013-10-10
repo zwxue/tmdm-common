@@ -32,8 +32,8 @@ class ForeignKeyNotStringTyped implements ValidationRule {
             while (!currentType.getSuperTypes().isEmpty()) {
                 TypeMetadata superType = currentType.getSuperTypes().iterator().next();
                 if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(superType.getNamespace())
-                        && ("anyType".equals(superType.getName()) //$NON-NLS-1$
-                        || "anySimpleType".equals(superType.getName()))) { //$NON-NLS-1$
+                        && (Types.ANY_TYPE.equals(superType.getName())
+                        || Types.ANY_SIMPLE_TYPE.equals(superType.getName()))) {
                     break;
                 }
                 currentType = superType;

@@ -14,13 +14,7 @@ import java.util.List;
 
 import javax.xml.XMLConstants;
 
-import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.FieldMetadata;
-import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.metadata.TypeMetadata;
-import org.talend.mdm.commmon.metadata.ValidationError;
-import org.talend.mdm.commmon.metadata.ValidationHandler;
+import org.talend.mdm.commmon.metadata.*;
 import org.w3c.dom.Element;
 
 class PrimaryKeyInfoValidationRule implements ValidationRule {
@@ -78,8 +72,9 @@ class PrimaryKeyInfoValidationRule implements ValidationRule {
         if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace())) {
             while (!currentType.getSuperTypes().isEmpty()) {
                 TypeMetadata superType = currentType.getSuperTypes().iterator().next();
-                if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(superType.getNamespace()) && ("anyType".equals(superType.getName()) //$NON-NLS-1$
-                        || "anySimpleType".equals(superType.getName()))) { //$NON-NLS-1$
+                if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(superType.getNamespace())
+                        && (Types.ANY_TYPE.equals(superType.getName())
+                        || Types.ANY_SIMPLE_TYPE.equals(superType.getName()))) {
                     break;
                 }
                 currentType = superType;
