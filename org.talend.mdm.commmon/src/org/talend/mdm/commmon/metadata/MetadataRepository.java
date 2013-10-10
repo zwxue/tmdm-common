@@ -95,6 +95,9 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
     }
 
     public ComplexTypeMetadata getComplexType(String typeName) {
+        if (typeName == null) {
+            throw new IllegalArgumentException("Type cannot be null.");
+        }
         try {
             return (ComplexTypeMetadata) getType(USER_NAMESPACE, typeName.trim());
         } catch (ClassCastException e) {
