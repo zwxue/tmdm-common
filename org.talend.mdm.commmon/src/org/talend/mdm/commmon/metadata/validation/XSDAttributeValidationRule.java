@@ -12,6 +12,7 @@
 package org.talend.mdm.commmon.metadata.validation;
 
 import org.apache.log4j.Logger;
+import org.eclipse.xsd.util.XSDParser;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.ValidationError;
@@ -31,7 +32,9 @@ import java.util.Iterator;
 public class XSDAttributeValidationRule implements ValidationRule {
 
     protected static final Logger LOGGER = Logger.getLogger(XSDAttributeValidationRule.class);
+
     private final ComplexTypeMetadata type;
+
     private final XPath xPath;
 
     public XSDAttributeValidationRule(ComplexTypeMetadata type) {
@@ -40,7 +43,7 @@ public class XSDAttributeValidationRule implements ValidationRule {
         xPath.setNamespaceContext(new NamespaceContext() {
             @Override
             public String getNamespaceURI(String prefix) {
-                if ("xsd".equals(prefix)) {
+                if ("xsd".equals(prefix)) { //$NON-NLS-1$
                     return XMLConstants.W3C_XML_SCHEMA_NS_URI;
                 }
                 return null;
@@ -67,13 +70,13 @@ public class XSDAttributeValidationRule implements ValidationRule {
         Integer lineNumber = type.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER);
         Integer columnNumber = type.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER);
         try {
-            NodeList nodeSet = (NodeList) xPath.evaluate("//xsd:attribute", element, XPathConstants.NODESET);
-            if(nodeSet.getLength() > 0) {
+            NodeList nodeSet = (NodeList) xPath.evaluate("//xsd:attribute", element, XPathConstants.NODESET); //$NON-NLS-1$
+            for (int i = 0; i < nodeSet.getLength(); i++) {
                 handler.warning(type,
                         "Entity type '" + type.getName() + "' uses XSD attribute but attributes are ignored by MDM.",
-                        element,
-                        lineNumber,
-                        columnNumber,
+                        (Element) nodeSet.item(i),
+                        XSDParser.getStartLine(nodeSet.item(i)),
+                        XSDParser.getStartColumn(nodeSet.item(i)),
                         ValidationError.TYPE_USE_XSD_ATTRIBUTES);
             }
             return nodeSet.getLength() == 0;
