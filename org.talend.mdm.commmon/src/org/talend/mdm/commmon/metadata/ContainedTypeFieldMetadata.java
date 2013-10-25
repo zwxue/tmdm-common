@@ -12,9 +12,13 @@
 package org.talend.mdm.commmon.metadata;
 
 import org.apache.commons.lang.StringUtils;
+import org.talend.mdm.commmon.metadata.validation.CompositeValidationRule;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -110,7 +114,13 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
 
     @Override
     public ValidationRule createValidationRule() {
-        return ValidationFactory.getRule(this);
+        List<ValidationRule> rules = new LinkedList<ValidationRule>();
+        rules.add(ValidationFactory.getRule(this));
+        Collection<FieldMetadata> fields = fieldType.getFields();
+        for (FieldMetadata field : fields) {
+            rules.add(ValidationFactory.getRule(field));
+        }
+        return new CompositeValidationRule(rules.toArray(new ValidationRule[rules.size()]));
     }
 
     @Override

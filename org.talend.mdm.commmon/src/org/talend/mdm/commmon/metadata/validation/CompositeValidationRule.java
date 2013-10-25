@@ -13,11 +13,11 @@ package org.talend.mdm.commmon.metadata.validation;
 
 import org.talend.mdm.commmon.metadata.ValidationHandler;
 
-class CompositeValidationRule implements ValidationRule {
+public class CompositeValidationRule implements ValidationRule {
 
     private final ValidationRule[] rules;
 
-    CompositeValidationRule(ValidationRule... rules) {
+    public CompositeValidationRule(ValidationRule... rules) {
         this.rules = rules;
     }
 
