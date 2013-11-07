@@ -62,7 +62,8 @@ public enum XSystemObjects {
     M_DATASTEWARDSHIP(XObjectType.MENU, "Datastewardship", true), //$NON-NLS-1$
     M_WELCOME(XObjectType.MENU, "Welcome", false), //$NON-NLS-1$
     M_STAGINGAREA(XObjectType.MENU, "StagingArea", false), //$NON-NLS-1$
-    M_BROWSE_RECORDS_STAGING(XObjectType.MENU, "BrowseRecordsInStaging", false); //$NON-NLS-1$
+    M_BROWSE_RECORDS_STAGING(XObjectType.MENU, "BrowseRecordsInStaging", false), //$NON-NLS-1$
+    M_BONITAWORKFLOWTASKS(XObjectType.MENU, "BonitaWorkflowTasks", true); //$NON-NLS-1$
 
     private String name;
 
