@@ -10,11 +10,21 @@
 
 package org.talend.mdm.commmon.metadata.validation;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.xml.XMLConstants;
 
-import org.talend.mdm.commmon.metadata.*;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.TypeMetadata;
+import org.talend.mdm.commmon.metadata.Types;
+import org.talend.mdm.commmon.metadata.ValidationError;
+import org.talend.mdm.commmon.metadata.ValidationHandler;
 import org.w3c.dom.Element;
 
 class PrimaryKeyInfoValidationRule implements ValidationRule {
@@ -36,13 +46,15 @@ class PrimaryKeyInfoValidationRule implements ValidationRule {
                 ctm = ((ContainedComplexTypeMetadata) ctm).getContainerType();
             }
             if (!type.equals(ctm)) {
-                handler.error(type, "Primary key info must refer a field of the same entity.",
-                        pkInfo.<Element> getData(MetadataRepository.XSD_DOM_ELEMENT),
-                        pkInfo.<Integer> getData(MetadataRepository.XSD_LINE_NUMBER),
-                        pkInfo.<Integer> getData(MetadataRepository.XSD_COLUMN_NUMBER),
-                        ValidationError.PRIMARY_KEY_INFO_NOT_IN_ENTITY);
-                success &= false;
-                continue;
+                if (!validateDefinedInEntity(type.getFields(),ctm)) {
+                    handler.error(type, "Primary key info must refer a field of the same entity.",
+                            pkInfo.<Element> getData(MetadataRepository.XSD_DOM_ELEMENT),
+                            pkInfo.<Integer> getData(MetadataRepository.XSD_LINE_NUMBER),
+                            pkInfo.<Integer> getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                            ValidationError.PRIMARY_KEY_INFO_NOT_IN_ENTITY);
+                    success &= false;
+                    continue;
+                }
             }
             // Order matters here: check if field is correct (exists) before checking isMany().
             ValidationFactory.getRule(pkInfo).perform(handler);
@@ -81,6 +93,23 @@ class PrimaryKeyInfoValidationRule implements ValidationRule {
             }
         }
         return XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace());
+    }
+    
+    private boolean validateDefinedInEntity(Collection<FieldMetadata> fieldCollection,ComplexTypeMetadata complexTypeMetadata) {
+        ComplexTypeMetadata typeMetadata = null;
+        for (FieldMetadata fieldMetadata : fieldCollection) {
+            if (typeMetadata == null && fieldMetadata instanceof SimpleTypeFieldMetadata) {
+                typeMetadata = fieldMetadata.getContainingType();
+                if (complexTypeMetadata.equals(typeMetadata)) {
+                    return true;
+                }
+            }
+            if (fieldMetadata instanceof ContainedTypeFieldMetadata) {
+                ContainedComplexTypeMetadata containedComplexTypeMetadata = (ContainedComplexTypeMetadata)((ContainedTypeFieldMetadata) fieldMetadata).getType();
+                return validateDefinedInEntity(containedComplexTypeMetadata.getFields(), complexTypeMetadata);                
+            }
+        }
+        return false;
     }
 
     @Override
