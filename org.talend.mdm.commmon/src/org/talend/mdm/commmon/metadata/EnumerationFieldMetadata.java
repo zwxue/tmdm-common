@@ -210,7 +210,7 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
 
     @Override
     public int hashCode() {
-        if (isFrozen && cachedHashCode > 0) {
+        if (isFrozen && cachedHashCode != 0) {
             return cachedHashCode;
         }
         int result = (isKey ? 1 : 0);

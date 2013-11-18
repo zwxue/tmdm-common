@@ -162,7 +162,7 @@ public class CompoundFieldMetadata extends MetadataExtensions implements FieldMe
 
     @Override
     public int hashCode() {
-        if (isFrozen && cachedHashCode > 0) {
+        if (isFrozen && cachedHashCode != 0) {
             return cachedHashCode;
         }
         int result = fields != null ? Arrays.hashCode(fields) : 0;

@@ -223,7 +223,7 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
 
     @Override
     public int hashCode() {
-        if (isFrozen && cachedHashCode > 0) {
+        if (isFrozen && cachedHashCode != 0) {
             return cachedHashCode;
         }
         int result = (isMany ? 1 : 0);

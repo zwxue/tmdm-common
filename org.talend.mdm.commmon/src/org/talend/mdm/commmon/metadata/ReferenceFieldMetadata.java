@@ -325,7 +325,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
 
     @Override
     public int hashCode() {
-        if (isFrozen && cachedHashCode > 0) {
+        if (isFrozen && cachedHashCode != 0) {
             return cachedHashCode;
         }
         int result = (isKey ? 1 : 0);

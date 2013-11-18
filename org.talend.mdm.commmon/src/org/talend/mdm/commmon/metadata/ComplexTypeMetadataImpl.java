@@ -131,6 +131,9 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         if (fieldName == null || fieldName.isEmpty()) {
             throw new IllegalArgumentException("Field name can not be null nor empty.");
         }
+        if (fieldName.indexOf('/') < 0) {
+            return fieldMetadata.get(fieldName); // Shorcut for direct look up for a field (no hierarchy involved).
+        }
         StringTokenizer tokenizer = new StringTokenizer(fieldName, "/"); //$NON-NLS-1$
         String firstFieldName = tokenizer.nextToken();
         FieldMetadata currentField = fieldMetadata.get(firstFieldName);
