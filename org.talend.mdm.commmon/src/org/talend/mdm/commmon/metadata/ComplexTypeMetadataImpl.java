@@ -29,6 +29,8 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
 
     private final Map<String, FieldMetadata> fieldMetadata = new LinkedHashMap<String, FieldMetadata>();
 
+    private final Map<String, FieldMetadata> fieldPathCache = new HashMap<String, FieldMetadata>();
+
     private final Map<String, FieldMetadata> keyFields = new LinkedHashMap<String, FieldMetadata>();
 
     private final Collection<TypeMetadata> superTypes = new LinkedList<TypeMetadata>();
@@ -132,60 +134,65 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
             throw new IllegalArgumentException("Field name can not be null nor empty.");
         }
         if (fieldName.indexOf('/') < 0) {
-            return fieldMetadata.get(fieldName); // Shorcut for direct look up for a field (no hierarchy involved).
-        }
-        StringTokenizer tokenizer = new StringTokenizer(fieldName, "/"); //$NON-NLS-1$
-        String firstFieldName = tokenizer.nextToken();
-        FieldMetadata currentField = fieldMetadata.get(firstFieldName);
-        // think about reusable type, e.g: Employee/Address[@xsi:type="CNAddressType"]/Province
-        if (firstFieldName.contains("xsi:type")) { //$NON-NLS-1$
-            currentField = fieldMetadata.get(StringUtils.substringBefore(firstFieldName, "[@xsi:type")); //$NON-NLS-1$
-        }
-        if (currentField == null) { // Look in super types if it wasn't found in current type.
-            for (TypeMetadata superType : superTypes) {
-                if (superType instanceof ComplexTypeMetadata) {
-                    if (((ComplexTypeMetadata) superType).hasField(firstFieldName)) {
-                        currentField = ((ComplexTypeMetadata) superType).getField(firstFieldName);
-                        break;
-                    }
-                } else {
-                    throw new IllegalStateException("No support for look up of fields in simple types.");
-                }
+            return fieldMetadata.get(fieldName); // Shortcut for direct look up for a field (no hierarchy involved).
+        } else {
+            if (fieldPathCache.containsKey(fieldName)) {
+                return fieldPathCache.get(fieldName);
             }
-        }
-        if (currentField == null) {
-            throw new IllegalArgumentException("Type '" + getName() + "' does not own field '" + firstFieldName + "'");
-        }
-        if (tokenizer.hasMoreTokens()) {
-            ComplexTypeMetadata currentType = (ComplexTypeMetadata) currentField.getType();
+            StringTokenizer tokenizer = new StringTokenizer(fieldName, "/"); //$NON-NLS-1$
+            String firstFieldName = tokenizer.nextToken();
+            FieldMetadata currentField = fieldMetadata.get(firstFieldName);
+            // think about reusable type, e.g: Employee/Address[@xsi:type="CNAddressType"]/Province
             if (firstFieldName.contains("xsi:type")) { //$NON-NLS-1$
-                String reusableTypeName = StringUtils.substringAfter(firstFieldName, "@xsi:type").replace('=', ' ').replace(']', ' ').trim(); //$NON-NLS-1$
-                if (reusableTypeName == null || reusableTypeName.isEmpty()) {
-                    throw new IllegalArgumentException("Reusable type could not be null for fieldName '" + fieldName + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-                }
-                if (reusableTypeName != null && !reusableTypeName.isEmpty() && !currentType.getName().equals(reusableTypeName)) { // Look real type in sub types
-                    boolean isFindRealType = false;
-                    for (TypeMetadata subType : currentType.getSubTypes()) {
-                        if (subType instanceof ComplexTypeMetadata && subType.getName().equals(reusableTypeName)) {
-                            currentType = (ComplexTypeMetadata) subType;
-                            isFindRealType = true;
+                currentField = fieldMetadata.get(StringUtils.substringBefore(firstFieldName, "[@xsi:type")); //$NON-NLS-1$
+            }
+            if (currentField == null) { // Look in super types if it wasn't found in current type.
+                for (TypeMetadata superType : superTypes) {
+                    if (superType instanceof ComplexTypeMetadata) {
+                        if (((ComplexTypeMetadata) superType).hasField(firstFieldName)) {
+                            currentField = ((ComplexTypeMetadata) superType).getField(firstFieldName);
                             break;
                         }
+                    } else {
+                        throw new IllegalStateException("No support for look up of fields in simple types.");
                     }
-                    if (!isFindRealType) {
-                        throw new IllegalArgumentException("Type '" + reusableTypeName + "' could not be found."); //$NON-NLS-1$ //$NON-NLS-2$
-                    }
-                }    
-            }
-            while (tokenizer.hasMoreTokens()) {
-                String currentFieldName = tokenizer.nextToken();
-                currentField = currentType.getField(currentFieldName);
-                if (tokenizer.hasMoreTokens()) {
-                    currentType = (ComplexTypeMetadata) currentField.getType();
                 }
             }
+            if (currentField == null) {
+                throw new IllegalArgumentException("Type '" + getName() + "' does not own field '" + firstFieldName + "'");
+            }
+            if (tokenizer.hasMoreTokens()) {
+                ComplexTypeMetadata currentType = (ComplexTypeMetadata) currentField.getType();
+                if (firstFieldName.contains("xsi:type")) { //$NON-NLS-1$
+                    String reusableTypeName = StringUtils.substringAfter(firstFieldName, "@xsi:type").replace('=', ' ').replace(']', ' ').trim(); //$NON-NLS-1$
+                    if (reusableTypeName.isEmpty()) {
+                        throw new IllegalArgumentException("Reusable type could not be null for fieldName '" + fieldName + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+                    }
+                    if (!reusableTypeName.isEmpty() && !currentType.getName().equals(reusableTypeName)) { // Look real type in sub types
+                        boolean isFindRealType = false;
+                        for (TypeMetadata subType : currentType.getSubTypes()) {
+                            if (subType instanceof ComplexTypeMetadata && subType.getName().equals(reusableTypeName)) {
+                                currentType = (ComplexTypeMetadata) subType;
+                                isFindRealType = true;
+                                break;
+                            }
+                        }
+                        if (!isFindRealType) {
+                            throw new IllegalArgumentException("Type '" + reusableTypeName + "' could not be found."); //$NON-NLS-1$ //$NON-NLS-2$
+                        }
+                    }
+                }
+                while (tokenizer.hasMoreTokens()) {
+                    String currentFieldName = tokenizer.nextToken();
+                    currentField = currentType.getField(currentFieldName);
+                    if (tokenizer.hasMoreTokens()) {
+                        currentType = (ComplexTypeMetadata) currentField.getType();
+                    }
+                }
+            }
+            fieldPathCache.put(fieldName, currentField);
+            return currentField;
         }
-        return currentField;
     }
 
     public boolean isInstantiable() {
