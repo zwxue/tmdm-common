@@ -182,16 +182,36 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
                         }
                     }
                 }
+                List<String> pathElements = new ArrayList<String>();
                 while (tokenizer.hasMoreTokens()) {
-                    String currentFieldName = tokenizer.nextToken();
-                    currentField = currentType.getField(currentFieldName);
-                    if (tokenizer.hasMoreTokens()) {
-                        currentType = (ComplexTypeMetadata) currentField.getType();
-                    }
+                    pathElements.add(tokenizer.nextToken());
+                }
+                currentField = findField(currentType, pathElements, 0);
+                if (currentField == null) {
+                    throw new IllegalArgumentException("Type '" + name + "' does not contain field '" + fieldName + "'.");
                 }
             }
             fieldPathCache.put(fieldName, currentField);
             return currentField;
+        }
+    }
+
+    private static FieldMetadata findField(ComplexTypeMetadata type, List<String> pathElements, int level) {
+        FieldMetadata field = type.getField(pathElements.get(level));
+        if (field == null) {
+            for (ComplexTypeMetadata subType : type.getSubTypes()) {
+                field = findField(subType, pathElements, level);
+                if (field != null) {
+                    return field;
+                }
+            }
+            return null;
+        } else {
+            if (level == pathElements.size() - 1) {
+                return field;
+            } else {
+                return findField((ComplexTypeMetadata) field.getType(), pathElements, level + 1);
+            }
         }
     }
 
