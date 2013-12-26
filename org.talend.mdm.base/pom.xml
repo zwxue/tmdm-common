@@ -654,11 +654,6 @@
                 <artifactId>org.talend.mdm.connector.core</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.talend.mdm</groupId>
-                <artifactId>org.talend.mdm.xmldb</artifactId>
-                <version>${project.version}</version>
-            </dependency>
 
             <!-- 3rd party dependencies (see deploy-jboss-runtime-libs execution) -->
             <dependency>
