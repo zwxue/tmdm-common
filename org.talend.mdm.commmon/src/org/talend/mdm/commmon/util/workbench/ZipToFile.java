@@ -27,7 +27,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import org.eclipse.ui.internal.intro.impl.util.Log;
+import org.apache.log4j.Logger;
 
 /**
  * DOC aiming class global comment. Detailled comment
@@ -36,11 +36,14 @@ public class ZipToFile {
 
     public static final int BUFFER = 1024;// buf size
 
+    private static final Logger log = Logger.getLogger(ZipToFile.class);
+
     public static void deleteDirectory(File dir) {
-        //modified by honghb ,fix bug 21552
-        if(!dir.exists()||dir.isFile())
+        // modified by honghb ,fix bug 21552
+        if (!dir.exists() || dir.isFile()) {
             return;
-        //end
+        }
+        // end
         File[] entries = dir.listFiles();
         int sz = entries.length;
         for (int i = 0; i < sz; i++) {
@@ -96,12 +99,14 @@ public class ZipToFile {
         String ret = real.getName();
         while (true) {
             real = real.getParentFile();
-            if (real == null)
+            if (real == null) {
                 break;
-            if (real.equals(base))
+            }
+            if (real.equals(base)) {
                 break;
-            else
+            } else {
                 ret = real.getName() + "/" + ret; //$NON-NLS-1$
+            }
         }
         return ret;
     }
@@ -117,10 +122,12 @@ public class ZipToFile {
         List ret = new ArrayList();
         File[] tmp = baseDir.listFiles();
         for (int i = 0; i < tmp.length; i++) {
-            if (tmp[i].isFile())
+            if (tmp[i].isFile()) {
                 ret.add(tmp[i]);
-            if (tmp[i].isDirectory())
+            }
+            if (tmp[i].isDirectory()) {
                 ret.addAll(getSubFiles(tmp[i]));
+            }
         }
         return ret;
     }
@@ -131,7 +138,7 @@ public class ZipToFile {
      * 
      * @param zipfile
      * @param unzipdir
-     * @throws IOException 
+     * @throws IOException
      * @throws Exception
      */
     public static void unZipFile(String zipfile, String unzipdir) throws IOException {
@@ -173,7 +180,7 @@ public class ZipToFile {
                         os.write(buf, 0, readLen);
                     }
                 } catch (IOException e) {
-                    Log.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 } finally {
                     try {
                         if (is != null) {
@@ -191,7 +198,7 @@ public class ZipToFile {
                 }
             }
         } catch (IOException e) {
-            Log.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             throw e;
         } finally {
             if (zfile != null) {
@@ -203,16 +210,15 @@ public class ZipToFile {
         }
     }
 
- 
-
     public static void removeTalendLibsFromBarFile(File barFile) {
         String tmpfolder = System.getProperty("user.dir") + "/tmpfolder";
 
         try {
             ZipToFile.unZipFile(barFile.getAbsolutePath(), tmpfolder);
             File talendFolder = new File(tmpfolder + "/provided-libs/talend");
-            if (talendFolder.exists())
+            if (talendFolder.exists()) {
                 ZipToFile.deleteDirectory(talendFolder);
+            }
 
             ZipToFile.zipFile(tmpfolder, barFile.getAbsolutePath());
         } catch (Exception e) {
@@ -220,8 +226,9 @@ public class ZipToFile {
             e.printStackTrace();
         } finally {
             File tmp = new File(tmpfolder);
-            if (tmp.exists())
+            if (tmp.exists()) {
                 ZipToFile.deleteDirectory(tmp);
+            }
         }
     }
 
