@@ -649,7 +649,12 @@
                 <version>${project.version}</version>
                 <classifier>lib</classifier>
             </dependency>
-            
+            <dependency>
+                <groupId>org.talend.mdm</groupId>
+                <artifactId>org.talend.mdm.connector.core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!-- 3rd party dependencies (see deploy-jboss-runtime-libs execution) -->
             <dependency>
                 <groupId>commons-codec</groupId>
