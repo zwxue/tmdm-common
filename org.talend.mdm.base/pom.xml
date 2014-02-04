@@ -205,6 +205,7 @@
                                 <goal>compile</goal>
                             </goals>
                             <configuration>
+                                <extraJvmArgs>-Xmx1024m</extraJvmArgs>
                                 <localWorkers>3</localWorkers>
                                 <warSourceDirectory>${basedir}/war</warSourceDirectory>
                                 <webappDirectory>${project.build.directory}/war</webappDirectory>
@@ -237,6 +238,7 @@
                             <additionalClasspathElement>${project.build.testSourceDirectory}</additionalClasspathElement>
                         </additionalClasspathElements>
                         <forkMode>always</forkMode>
+                        <argLine>-XX:-ReduceInitialCardMarks</argLine>
                         <useManifestOnlyJar>false</useManifestOnlyJar>
                         <systemPropertyVariables>
                             <gwt.args>-out ${project.build.directory} -logLevel ERROR</gwt.args>
