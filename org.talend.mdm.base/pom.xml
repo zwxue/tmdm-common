@@ -82,8 +82,8 @@
                     <artifactId>gwt-maven-plugin</artifactId>
                     <version>2.4.0</version>
                     <configuration>
-                        <extraJvmArgs>-Xmx1024m</extraJvmArgs>
-                        <localWorkers>3</localWorkers>
+                        <extraJvmArgs>-Xmx512m -XX:-ReduceInitialCardMarks</extraJvmArgs>
+                        <localWorkers>2</localWorkers>
                         <warSourceDirectory>${basedir}/war</warSourceDirectory>
                         <webappDirectory>${project.build.directory}/war</webappDirectory>
                         <!-- Exclude from packaged war file GWT 2.2 and onwards generated stuff -->
