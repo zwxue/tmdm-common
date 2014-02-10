@@ -238,7 +238,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
             String complexTypeName = current.getData(COMPLEX_TYPE_NAME);
             if (complexTypeName != null) {
                 TypeMetadata nonInstantiableType = repository.getNonInstantiableType(USER_NAMESPACE, complexTypeName);
-                if (!nonInstantiableType.getSuperTypes().isEmpty()) {
+                if (!nonInstantiableType.getSuperTypes().isEmpty() && !nonInstantiableType.isFrozen()) {
                     // TODO Move to validation rule
                     if (nonInstantiableType.getSuperTypes().size() > 1) {
                         handler.error(nonInstantiableType,
