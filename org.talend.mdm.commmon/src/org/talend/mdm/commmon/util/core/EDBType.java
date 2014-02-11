@@ -2,9 +2,8 @@ package org.talend.mdm.commmon.util.core;
 
 public enum EDBType {
 	EXIST("exist",""),
-	BERKELEY("berkeley",""),
-	QIZX("qizx",""),
-	ORACLE("oracle","/talendmdm");	
+	QIZX("qizx","");
+
 	String name;
 	String root;
 	EDBType(String name,String root){

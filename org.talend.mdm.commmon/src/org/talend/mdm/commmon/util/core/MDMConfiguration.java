@@ -135,12 +135,6 @@ public final class MDMConfiguration {
 
     public static EDBType getDBType() {
         Object dbType = getConfiguration().get("xmldb.type"); //$NON-NLS-1$
-        if (dbType != null && dbType.toString().equals(EDBType.ORACLE.getName())) {
-            return EDBType.ORACLE;
-        }
-        if (dbType != null && dbType.toString().equals(EDBType.BERKELEY.getName())) {
-            return EDBType.BERKELEY;
-        }
         if (dbType != null && dbType.toString().equals(EDBType.QIZX.getName())) {
             return EDBType.QIZX;
         }

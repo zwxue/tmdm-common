@@ -1,34 +1,23 @@
 package org.talend.mdm.commmon.util.core;
 
 /**
- * @author achen
  * all uuid type
  */
-import java.util.HashSet;
-import java.util.Set;
-
 public enum EUUIDCustomType {
 	//two custom simple type (only used for concept id)
-	UUID("UUID"),
-	PICTURE("PICTURE"),
-	URL("URL"),
-	AUTO_INCREMENT("AUTO_INCREMENT"),
-	MULTI_LINGUAL("MULTI_LINGUAL");
-	String name;
+	UUID("UUID"), //$NON-NLS-1$
+	PICTURE("PICTURE"), //$NON-NLS-1$
+	URL("URL"), //$NON-NLS-1$
+	AUTO_INCREMENT("AUTO_INCREMENT"), //$NON-NLS-1$
+	MULTI_LINGUAL("MULTI_LINGUAL"); //$NON-NLS-1$
+
+    String name;
+
 	EUUIDCustomType(String name){
 		this.name=name;
 	}
 	
 	public String getName() {
 		return name;
-	}
-
-
-	public static Set<String> allTypes(){
-		Set<String> list=new HashSet<String>();
-		for(EUUIDCustomType type:values()){
-			list.add(type.name);
-		}
-		return list;
 	}
 }
