@@ -756,6 +756,27 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
         return path.toString();
     }
 
+    public MetadataRepository copy() {
+        MetadataRepository repositoryCopy = new MetadataRepository();
+        // Copy first non instantiable types...
+        for (Map.Entry<String, Map<String, TypeMetadata>> currentNamespace : nonInstantiableTypes.entrySet()) {
+            Map<String, TypeMetadata> namespaceCopy = new HashMap<String, TypeMetadata>();
+            for (Map.Entry<String, TypeMetadata> currentType : currentNamespace.getValue().entrySet()) {
+                namespaceCopy.put(currentType.getKey(), currentType.getValue().copy(repositoryCopy));
+            }
+            repositoryCopy.nonInstantiableTypes.put(currentNamespace.getKey(), namespaceCopy);
+        }
+        // ... then copy entity types.
+        for (Map.Entry<String, Map<String, TypeMetadata>> currentNamespace : entityTypes.entrySet()) {
+            Map<String, TypeMetadata> namespaceCopy = new HashMap<String, TypeMetadata>();
+            for (Map.Entry<String, TypeMetadata> currentType : currentNamespace.getValue().entrySet()) {
+                namespaceCopy.put(currentType.getKey(), currentType.getValue().copy(repositoryCopy));
+            }
+            repositoryCopy.entityTypes.put(currentNamespace.getKey(), namespaceCopy);
+        }
+        return repositoryCopy;
+    }
+
     private static class NoOpValidationHandler implements ValidationHandler {
         @Override
         public void error(TypeMetadata type, String message, Element element, Integer lineNumber, Integer columnNumber, ValidationError error) {
