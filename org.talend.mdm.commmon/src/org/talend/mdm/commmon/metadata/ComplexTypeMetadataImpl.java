@@ -33,7 +33,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
 
     private final Map<String, FieldMetadata> keyFields = new LinkedHashMap<String, FieldMetadata>();
 
-    private final Collection<TypeMetadata> superTypes = new LinkedList<TypeMetadata>();
+    private final Collection<TypeMetadata> superTypes = new HashSet<TypeMetadata>();
 
     private final List<String> denyCreate;
 
@@ -55,11 +55,13 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
 
     private String name;
 
-    private MetadataRepository repository;
-
     private boolean isFrozen;
     
     private final List<String> workflowAccessRights;
+
+    private FieldMetadata containingField;
+
+    private List<ContainedComplexTypeMetadata> usages = new ArrayList<ContainedComplexTypeMetadata>();
 
     public ComplexTypeMetadataImpl(String nameSpace, String name, boolean instantiable) {
         this(nameSpace,
@@ -102,11 +104,10 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         this.workflowAccessRights = workflowAccessRights;
     }
 
-    public void addSuperType(TypeMetadata superType, MetadataRepository repository) {
+    public void addSuperType(TypeMetadata superType) {
         if (isFrozen) {
             throw new IllegalStateException("Type '" + name + "' is frozen and can not be modified.");
         }
-        this.repository = repository;
         superTypes.add(superType);
     }
 
@@ -169,15 +170,15 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
                         throw new IllegalArgumentException("Reusable type could not be null for fieldName '" + fieldName + "'"); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                     if (!reusableTypeName.isEmpty() && !currentType.getName().equals(reusableTypeName)) { // Look real type in sub types
-                        boolean isFindRealType = false;
+                        boolean foundRealType = false;
                         for (TypeMetadata subType : currentType.getSubTypes()) {
                             if (subType instanceof ComplexTypeMetadata && subType.getName().equals(reusableTypeName)) {
                                 currentType = (ComplexTypeMetadata) subType;
-                                isFindRealType = true;
+                                foundRealType = true;
                                 break;
                             }
                         }
-                        if (!isFindRealType) {
+                        if (!foundRealType) {
                             throw new IllegalArgumentException("Type '" + reusableTypeName + "' could not be found."); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     }
@@ -245,16 +246,30 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         this.isInstantiable = isInstantiable;
     }
 
+    @Override
+    public ComplexTypeMetadata getEntity() {
+        if (getContainer() == null) {
+            return this;
+        } else {
+            return getContainer().getContainingType().getEntity();
+        }
+    }
+
+    @Override
+    public FieldMetadata getContainer() {
+        return containingField;
+    }
+
+    @Override
+    public void setContainer(FieldMetadata field) {
+        this.containingField = field;
+    }
+
     public Collection<FieldMetadata> getKeyFields() {
         return Collections.unmodifiableCollection(keyFields.values());
     }
 
     public Collection<FieldMetadata> getFields() {
-        if (!isFrozen) {
-            DefaultValidationHandler validationHandler = new DefaultValidationHandler();
-            freeze();
-            validationHandler.end();
-        }
         return Collections.unmodifiableCollection(fieldMetadata.values());
     }
 
@@ -266,14 +281,12 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
                 return true;
             }
         }
-
         // Checks in type inheritance hierarchy.
         for (TypeMetadata superType : superTypes) {
             if (superType.isAssignableFrom(type)) {
                 return true;
             }
         }
-
         return getName().equals(type.getName());
     }
 
@@ -306,20 +319,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         keyFields.put(keyField.getName(), keyField);
     }
 
-    public ComplexTypeMetadata copy(MetadataRepository repository) {
-        ComplexTypeMetadata registeredCopy;
-        if (isInstantiable) {
-            registeredCopy = repository.getComplexType(getName());
-            if (registeredCopy != null) {
-                return registeredCopy;
-            }
-        } else {
-            registeredCopy = (ComplexTypeMetadata) repository.getNonInstantiableType(repository.getUserNamespace(), getName());
-            if (registeredCopy != null) {
-                return registeredCopy;
-            }
-        }
-
+    public ComplexTypeMetadata copy() {
         ComplexTypeMetadataImpl copy = new ComplexTypeMetadataImpl(getNamespace(),
                 getName(),
                 allowWrite,
@@ -328,22 +328,28 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
                 physicalDelete,
                 logicalDelete,
                 schematron,
-                primaryKeyInfo, Collections.<FieldMetadata>emptyList(), isInstantiable, workflowAccessRights);
-        repository.addTypeMetadata(copy);
-
+                primaryKeyInfo,
+                Collections.<FieldMetadata>emptyList(),
+                isInstantiable,
+                workflowAccessRights);
         Collection<FieldMetadata> fields = getFields();
         for (FieldMetadata field : fields) {
-            copy.addField(field.copy(repository));
+            copy.addField(field.copy());
         }
         for (TypeMetadata superType : superTypes) {
-            copy.addSuperType(superType.copy(repository), repository);
+            copy.addSuperType(superType);
+            if (superType instanceof ComplexTypeMetadata) {
+                ((ComplexTypeMetadata) superType).registerSubType(copy);
+            }
         }
-
+        for (ComplexTypeMetadata subType : subTypes) {
+            copy.subTypes.add(subType);
+        }
         Collection<FieldMetadata> typeKeyFields = getKeyFields();
         for (FieldMetadata typeKeyField : typeKeyFields) {
-            copy.registerKey(typeKeyField.copy(repository));
+            copy.registerKey(typeKeyField.copy());
         }
-
+        copy.isFrozen = false;
         return copy;
     }
 
@@ -399,6 +405,24 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
     @Override
     public List<FieldMetadata> getLookupFields() {
         return lookupFields;
+    }
+
+    @Override
+    public void declareUsage(ContainedComplexTypeMetadata usage) {
+        usages.add(usage);
+    }
+
+    @Override
+    public void freezeUsages() {
+        for (ContainedComplexTypeMetadata usage : usages) {
+            usage.finalizeUsage();
+        }
+    }
+
+    @Override
+    public void setSubTypes(List<ComplexTypeMetadata> subTypes) {
+        this.subTypes.clear();
+        this.subTypes.addAll(subTypes);
     }
 
     public boolean hasField(String fieldName) {
@@ -469,7 +493,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
                     ((ComplexTypeMetadata) superType).registerSubType(this);
                     Collection<FieldMetadata> superTypeFields = ((ComplexTypeMetadata) superType).getFields();
                     for (FieldMetadata superTypeField : superTypeFields) {
-                        superTypeField.adopt(this, repository);
+                        superTypeField.adopt(this);
                     }
                 }
             }
@@ -513,16 +537,22 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ComplexTypeMetadata)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ComplexTypeMetadata)) {
+            return false;
+        }
         ComplexTypeMetadata that = (ComplexTypeMetadata) o;
-        return that.getName().equals(name) && that.getNamespace().equals(nameSpace);
+        if (!name.equals(that.getName())) return false;
+        if (nameSpace != null ? !nameSpace.equals(that.getNamespace()) : that.getNamespace() != null) return false;
+        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + nameSpace.hashCode();
+        int result = nameSpace != null ? nameSpace.hashCode() : 0;
+        result = 31 * result + name.hashCode();
         return result;
     }
 }

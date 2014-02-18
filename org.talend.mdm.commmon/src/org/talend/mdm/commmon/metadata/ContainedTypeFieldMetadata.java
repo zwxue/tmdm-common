@@ -11,12 +11,10 @@
 
 package org.talend.mdm.commmon.metadata;
 
-import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.validation.CompositeValidationRule;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,11 +36,9 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
 
     private final boolean isMandatory;
 
-    private final String path;
-
     private TypeMetadata declaringType;
 
-    private ContainedComplexTypeMetadata fieldType;
+    private ComplexTypeMetadata fieldType;
 
     private ComplexTypeMetadata containingType;
 
@@ -54,16 +50,15 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
                                       boolean isMany,
                                       boolean isMandatory,
                                       String name,
-                                      ContainedComplexTypeMetadata fieldType,
+                                      ComplexTypeMetadata fieldType,
                                       List<String> allowWriteUsers,
                                       List<String> hideUsers,
-                                      List<String> workflowAccessRights,
-                                      String path) {
+                                      List<String> workflowAccessRights) {
         if (fieldType == null) {
             throw new IllegalArgumentException("Contained type cannot be null.");
         }
         this.isMandatory = isMandatory;
-        this.fieldType = fieldType;
+        this.fieldType = ContainedComplexTypeMetadata.contain(fieldType, this);
         this.containingType = containingType;
         this.declaringType = containingType;
         this.isMany = isMany;
@@ -71,7 +66,6 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
         this.allowWriteUsers = allowWriteUsers;
         this.hideUsers = hideUsers;
         this.workflowAccessRights = workflowAccessRights;
-        this.path = path;
     }
 
     public String getName() {
@@ -99,7 +93,7 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
             return this;
         }
         isFrozen = true;
-        fieldType = (ContainedComplexTypeMetadata) fieldType.freeze();
+        fieldType = (ComplexTypeMetadata) fieldType.freeze();
         return this;
     }
 
@@ -125,25 +119,30 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
 
     @Override
     public String getPath() {
-        return StringUtils.substringAfter(path, "/"); //$NON-NLS-1$
+        FieldMetadata containingField = containingType.getContainer();
+        if (containingField != null) {
+            return containingField.getPath() + '/' + name;
+        } else {
+            return name;
+        }
     }
 
     @Override
     public String getEntityTypeName() {
-        return StringUtils.substringBefore(path, "/"); //$NON-NLS-1$
+        return containingType.getEntity().getName();
     }
 
     public TypeMetadata getDeclaringType() {
         return declaringType;
     }
 
-    public void adopt(ComplexTypeMetadata metadata, MetadataRepository repository) {
-        FieldMetadata copy = copy(repository);
+    public void adopt(ComplexTypeMetadata metadata) {
+        FieldMetadata copy = copy();
         copy.setContainingType(metadata);
         metadata.addField(copy);
     }
 
-    public FieldMetadata copy(MetadataRepository repository) {
+    public FieldMetadata copy() {
         return new ContainedTypeFieldMetadata(containingType,
                 isMany,
                 isMandatory,
@@ -151,8 +150,7 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
                 fieldType,
                 allowWriteUsers,
                 hideUsers,
-                workflowAccessRights,
-                path);
+                workflowAccessRights);
     }
 
     public List<String> getHideUsers() {
@@ -190,7 +188,7 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
                 '}';   //$NON-NLS-1$
     }
 
-    public ContainedComplexTypeMetadata getContainedType() {
+    public ComplexTypeMetadata getContainedType() {
         return fieldType;
     }
 

@@ -11,11 +11,9 @@
 
 package org.talend.mdm.commmon.metadata;
 
-import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,8 +32,6 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
     private final List<String> workflowAccessRights;
 
     private final boolean isMandatory;
-
-    private final String path;
 
     private TypeMetadata fieldType;
 
@@ -57,8 +53,7 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
                                    TypeMetadata fieldType,
                                    List<String> allowWriteUsers,
                                    List<String> hideUsers,
-                                   List<String> workflowAccessRights,
-                                   String path) {
+                                   List<String> workflowAccessRights) {
         if (fieldType == null) {
             throw new IllegalArgumentException("Field type cannot be null.");
         }
@@ -72,7 +67,6 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
         this.allowWriteUsers = allowWriteUsers;
         this.hideUsers = hideUsers;
         this.workflowAccessRights = workflowAccessRights;
-        this.path = path;
     }
 
     public String getName() {
@@ -126,26 +120,31 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
 
     @Override
     public String getPath() {
-        return StringUtils.substringAfter(path, "/"); //$NON-NLS-1$
+        FieldMetadata container = containingType.getContainer();
+        if (container != null) {
+            return container.getPath() + '/' + name;
+        } else {
+            return name;
+        }
     }
 
     @Override
     public String getEntityTypeName() {
-        return StringUtils.substringBefore(path, "/"); //$NON-NLS-1$
+        return containingType.getEntity().getName();
     }
 
     public TypeMetadata getDeclaringType() {
         return declaringType;
     }
 
-    public void adopt(ComplexTypeMetadata metadata, MetadataRepository repository) {
-        FieldMetadata copy = copy(repository);
+    public void adopt(ComplexTypeMetadata metadata) {
+        FieldMetadata copy = copy();
         copy.setContainingType(metadata);
         metadata.addField(copy);
     }
 
-    public FieldMetadata copy(MetadataRepository repository) {
-        return new SimpleTypeFieldMetadata(containingType,
+    public FieldMetadata copy() {
+        SimpleTypeFieldMetadata copy = new SimpleTypeFieldMetadata(containingType,
                 isKey,
                 isMany,
                 isMandatory,
@@ -153,7 +152,9 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
                 fieldType,
                 allowWriteUsers,
                 hideUsers,
-                workflowAccessRights, path);
+                workflowAccessRights);
+        copy.setDeclaringType(declaringType);
+        return copy;
     }
 
     public List<String> getHideUsers() {

@@ -13,7 +13,6 @@ package org.talend.mdm.commmon.metadata;
 
 import org.apache.log4j.Logger;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -110,49 +109,34 @@ public class ConsoleDumpMetadataVisitor extends DefaultMetadataVisitor<Void> {
                 log("\t[FKInfo=" + fieldMetadata.getName() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
+        log("\t[Full path: " + referenceField.getEntityTypeName() + "/" + referenceField.getPath() + "]");
         logUsers(referenceField);
         return null;
     }
 
     public Void visit(SimpleTypeFieldMetadata simpleField) {
         if (simpleField.isKey()) {
-            log("[Field (Simple) (Key)] " + simpleField.getName()); //$NON-NLS-1$
+            log("[Field (Simple) (Key) -> " + simpleField.getType().getName() + "] " + simpleField.getName()); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
-            log("[Field (Simple)] " + simpleField.getName() + (simpleField.isMany() ? "*" : "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log("[Field (Simple) -> " + simpleField.getType().getName() + "] " + simpleField.getName() + (simpleField.isMany() ? "*" : "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         }
         logUsers(simpleField);
+        log("\t[Full path:" + simpleField.getEntityTypeName() + "/" + simpleField.getPath() + "]");
         return null;
     }
 
     public Void visit(EnumerationFieldMetadata enumField) {
-        log("[Field (Enumeration)] " + enumField.getName()); //$NON-NLS-1$
+        log("[Field (Enumeration) -> " + enumField.getType().getName() + "] " + enumField.getName()); //$NON-NLS-1$ //$NON-NLS-2$
         logUsers(enumField);
-        return null;
-    }
-
-    @Override
-    public Void visit(ContainedComplexTypeMetadata containedType) {
-        if (processedTypes.contains(containedType)) {
-            return null;
-        } else {
-            processedTypes.add(containedType);
-        }
-        Collection<FieldMetadata> fields = containedType.getFields();
-        indent++;
-        {
-            for (FieldMetadata field : fields) {
-                field.accept(this);
-            }
-        }
-        indent--;
+        log("\t[Full path:" + enumField.getEntityTypeName() + "/" + enumField.getPath() + "]");
         return null;
     }
 
     @Override
     public Void visit(ContainedTypeFieldMetadata containedField) {
-        log("[Field (Contained type) -> " + containedField.getContainedType().getName() + ")] " + containedField.getName() + (containedField.isMany() ? "*" : ""));  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        log("[Field (Contained type) -> " + containedField.getContainedType().getName() + "] " + containedField.getName() + (containedField.isMany() ? "*" : ""));  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         logUsers(containedField);
-
+        log("\t[Full path:" + containedField.getEntityTypeName() + "/" + containedField.getPath() + "]");
         indent++;
         {
             containedField.getContainedType().accept(this);

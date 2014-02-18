@@ -25,7 +25,7 @@ import java.util.Collection;
 public interface TypeMetadata extends MetadataVisitable, MetadataExtensible {
 
     /**
-     * Returns a <b>READ ONLY</b> collection of super types. For adding super type see {@link #addSuperType(TypeMetadata, MetadataRepository)}
+     * Returns a <b>READ ONLY</b> collection of super types. For adding super type see {@link #addSuperType(TypeMetadata)}
      *
      * @return A collection of super types.
      */
@@ -37,9 +37,9 @@ public interface TypeMetadata extends MetadataVisitable, MetadataExtensible {
      * </p>
      *
      * @param superType  A type.
-     * @param repository Repository needed to copy type/fields references if any.
+     *
      */
-    void addSuperType(TypeMetadata superType, MetadataRepository repository);
+    void addSuperType(TypeMetadata superType);
 
     /**
      * @return Type's name as it can be used for the {@link MetadataRepository#getType(String, String)} method.
@@ -67,10 +67,9 @@ public interface TypeMetadata extends MetadataVisitable, MetadataExtensible {
      * Copies this type to another {@link MetadataRepository}. This method provides "deep copy" as it copies all metadata
      * reachable from this type.
      *
-     * @param repository The {@link MetadataRepository} the copy should be added to.
      * @return A copy of the current type registered in <code>repository</code>.
      */
-    TypeMetadata copy(MetadataRepository repository);
+    TypeMetadata copy();
 
     /**
      * Copies this type to another {@link MetadataRepository}. This method provides "shallow copy" as it copies only fields

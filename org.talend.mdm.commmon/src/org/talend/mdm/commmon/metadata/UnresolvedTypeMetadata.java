@@ -33,7 +33,7 @@ public class UnresolvedTypeMetadata extends MetadataExtensions implements Comple
     }
 
     @Override
-    public void addSuperType(TypeMetadata superType, MetadataRepository repository) {
+    public void addSuperType(TypeMetadata superType) {
     }
 
     @Override
@@ -56,7 +56,7 @@ public class UnresolvedTypeMetadata extends MetadataExtensions implements Comple
     }
 
     @Override
-    public TypeMetadata copy(MetadataRepository repository) {
+    public TypeMetadata copy() {
         return this;
     }
 
@@ -101,6 +101,20 @@ public class UnresolvedTypeMetadata extends MetadataExtensions implements Comple
 
     public String getTypeName() {
         return typeName;
+    }
+
+    @Override
+    public ComplexTypeMetadata getEntity() {
+        return null;
+    }
+
+    @Override
+    public FieldMetadata getContainer() {
+        return null;
+    }
+
+    @Override
+    public void setContainer(FieldMetadata field) {
     }
 
     @Override
@@ -178,5 +192,17 @@ public class UnresolvedTypeMetadata extends MetadataExtensions implements Comple
     @Override
     public List<FieldMetadata> getLookupFields() {
         return Collections.emptyList();
+    }
+
+    @Override
+    public void declareUsage(ContainedComplexTypeMetadata usage) {
+    }
+
+    @Override
+    public void freezeUsages() {
+    }
+
+    @Override
+    public void setSubTypes(List<ComplexTypeMetadata> subTypes) {
     }
 }

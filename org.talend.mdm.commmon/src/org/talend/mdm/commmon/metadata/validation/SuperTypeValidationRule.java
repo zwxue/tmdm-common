@@ -30,6 +30,16 @@ class SuperTypeValidationRule implements ValidationRule {
     public boolean perform(ValidationHandler handler) {
         Collection<TypeMetadata> superTypes = type.getSuperTypes();
         if (!superTypes.isEmpty()) {
+            // Multiple inheritance is not supported.
+            if (superTypes.size() > 1) {
+                handler.error(type,
+                        "Multiple inheritance is not supported.",
+                        type.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
+                        type.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                        type.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                        ValidationError.MULTIPLE_INHERITANCE_NOT_ALLOWED);
+            }
+            // Check for key override in sub types (not allowed).
             List<TypeMetadata> thisSuperTypes = new LinkedList<TypeMetadata>(superTypes);
             for (TypeMetadata superType : thisSuperTypes) {
                 if (type.isInstantiable() == superType.isInstantiable()) {

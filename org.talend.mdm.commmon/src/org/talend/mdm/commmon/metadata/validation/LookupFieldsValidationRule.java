@@ -32,10 +32,7 @@ class LookupFieldsValidationRule implements ValidationRule {
                 continue;
             }
             // Lookup field must be defined in the entity (can't reference other entity field).
-            ComplexTypeMetadata containingType = lookupField.freeze().getContainingType();
-            while (containingType instanceof ContainedComplexTypeMetadata) {
-                containingType = ((ContainedComplexTypeMetadata) containingType).getContainerType();
-            }
+            ComplexTypeMetadata containingType = lookupField.freeze().getContainingType().getEntity();
             if (!type.equals(containingType)) {
                 handler.error(type,
                         "Lookup field info must refer a field of the same entity.",

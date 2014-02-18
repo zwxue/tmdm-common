@@ -14,6 +14,8 @@ package org.talend.mdm.commmon.metadata.xsd;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.xsd.*;
 
+import javax.xml.XMLConstants;
+
 /**
  *
  */
@@ -34,9 +36,15 @@ public class XmlSchemaWalker {
     }
 
     public static void walk(XSDTypeDefinition type, XSDVisitor visitor) {
+        if (type == null) {
+            return;
+        }
         if (type instanceof XSDSimpleTypeDefinition) {
             walk(((XSDSimpleTypeDefinition) type), visitor);
         } else if (type instanceof XSDComplexTypeDefinition) {
+            if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(type.getTargetNamespace())) {
+                return;
+            }
             walk(((XSDComplexTypeDefinition) type), visitor);
         } else {
             throw new IllegalArgumentException("Not supported XML Schema type: " + type.getClass().getName());
@@ -44,6 +52,9 @@ public class XmlSchemaWalker {
     }
 
     public static void walk(XSDElementDeclaration element, XSDVisitor visitor) {
+        if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(element.getTargetNamespace())) {
+            return;
+        }
         visitor.visitElement(element);
     }
 
@@ -52,6 +63,9 @@ public class XmlSchemaWalker {
     }
 
     private static void walk(XSDComplexTypeDefinition xmlSchemaType, XSDVisitor visitor) {
+        if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(xmlSchemaType.getTargetNamespace())) {
+            return;
+        }
         visitor.visitComplexType(xmlSchemaType);
     }
 
