@@ -35,8 +35,7 @@ public class AliasedFieldMetadata extends SimpleTypeFieldMetadata {
                 fieldType,
                 allowWriteUsers,
                 hideUsers,
-                aliasedField.getWorkflowAccessRights(),
-                aliasedField.getPath());
+                aliasedField.getWorkflowAccessRights());
         this.realFieldName = aliasedField.getName();
     }
 

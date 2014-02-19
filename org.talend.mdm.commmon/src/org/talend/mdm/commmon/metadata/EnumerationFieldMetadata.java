@@ -11,7 +11,6 @@
 
 package org.talend.mdm.commmon.metadata;
 
-import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 
@@ -29,7 +28,7 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
     private final List<String> allowWriteUsers;
 
     private final List<String> hideUsers;
-    
+
     private final List<String> workflowAccessRights;
 
     private TypeMetadata declaringType;
@@ -37,8 +36,6 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
     private final boolean isMany;
 
     private final boolean isMandatory;
-
-    private final String path;
 
     private ComplexTypeMetadata containingType;
 
@@ -54,8 +51,7 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
                                     TypeMetadata fieldType,
                                     List<String> allowWriteUsers,
                                     List<String> hideUsers,
-                                    List<String> workflowAccessRights,
-                                    String path) {
+                                    List<String> workflowAccessRights) {
         this.containingType = containingType;
         this.declaringType = containingType;
         this.isKey = isKey;
@@ -66,7 +62,6 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
         this.allowWriteUsers = allowWriteUsers;
         this.hideUsers = hideUsers;
         this.workflowAccessRights = workflowAccessRights;
-        this.path = path;
     }
 
     public String getName() {
@@ -114,25 +109,29 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
 
     @Override
     public String getPath() {
-        return StringUtils.substringAfter(path, "/"); //$NON-NLS-1$
+        FieldMetadata containingField = containingType.getContainer();
+        if (containingField != null) {
+            return containingField.getPath() + '/' + name;
+        } else {
+            return name;
+        }
     }
 
     @Override
     public String getEntityTypeName() {
-        return StringUtils.substringBefore(path, "/"); //$NON-NLS-1$
+        return containingType.getEntity().getName();
     }
 
     public TypeMetadata getDeclaringType() {
         return declaringType;
     }
 
-    public void adopt(ComplexTypeMetadata metadata, MetadataRepository repository) {
-        FieldMetadata copy = copy(repository);
+    public void adopt(ComplexTypeMetadata metadata) {
+        FieldMetadata copy = copy();
         copy.setContainingType(metadata);
-        metadata.addField(copy);
     }
 
-    public FieldMetadata copy(MetadataRepository repository) {
+    public FieldMetadata copy() {
         return new EnumerationFieldMetadata(containingType,
                 isKey(),
                 isMany,
@@ -141,8 +140,7 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
                 fieldType,
                 allowWriteUsers,
                 hideUsers,
-                workflowAccessRights,
-                path);
+                workflowAccessRights);
     }
 
     public List<String> getHideUsers() {
@@ -156,7 +154,7 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
     public List<String> getWorkflowAccessRights() {
         return this.workflowAccessRights;
     }
-    
+
     public boolean isMany() {
         return isMany;
     }
@@ -203,7 +201,8 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
         if (fieldType != null ? !fieldType.equals(that.fieldType) : that.fieldType != null) return false;
         if (hideUsers != null ? !hideUsers.equals(that.hideUsers) : that.hideUsers != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (workflowAccessRights != null ? !workflowAccessRights.equals(that.workflowAccessRights) : that.workflowAccessRights != null) return false;
+        if (workflowAccessRights != null ? !workflowAccessRights.equals(that.workflowAccessRights) : that.workflowAccessRights != null)
+            return false;
 
         return true;
     }

@@ -13,7 +13,6 @@ package org.talend.mdm.commmon.metadata;
 
 import java.util.*;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 import org.w3c.dom.Element;
@@ -38,6 +37,8 @@ public class SoftTypeRef implements ComplexTypeMetadata {
     private final Map<String, Object> additionalData = new HashMap<String, Object>();
 
     private TypeMetadata frozenType;
+
+    private List<ContainedComplexTypeMetadata> usages = new ArrayList<ContainedComplexTypeMetadata>();
 
     private SoftTypeRef(MetadataRepository repository, FieldMetadata fieldRef) {
         if (fieldRef == null) {
@@ -130,11 +131,11 @@ public class SoftTypeRef implements ComplexTypeMetadata {
     }
 
     @Override
-    public TypeMetadata copy(MetadataRepository repository) {
+    public TypeMetadata copy() {
         if (typeName != null) {
             return new SoftTypeRef(repository, namespace, typeName, instantiable);
         } else {
-            return new SoftTypeRef(repository, fieldRef.copy(repository));
+            return new SoftTypeRef(repository, fieldRef.copy());
         }
     }
 
@@ -157,16 +158,16 @@ public class SoftTypeRef implements ComplexTypeMetadata {
             }
             frozenType = type.freeze();
             Set<Map.Entry<String, Object>> data = additionalData.entrySet();
-                        for (Map.Entry<String, Object> currentData : data) {
-                            frozenType.setData(currentData.getKey(), currentData.getValue());
-                        }
+            for (Map.Entry<String, Object> currentData : data) {
+                frozenType.setData(currentData.getKey(), currentData.getValue());
+            }
         }
         return frozenType;
     }
 
     @Override
-    public void addSuperType(TypeMetadata superType, MetadataRepository repository) {
-        getType().addSuperType(superType, repository);
+    public void addSuperType(TypeMetadata superType) {
+        getType().addSuperType(superType);
     }
 
     @Override
@@ -185,18 +186,13 @@ public class SoftTypeRef implements ComplexTypeMetadata {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return obj instanceof TypeMetadata && getType().equals(obj);
-    }
-
-    @Override
     public boolean isInstantiable() {
         return instantiable;
     }
 
     @Override
     public boolean isFrozen() {
-        return getType().isFrozen();
+        return false;
     }
 
     @Override
@@ -234,6 +230,21 @@ public class SoftTypeRef implements ComplexTypeMetadata {
     @Override
     public void setInstantiable(boolean isInstantiable) {
         getType().setInstantiable(isInstantiable);
+    }
+
+    @Override
+    public ComplexTypeMetadata getEntity() {
+        return getTypeAsComplex().getEntity();
+    }
+
+    @Override
+    public FieldMetadata getContainer() {
+        return getTypeAsComplex().getContainer();
+    }
+
+    @Override
+    public void setContainer(FieldMetadata field) {
+        getTypeAsComplex().setContainer(field);
     }
 
     @Override
@@ -293,12 +304,26 @@ public class SoftTypeRef implements ComplexTypeMetadata {
 
     @Override
     public void registerSubType(ComplexTypeMetadata type) {
-        getTypeAsComplex().registerSubType(type);
     }
 
     @Override
     public List<FieldMetadata> getLookupFields() {
         return getTypeAsComplex().getLookupFields();
+    }
+
+    @Override
+    public void declareUsage(ContainedComplexTypeMetadata usage) {
+        usages.add(usage);
+    }
+
+    @Override
+    public void freezeUsages() {
+        throw new IllegalStateException("Usage freeze must be called on resolved type references.");
+    }
+
+    @Override
+    public void setSubTypes(List<ComplexTypeMetadata> subTypes) {
+        getTypeAsComplex().setSubTypes(subTypes);
     }
 
     @Override
@@ -308,7 +333,28 @@ public class SoftTypeRef implements ComplexTypeMetadata {
 
     @Override
     public int hashCode() {
-        return getType().hashCode();
+        TypeMetadata type = getType();
+        if (type != null) {
+            return type.hashCode();
+        } else {
+            int result = typeName.hashCode();
+            result = 31 * result + (namespace != null ? namespace.hashCode() : 0);
+            result = 31 * result + (instantiable ? 1 : 0);
+            return result;
+        }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SoftTypeRef)) return false;
+
+        SoftTypeRef that = (SoftTypeRef) o;
+
+        if (instantiable != that.instantiable) return false;
+        if (namespace != null ? !namespace.equals(that.namespace) : that.namespace != null) return false;
+        if (!typeName.equals(that.typeName)) return false;
+
+        return true;
+    }
 }

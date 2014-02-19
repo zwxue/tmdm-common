@@ -48,10 +48,7 @@ class ForeignKeyInfo implements ValidationRule {
                         ValidationError.FOREIGN_KEY_INFO_REPEATABLE);
             }
             if (foreignKeyInfo.getContainingType() != null) {
-                ComplexTypeMetadata foreignKeyInfoContainingType = foreignKeyInfo.getContainingType();
-                while (foreignKeyInfoContainingType instanceof ContainedComplexTypeMetadata) {
-                    foreignKeyInfoContainingType = ((ContainedComplexTypeMetadata) foreignKeyInfoContainingType).getContainerType();
-                }
+                ComplexTypeMetadata foreignKeyInfoContainingType = foreignKeyInfo.getContainingType().getEntity();
                 if (foreignKeyInfoContainingType.isInstantiable() && !foreignKeyInfoContainingType.equals(field.getReferencedType())) {
                     handler.error(foreignKeyInfo,
                             "Foreign key info must reference an element in referenced type.",

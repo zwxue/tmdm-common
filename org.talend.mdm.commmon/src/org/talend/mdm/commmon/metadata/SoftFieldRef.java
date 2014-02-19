@@ -117,7 +117,7 @@ public class SoftFieldRef implements FieldMetadata {
                         true,
                         type);
             } else {
-                frozenField = type.getField(fieldName).copy(repository).freeze();
+                frozenField = type.getField(fieldName).copy().freeze();
             }
         }
         // Add additional data (line number...).
@@ -202,14 +202,14 @@ public class SoftFieldRef implements FieldMetadata {
     }
 
     @Override
-    public void adopt(ComplexTypeMetadata metadata, MetadataRepository repository) {
-        FieldMetadata copy = getField().copy(this.repository);
+    public void adopt(ComplexTypeMetadata metadata) {
+        FieldMetadata copy = getField().copy();
         copy.setContainingType(metadata);
         metadata.addField(copy);
     }
 
     @Override
-    public FieldMetadata copy(MetadataRepository repository) {
+    public FieldMetadata copy() {
         return this;
     }
 

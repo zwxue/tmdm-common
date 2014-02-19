@@ -188,12 +188,12 @@ public class SoftIdFieldRef implements FieldMetadata {
     }
 
     @Override
-    public void adopt(ComplexTypeMetadata metadata, MetadataRepository repository) {
-        getField().adopt(metadata, repository);
+    public void adopt(ComplexTypeMetadata metadata) {
+        getField().adopt(metadata);
     }
 
     @Override
-    public FieldMetadata copy(MetadataRepository repository) {
+    public FieldMetadata copy() {
         return new SoftIdFieldRef(this.repository, typeName);
     }
 

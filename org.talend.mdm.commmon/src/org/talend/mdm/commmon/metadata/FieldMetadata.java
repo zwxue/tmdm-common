@@ -80,19 +80,17 @@ public interface FieldMetadata extends MetadataVisitable, MetadataExtensible {
     /**
      * "Adopt" this field in <code>metadata</code> type. This method performs all necessary operations so this field
      * behaves as is field was declared in <code>metadata</code>.
-     * 
+     *
      * @param metadata The new type.
-     * @param repository The {@link MetadataRepository} of the type to adopt.
      */
-    void adopt(ComplexTypeMetadata metadata, MetadataRepository repository);
+    void adopt(ComplexTypeMetadata metadata);
 
     /**
      * Copy the field and all depending information in <code>repository</code>.
      * 
-     * @param repository The {@link MetadataRepository} to copy to.
      * @return A copy of this field.
      */
-    FieldMetadata copy(MetadataRepository repository);
+    FieldMetadata copy();
 
     /**
      * Changes containing type for this field. Use this method with extra caution.
