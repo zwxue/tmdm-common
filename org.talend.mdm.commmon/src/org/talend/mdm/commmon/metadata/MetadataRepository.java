@@ -746,18 +746,24 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
         // Copy first non instantiable types...
         for (Map.Entry<String, Map<String, TypeMetadata>> currentNamespace : nonInstantiableTypes.entrySet()) {
             Map<String, TypeMetadata> namespaceCopy = new HashMap<String, TypeMetadata>();
-            for (Map.Entry<String, TypeMetadata> currentType : currentNamespace.getValue().entrySet()) {
-                namespaceCopy.put(currentType.getKey(), currentType.getValue().copy());
+            Map<String, TypeMetadata> namespaceTypes = currentNamespace.getValue();
+            if (namespaceTypes != null) {
+                for (Map.Entry<String, TypeMetadata> currentType : namespaceTypes.entrySet()) {
+                    namespaceCopy.put(currentType.getKey(), currentType.getValue().copy());
+                }
+                repositoryCopy.nonInstantiableTypes.put(currentNamespace.getKey(), namespaceCopy);
             }
-            repositoryCopy.nonInstantiableTypes.put(currentNamespace.getKey(), namespaceCopy);
         }
         // ... then copy entity types.
         for (Map.Entry<String, Map<String, TypeMetadata>> currentNamespace : entityTypes.entrySet()) {
             Map<String, TypeMetadata> namespaceCopy = new HashMap<String, TypeMetadata>();
-            for (Map.Entry<String, TypeMetadata> currentType : currentNamespace.getValue().entrySet()) {
-                namespaceCopy.put(currentType.getKey(), currentType.getValue().copy());
+            Map<String, TypeMetadata> namespaceTypes = currentNamespace.getValue();
+            if (namespaceTypes != null) {
+                for (Map.Entry<String, TypeMetadata> currentType : namespaceTypes.entrySet()) {
+                    namespaceCopy.put(currentType.getKey(), currentType.getValue().copy());
+                }
+                repositoryCopy.entityTypes.put(currentNamespace.getKey(), namespaceCopy);
             }
-            repositoryCopy.entityTypes.put(currentNamespace.getKey(), namespaceCopy);
         }
         return repositoryCopy;
     }
