@@ -1,34 +1,34 @@
 /*
  * Copyright (C) 2006-2013 Talend Inc. - www.talend.com
- *
+ * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
- *
- * You should have received a copy of the agreement
- * along with this program; if not, write to Talend SA
- * 9 rue Pages 92150 Suresnes, France
+ * 
+ * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
+ * 92150 Suresnes, France
  */
 
 package org.talend.mdm.commmon.metadata;
 
-import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
-import org.talend.mdm.commmon.metadata.validation.ValidationRule;
-
-import javax.xml.XMLConstants;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
+
+import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
+import org.talend.mdm.commmon.metadata.validation.ValidationRule;
+
 public class UnresolvedFieldMetadata implements FieldMetadata {
 
     private final String fieldName;
 
-    private boolean isKey;
-
     private final TypeMetadata declaringType;
 
-    private final Map<String,Object> additionalData = new HashMap<String, Object>();
+    private final Map<String, Object> additionalData = new HashMap<String, Object>();
+
+    private boolean isKey;
 
     private ComplexTypeMetadata containingType;
 
@@ -57,6 +57,11 @@ public class UnresolvedFieldMetadata implements FieldMetadata {
     @Override
     public ComplexTypeMetadata getContainingType() {
         return containingType;
+    }
+
+    @Override
+    public void setContainingType(ComplexTypeMetadata typeMetadata) {
+        this.containingType = typeMetadata;
     }
 
     @Override
@@ -99,11 +104,6 @@ public class UnresolvedFieldMetadata implements FieldMetadata {
     }
 
     @Override
-    public void setContainingType(ComplexTypeMetadata typeMetadata) {
-        this.containingType = typeMetadata;
-    }
-
-    @Override
     public FieldMetadata freeze() {
         return this;
     }
@@ -125,12 +125,17 @@ public class UnresolvedFieldMetadata implements FieldMetadata {
 
     @Override
     public String getPath() {
-        throw new UnsupportedOperationException();
+        FieldMetadata containingField = containingType.getContainer();
+        if (containingField != null) {
+            return containingField.getPath() + '/' + fieldName;
+        } else {
+            return fieldName;
+        }
     }
 
     @Override
     public String getEntityTypeName() {
-        throw new UnsupportedOperationException();
+        return containingType.getEntity().getName();
     }
 
     @Override
