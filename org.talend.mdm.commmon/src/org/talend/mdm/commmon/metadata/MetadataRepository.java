@@ -188,6 +188,9 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
         XSDParser parse = new XSDParser(options);
         parse.parse(inputStream);
         XSDSchema schema = parse.getSchema();
+        if (schema == null) {
+            throw new IllegalStateException("No schema parsed from input (make sure stream contains a data model).");
+        }
         schema.validate();
         EList<XSDDiagnostic> diagnostics = schema.getDiagnostics();
         for (XSDDiagnostic diagnostic : diagnostics) {
