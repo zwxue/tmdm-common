@@ -153,9 +153,9 @@ public class MetadataUtils {
      *
      * @param repository The repository that contains entity types to sort.
      * @return A sorted list of {@link ComplexTypeMetadata} types. First type of list is a type that has no dependency on
-     *         any other type of the list.
-     * @throws IllegalArgumentException If repository contains types that creates a cyclic dependency. Error message contains
-     *                                  information on where the cycle is.
+     * any other type of the list.
+     * @throws org.talend.mdm.commmon.metadata.CircularDependencyException If repository contains types that creates a cyclic dependency. Error message contains
+     *                                                                     information on where the cycle is.
      */
     public static List<ComplexTypeMetadata> sortTypes(MetadataRepository repository) {
         ArrayList<ComplexTypeMetadata> types = new ArrayList<ComplexTypeMetadata>(repository.getUserComplexTypes());
@@ -178,12 +178,12 @@ public class MetadataUtils {
      * </p>
      *
      * @param repository This is used to display information in case of cycle.
-     * @param types The list of types to be sorted. This list should provide a transitive closure of types (all references
-     *              to other types must be satisfied in this list), if it isn't the unresolved FK will be ignored.
+     * @param types      The list of types to be sorted. This list should provide a transitive closure of types (all references
+     *                   to other types must be satisfied in this list), if it isn't the unresolved FK will be ignored.
      * @return A sorted list of {@link ComplexTypeMetadata} types. First type of list is a type that has no dependency on
-     *         any other type of the list.
-     * @throws IllegalArgumentException If repository contains types that creates a cyclic dependency. Error message contains
-     *                                  information on where the cycle is.
+     * any other type of the list.
+     * @throws org.talend.mdm.commmon.metadata.CircularDependencyException If repository contains types that creates a cyclic dependency. Error message contains
+     *                                                                     information on where the cycle is.
      */
     public static List<ComplexTypeMetadata> sortTypes(MetadataRepository repository, List<ComplexTypeMetadata> types) {
         return _sortTypes(repository, true, types);
@@ -359,37 +359,28 @@ public class MetadataUtils {
                 lineNumber++;
             }
             if (!cycles.isEmpty()) { // Found cycle(s): report it/them as exception
-                StringBuilder cyclesAsString = new StringBuilder();
-                int i = 1;
                 Iterator<List<ComplexTypeMetadata>> cyclesIterator = cycles.iterator();
+                Map<ComplexTypeMetadata, List<FieldMetadata>> cycleHints = new HashMap<ComplexTypeMetadata, List<FieldMetadata>>();
                 while (cyclesIterator.hasNext()) {
-                    cyclesAsString.append(i++).append(") "); //$NON-NLS-1$
                     Iterator<ComplexTypeMetadata> dependencyPathIterator = cyclesIterator.next().iterator();
                     ComplexTypeMetadata previous = null;
                     while (dependencyPathIterator.hasNext()) {
                         ComplexTypeMetadata currentType = dependencyPathIterator.next();
-                        cyclesAsString.append(currentType.getName());
-                        if (dependencyPathIterator.hasNext()) {
-                            cyclesAsString.append(" -> "); //$NON-NLS-1$
-                        } else if (previous != null) {
+                        ArrayList<FieldMetadata> fields = new ArrayList<FieldMetadata>();
+                        cycleHints.put(currentType, fields);
+                        if (previous != null) {
                             Set<ReferenceFieldMetadata> inboundReferences = repository.accept(new InboundReferences(currentType));
-                            cyclesAsString.append(" ( possible fields: ");
                             for (ReferenceFieldMetadata inboundReference : inboundReferences) {
                                 ComplexTypeMetadata entity = repository.getComplexType(inboundReference.getEntityTypeName());
                                 if (entity != null) {
-                                    String xPath = inboundReference.getEntityTypeName() + '/' + inboundReference.getPath();
-                                    cyclesAsString.append(xPath).append(' ');
+                                    fields.add(inboundReference);
                                 }
                             }
-                            cyclesAsString.append(')');
                         }
                         previous = currentType;
                     }
-                    if (cyclesIterator.hasNext()) {
-                        cyclesAsString.append('\n');
-                    }
                 }
-                throw new IllegalArgumentException("Data model has circular dependencies:\n" + cyclesAsString);
+                throw new CircularDependencyException(cycleHints);
             }
         }
         return sortedTypes;

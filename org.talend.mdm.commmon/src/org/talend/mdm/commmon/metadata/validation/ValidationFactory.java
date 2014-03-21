@@ -11,6 +11,7 @@
 
 package org.talend.mdm.commmon.metadata.validation;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.talend.mdm.commmon.metadata.*;
 
 import java.util.LinkedList;
@@ -18,9 +19,10 @@ import java.util.List;
 
 public class ValidationFactory {
 
+    private static final String VALIDATION_MARKER = "validation.validated"; //$NON-NLS-1$
+
     private static boolean isValidated(MetadataExtensible metadataElement) {
-        return metadataElement.getData("validation.validated") != null //$NON-NLS-1$
-                && metadataElement.<Boolean>getData("validation.validated"); //$NON-NLS-1$
+        return BooleanUtils.isTrue(metadataElement.<Boolean>getData(VALIDATION_MARKER));
     }
 
     public static ValidationRule getRule(FieldMetadata field) {
@@ -31,8 +33,12 @@ public class ValidationFactory {
                 return NoOpValidationRule.SUCCESS;
             }
         }
-        field.setData("validation.validated", true); //$NON-NLS-1$
+        field.setData(VALIDATION_MARKER, true);
         return field.createValidationRule();
+    }
+
+    public static ValidationRule getRule(MetadataRepository repository) {
+        return new CircularDependencyValidationRule(repository);
     }
 
     public static ValidationRule getRule(SoftFieldRef field) {
@@ -84,7 +90,7 @@ public class ValidationFactory {
                 return NoOpValidationRule.SUCCESS;
             }
         }
-        type.setData("validation.validated", true); //$NON-NLS-1$
+        type.setData(VALIDATION_MARKER, true);
         return type.createValidationRule();
     }
 

@@ -210,6 +210,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
         // "Freeze" all reusable type usages in the data model.
         freezeUsages(nonInstantiableTypes.get(getUserNamespace()));
         freezeUsages(entityTypes.get(getUserNamespace()));
+        ValidationFactory.getRule(this).perform(handler); // Perform data model-scoped validation (e.g. cycles).
         for (TypeMetadata type : getUserComplexTypes()) {
             if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(type.getNamespace())) {
                 type.validate(handler);
