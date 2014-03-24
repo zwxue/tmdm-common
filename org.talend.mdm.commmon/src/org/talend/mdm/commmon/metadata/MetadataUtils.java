@@ -261,7 +261,7 @@ public class MetadataUtils {
                         return lineContent;
                     }
                     // Only takes into account mandatory and FK integrity-enabled FKs.
-                    if (referenceField.isFKIntegrity() && referenceField.isMandatory()) {
+                    if (isMandatory(referenceField) && referenceField.isFKIntegrity()) {
                         if (sortAllTypes || referencedType.isInstantiable()) {
                             if (types.contains(referencedType)) {
                                 lineContent[getId(referencedType, types)]++;
@@ -273,6 +273,16 @@ public class MetadataUtils {
                         }
                     }
                     return lineContent;
+                }
+
+                private boolean isMandatory(FieldMetadata field) {
+                    ComplexTypeMetadata containingType = field.getContainingType();
+                    FieldMetadata containerField = containingType.getContainer();
+                    if (containerField != null) {
+                        return isMandatory(containerField) && field.isMandatory();
+                    } else {
+                        return field.isMandatory();
+                    }
                 }
             });
         }
