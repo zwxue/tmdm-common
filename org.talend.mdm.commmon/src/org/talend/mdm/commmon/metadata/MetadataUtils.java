@@ -260,9 +260,8 @@ public class MetadataUtils {
                     if (!processedReferences.add(referencedType)) {
                         return lineContent;
                     }
-                    // Don't count a dependency to itself as a dependency and only takes into account FK
-                    // integrity-enabled FKs.
-                    if (!type.equals(referencedType) && referenceField.isFKIntegrity() && referenceField.isMandatory()) {
+                    // Only takes into account mandatory and FK integrity-enabled FKs.
+                    if (referenceField.isFKIntegrity() && referenceField.isMandatory()) {
                         if (sortAllTypes || referencedType.isInstantiable()) {
                             if (types.contains(referencedType)) {
                                 lineContent[getId(referencedType, types)]++;
