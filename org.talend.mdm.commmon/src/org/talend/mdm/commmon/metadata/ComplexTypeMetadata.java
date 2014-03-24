@@ -19,10 +19,22 @@ import java.util.List;
  */
 public interface ComplexTypeMetadata extends TypeMetadata {
 
+    /**
+     * @return The top level {@link org.talend.mdm.commmon.metadata.ComplexTypeMetadata entity}. If <code>this</code> is
+     * already the top entity, returns <code>this</code>.
+     */
     ComplexTypeMetadata getEntity();
 
+    /**
+     * @return The {@link org.talend.mdm.commmon.metadata.FieldMetadata field} that contains this type or <code>null</code> if
+     * there's no container. When returning <code>null</code>, {@link #getEntity()} is expected to return <code>this</code>.
+     */
     FieldMetadata getContainer();
 
+    /**
+     * Changes (or set) the container field for this type.
+     * @param field The new container field or <code>null</code> to unset container field.
+     */
     void setContainer(FieldMetadata field);
 
     /**
