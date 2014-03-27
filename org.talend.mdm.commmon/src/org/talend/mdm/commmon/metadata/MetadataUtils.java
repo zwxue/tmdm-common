@@ -359,7 +359,7 @@ public class MetadataUtils {
                             break;
                         }
                     } while (currentLineNumber != lineNumber);
-                    if (dependencyPath.size() > 1) {
+                    if (dependencyPath.size() >= 1) {
                         dependencyPath.add(getType(types, lineNumber)); // Include cycle start to get a better exception
                                                                         // message.
                         cycles.add(dependencyPath);
