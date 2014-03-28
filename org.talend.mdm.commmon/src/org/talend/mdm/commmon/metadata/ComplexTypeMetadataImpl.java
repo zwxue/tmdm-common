@@ -367,27 +367,27 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
     }
 
     public List<String> getWriteUsers() {
-        return allowWrite;
+        return Collections.unmodifiableList(allowWrite);
     }
 
     public List<String> getDenyCreate() {
-        return denyCreate;
+        return Collections.unmodifiableList(denyCreate);
     }
 
     public List<String> getHideUsers() {
-        return hideUsers;
+        return Collections.unmodifiableList(hideUsers);
     }
     
     public List<String> getWorkflowAccessRights() {
-        return this.workflowAccessRights;
+        return Collections.unmodifiableList(workflowAccessRights);
     }
 
     public List<String> getDenyDelete(DeleteType type) {
         switch (type) {
             case LOGICAL:
-                return logicalDelete;
+                return Collections.unmodifiableList(logicalDelete);
             case PHYSICAL:
-                return physicalDelete;
+                return Collections.unmodifiableList(physicalDelete);
             default:
                 throw new NotImplementedException("Security information parsing for delete type '" + type + "'");
         }
@@ -399,12 +399,12 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
 
     @Override
     public List<FieldMetadata> getPrimaryKeyInfo() {
-        return primaryKeyInfo;
+        return Collections.unmodifiableList(primaryKeyInfo);
     }
 
     @Override
     public List<FieldMetadata> getLookupFields() {
-        return lookupFields;
+        return Collections.unmodifiableList(lookupFields);
     }
 
     @Override
