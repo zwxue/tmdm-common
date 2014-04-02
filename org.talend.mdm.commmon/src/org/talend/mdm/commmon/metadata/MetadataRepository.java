@@ -210,7 +210,6 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
         // "Freeze" all reusable type usages in the data model.
         freezeUsages(nonInstantiableTypes.get(getUserNamespace()));
         freezeUsages(entityTypes.get(getUserNamespace()));
-        ValidationFactory.getRule(this).perform(handler); // Perform data model-scoped validation (e.g. cycles).
         for (TypeMetadata type : getUserComplexTypes()) {
             if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(type.getNamespace())) {
                 type.validate(handler);
@@ -221,6 +220,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
                 type.validate(handler);
             }
         }
+        ValidationFactory.getRule(this).perform(handler); // Perform data model-scoped validation (e.g. cycles).
         handler.end();
         if (handler.getErrorCount() != 0) {
             LOGGER.error("Could not parse data model (" + handler.getErrorCount() + " error(s) found).");
@@ -682,9 +682,6 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
                     fieldType = new SoftTypeRef(this, targetNamespace, schemaType.getName(), false);
                     isContained = true;
                 } else {
-                    if (schemaType == null) {
-                        throw new IllegalArgumentException("Field '" + fieldName + "' from type '" + containingType.getName() + "' has an invalid type.");
-                    }
                     if (schemaType instanceof XSDComplexTypeDefinition) {
                         fieldType = new SoftTypeRef(this, schemaType.getTargetNamespace(), schemaType.getName(), false);
                         isContained = true;
