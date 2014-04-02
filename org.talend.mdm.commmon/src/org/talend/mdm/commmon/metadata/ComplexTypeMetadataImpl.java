@@ -169,7 +169,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
                     if (reusableTypeName.isEmpty()) {
                         throw new IllegalArgumentException("Reusable type could not be null for fieldName '" + fieldName + "'"); //$NON-NLS-1$ //$NON-NLS-2$
                     }
-                    if (!reusableTypeName.isEmpty() && !currentType.getName().equals(reusableTypeName)) { // Look real type in sub types
+                    if (!currentType.getName().equals(reusableTypeName)) { // Look real type in sub types
                         boolean foundRealType = false;
                         for (TypeMetadata subType : currentType.getSubTypes()) {
                             if (subType instanceof ComplexTypeMetadata && subType.getName().equals(reusableTypeName)) {
@@ -479,6 +479,16 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
             fieldMetadata.clear();
             List<TypeMetadata> thisSuperTypes = new LinkedList<TypeMetadata>(superTypes);
             superTypes.clear();
+            // Only accept super types with same instantiable status (if more than one).
+            // TODO Type should use declareUsage iso. super type for this!
+            if (thisSuperTypes.size() > 1) {
+                Iterator<TypeMetadata> iterator = thisSuperTypes.iterator();
+                while (iterator.hasNext()) {
+                    if (iterator.next().isInstantiable() != isInstantiable) {
+                        iterator.remove();
+                    }
+                }
+            }
             for (TypeMetadata superType : thisSuperTypes) {
                 if (isInstantiable() == superType.isInstantiable()) {
                     superType = superType.freeze();
