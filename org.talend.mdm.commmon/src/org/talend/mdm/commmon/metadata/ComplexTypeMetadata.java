@@ -13,11 +13,20 @@ package org.talend.mdm.commmon.metadata;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Represents a "complex" type (i.e. a MDM entity type).
  */
 public interface ComplexTypeMetadata extends TypeMetadata {
+
+    /**
+     * Return the type name in the <code>locale</code>. If no type name was declared for <code>locale</code>, returns same
+     * as {@link TypeMetadata#getName()}.
+     * @param locale A non null {@link java.util.Locale locale}.
+     * @return The type name for <code>locale</code>.
+     */
+    String getName(Locale locale);
 
     /**
      * @return The top level {@link org.talend.mdm.commmon.metadata.ComplexTypeMetadata entity}. If <code>this</code> is
@@ -147,6 +156,8 @@ public interface ComplexTypeMetadata extends TypeMetadata {
     void freezeUsages();
 
     void setSubTypes(List<ComplexTypeMetadata> subTypes);
+
+    void registerName(Locale locale, String label);
 
     enum DeleteType {
         /**

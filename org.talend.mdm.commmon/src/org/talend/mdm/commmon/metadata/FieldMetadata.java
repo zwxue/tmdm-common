@@ -11,6 +11,7 @@
 package org.talend.mdm.commmon.metadata;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 
@@ -141,4 +142,8 @@ public interface FieldMetadata extends MetadataVisitable, MetadataExtensible {
      * @since 5.4
      */
     String getEntityTypeName();
+
+    void registerName(Locale locale, String name);
+
+    String getName(Locale locale);
 }

@@ -45,6 +45,8 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
 
     private List<FieldMetadata> foreignKeyInfoFields = Collections.emptyList();
 
+    private Map<Locale, String> localeToLabel = new HashMap<Locale, String>();
+
     private ComplexTypeMetadata referencedType;
 
     private ComplexTypeMetadata containingType;
@@ -197,6 +199,20 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
     @Override
     public String getEntityTypeName() {
         return containingType.getEntity().getName();
+    }
+
+    @Override
+    public void registerName(Locale locale, String name) {
+        localeToLabel.put(locale, name);
+    }
+
+    @Override
+    public String getName(Locale locale) {
+        String localizedName = localeToLabel.get(locale);
+        if (localizedName == null) {
+            return getName();
+        }
+        return localizedName;
     }
 
     public TypeMetadata getDeclaringType() {

@@ -47,6 +47,8 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
 
     private final Collection<ComplexTypeMetadata> subTypes = new HashSet<ComplexTypeMetadata>();
 
+    private final Map<Locale, String> localeToLabel = new HashMap<Locale, String>();
+
     private List<FieldMetadata> lookupFields;
 
     private boolean isInstantiable;
@@ -79,17 +81,17 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
     }
 
     public ComplexTypeMetadataImpl(String nameSpace,
-                                   String name,
-                                   List<String> allowWrite,
-                                   List<String> denyCreate,
-                                   List<String> hideUsers,
-                                   List<String> physicalDelete,
-                                   List<String> logicalDelete,
-                                   String schematron,
-                                   List<FieldMetadata> primaryKeyInfo,
-                                   List<FieldMetadata> lookupFields,
-                                   boolean instantiable,
-                                   List<String> workflowAccessRights) {
+            String name,
+            List<String> allowWrite,
+            List<String> denyCreate,
+            List<String> hideUsers,
+            List<String> physicalDelete,
+            List<String> logicalDelete,
+            String schematron,
+            List<FieldMetadata> primaryKeyInfo,
+            List<FieldMetadata> lookupFields,
+            boolean instantiable,
+            List<String> workflowAccessRights) {
         this.name = name;
         this.nameSpace = nameSpace;
         this.allowWrite = allowWrite;
@@ -244,6 +246,15 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
             throw new IllegalStateException("Type '" + name + "' is frozen and can not be modified.");
         }
         this.isInstantiable = isInstantiable;
+    }
+
+    @Override
+    public String getName(Locale locale) {
+        String localizedName = localeToLabel.get(locale);
+        if (localizedName == null) {
+            return getName();
+        }
+        return localizedName;
     }
 
     @Override
@@ -423,6 +434,11 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
     public void setSubTypes(List<ComplexTypeMetadata> subTypes) {
         this.subTypes.clear();
         this.subTypes.addAll(subTypes);
+    }
+
+    @Override
+    public void registerName(Locale locale, String label) {
+        localeToLabel.put(locale, label);
     }
 
     public boolean hasField(String fieldName) {

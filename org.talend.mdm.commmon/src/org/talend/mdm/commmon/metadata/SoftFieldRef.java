@@ -32,6 +32,8 @@ public class SoftFieldRef implements FieldMetadata {
 
     private final Map<String, Object> additionalData = new HashMap<String, Object>();
 
+    private final Map<Locale, String> localeToLabel = new HashMap<Locale, String>();
+
     private FieldMetadata frozenField;
 
     public SoftFieldRef(MetadataRepository metadataRepository, String fieldName, TypeMetadata containingType) {
@@ -125,6 +127,9 @@ public class SoftFieldRef implements FieldMetadata {
         for (Map.Entry<String, Object> currentData : data) {
             frozenField.setData(currentData.getKey(), currentData.getValue());
         }
+        for (Map.Entry<Locale, String> entry : localeToLabel.entrySet()) {
+            frozenField.registerName(entry.getKey(), entry.getValue());
+        }
         return frozenField;
     }
 
@@ -194,6 +199,20 @@ public class SoftFieldRef implements FieldMetadata {
     @Override
     public String getEntityTypeName() {
         return getField().getEntityTypeName();
+    }
+
+    @Override
+    public void registerName(Locale locale, String name) {
+        localeToLabel.put(locale, name);
+    }
+
+    @Override
+    public String getName(Locale locale) {
+        String localizedName = localeToLabel.get(locale);
+        if (localizedName == null) {
+            return getName();
+        }
+        return localizedName;
     }
 
     @Override

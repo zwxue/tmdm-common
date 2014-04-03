@@ -14,7 +14,10 @@ package org.talend.mdm.commmon.metadata;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  *
@@ -45,15 +48,17 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
 
     private int cachedHashCode;
 
+    private final Map<Locale, String> localeToLabel = new HashMap<Locale, String>();
+
     public SimpleTypeFieldMetadata(ComplexTypeMetadata containingType,
-                                   boolean isKey,
-                                   boolean isMany,
-                                   boolean isMandatory,
-                                   String name,
-                                   TypeMetadata fieldType,
-                                   List<String> allowWriteUsers,
-                                   List<String> hideUsers,
-                                   List<String> workflowAccessRights) {
+            boolean isKey,
+            boolean isMany,
+            boolean isMandatory,
+            String name,
+            TypeMetadata fieldType,
+            List<String> allowWriteUsers,
+            List<String> hideUsers,
+            List<String> workflowAccessRights) {
         if (fieldType == null) {
             throw new IllegalArgumentException("Field type cannot be null.");
         }
@@ -131,6 +136,20 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
     @Override
     public String getEntityTypeName() {
         return containingType.getEntity().getName();
+    }
+
+    @Override
+    public void registerName(Locale locale, String name) {
+        localeToLabel.put(locale, name);
+    }
+
+    @Override
+    public String getName(Locale locale) {
+        String localizedName = localeToLabel.get(locale);
+        if (localizedName == null) {
+            return getName();
+        }
+        return localizedName;
     }
 
     public TypeMetadata getDeclaringType() {

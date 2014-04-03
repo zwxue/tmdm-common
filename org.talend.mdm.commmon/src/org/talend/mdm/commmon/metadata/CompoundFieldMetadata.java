@@ -17,6 +17,7 @@ import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 import javax.xml.XMLConstants;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class CompoundFieldMetadata extends MetadataExtensions implements FieldMetadata {
 
@@ -103,6 +104,15 @@ public class CompoundFieldMetadata extends MetadataExtensions implements FieldMe
     @Override
     public String getEntityTypeName() {
         return getContainingType().getEntity().getName();
+    }
+
+    @Override
+    public void registerName(Locale locale, String name) {
+    }
+
+    @Override
+    public String getName(Locale locale) {
+        throw new UnsupportedOperationException();
     }
 
     public TypeMetadata getDeclaringType() {

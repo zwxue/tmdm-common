@@ -16,6 +16,7 @@ import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 public class ContainedComplexTypeMetadata implements ComplexTypeMetadata {
 
@@ -58,6 +59,11 @@ public class ContainedComplexTypeMetadata implements ComplexTypeMetadata {
         }
         containedType.setSubTypes(subTypes);
         containedType = (ComplexTypeMetadata) containedType.freeze();
+    }
+
+    @Override
+    public String getName(Locale locale) {
+        return containedType.getName(locale);
     }
 
     @Override
@@ -166,6 +172,11 @@ public class ContainedComplexTypeMetadata implements ComplexTypeMetadata {
     @Override
     public void setSubTypes(List<ComplexTypeMetadata> subTypes) {
         containedType.setSubTypes(subTypes);
+    }
+
+    @Override
+    public void registerName(Locale locale, String label) {
+        containedType.registerName(locale, label);
     }
 
     @Override

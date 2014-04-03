@@ -183,6 +183,15 @@ public class SoftIdFieldRef implements FieldMetadata {
     }
 
     @Override
+    public void registerName(Locale locale, String name) {
+    }
+
+    @Override
+    public String getName(Locale locale) {
+        return getName();
+    }
+
+    @Override
     public TypeMetadata getDeclaringType() {
         return getField().getDeclaringType();
     }

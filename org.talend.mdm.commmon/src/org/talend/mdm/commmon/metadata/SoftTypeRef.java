@@ -233,6 +233,11 @@ public class SoftTypeRef implements ComplexTypeMetadata {
     }
 
     @Override
+    public String getName(Locale locale) {
+        return getTypeAsComplex().getName(locale);
+    }
+
+    @Override
     public ComplexTypeMetadata getEntity() {
         return getTypeAsComplex().getEntity();
     }
@@ -324,6 +329,11 @@ public class SoftTypeRef implements ComplexTypeMetadata {
     @Override
     public void setSubTypes(List<ComplexTypeMetadata> subTypes) {
         getTypeAsComplex().setSubTypes(subTypes);
+    }
+
+    @Override
+    public void registerName(Locale locale, String label) {
+        getTypeAsComplex().registerName(locale, label);
     }
 
     @Override

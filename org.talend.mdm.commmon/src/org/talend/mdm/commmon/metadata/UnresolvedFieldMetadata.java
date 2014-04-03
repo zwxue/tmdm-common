@@ -10,10 +10,7 @@
 
 package org.talend.mdm.commmon.metadata;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.xml.XMLConstants;
 
@@ -136,6 +133,15 @@ public class UnresolvedFieldMetadata implements FieldMetadata {
     @Override
     public String getEntityTypeName() {
         return containingType.getEntity().getName();
+    }
+
+    @Override
+    public void registerName(Locale locale, String name) {
+    }
+
+    @Override
+    public String getName(Locale locale) {
+        return getName();
     }
 
     @Override

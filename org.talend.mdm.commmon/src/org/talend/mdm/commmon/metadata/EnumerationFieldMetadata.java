@@ -14,7 +14,10 @@ package org.talend.mdm.commmon.metadata;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  *
@@ -37,6 +40,8 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
 
     private final boolean isMandatory;
 
+    private final Map<Locale, String> localeToLabel = new HashMap<Locale, String>();
+
     private ComplexTypeMetadata containingType;
 
     private String name;
@@ -46,12 +51,12 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
     private int cachedHashCode;
 
     public EnumerationFieldMetadata(ComplexTypeMetadata containingType,
-                                    boolean isKey,
-                                    boolean isMany, boolean isMandatory, String name,
-                                    TypeMetadata fieldType,
-                                    List<String> allowWriteUsers,
-                                    List<String> hideUsers,
-                                    List<String> workflowAccessRights) {
+            boolean isKey,
+            boolean isMany, boolean isMandatory, String name,
+            TypeMetadata fieldType,
+            List<String> allowWriteUsers,
+            List<String> hideUsers,
+            List<String> workflowAccessRights) {
         this.containingType = containingType;
         this.declaringType = containingType;
         this.isKey = isKey;
@@ -120,6 +125,20 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
     @Override
     public String getEntityTypeName() {
         return containingType.getEntity().getName();
+    }
+
+    @Override
+    public void registerName(Locale locale, String name) {
+        localeToLabel.put(locale, name);
+    }
+
+    @Override
+    public String getName(Locale locale) {
+        String localizedName = localeToLabel.get(locale);
+        if (localizedName == null) {
+            return getName();
+        }
+        return localizedName;
     }
 
     public TypeMetadata getDeclaringType() {

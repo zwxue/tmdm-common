@@ -17,7 +17,7 @@ import org.talend.mdm.commmon.metadata.MetadataRepository;
 
 /**
  * Enrich a {@link ComplexTypeMetadata} being built with information contained in XML Schema information.
- * @see MetadataRepository#createFieldMetadata(org.eclipse.xsd.XSDElementDeclaration, ComplexTypeMetadata)
+ * @see MetadataRepository#createFieldMetadata(org.eclipse.xsd.XSDElementDeclaration, org.talend.mdm.commmon.metadata.ComplexTypeMetadata, int, int)
  */
 public interface XmlSchemaAnnotationProcessor {
 
@@ -28,7 +28,7 @@ public interface XmlSchemaAnnotationProcessor {
      * @param type       The {@link ComplexTypeMetadata} being enriched by the <code>annotation</code>.
      * @param annotation An XML Schema annotation.
      * @param state      A {@link org.talend.mdm.commmon.metadata.annotation.XmlSchemaAnnotationProcessorState} that keeps track of information parsed by
- *                   {@link org.talend.mdm.commmon.metadata.annotation.XmlSchemaAnnotationProcessor}.
+     *                   {@link org.talend.mdm.commmon.metadata.annotation.XmlSchemaAnnotationProcessor}.
      */
     void process(MetadataRepository repository, ComplexTypeMetadata type, XSDAnnotation annotation, XmlSchemaAnnotationProcessorState state);
 }

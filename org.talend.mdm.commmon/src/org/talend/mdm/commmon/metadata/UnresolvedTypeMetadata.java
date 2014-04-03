@@ -18,6 +18,7 @@ import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class UnresolvedTypeMetadata extends MetadataExtensions implements ComplexTypeMetadata {
 
@@ -101,6 +102,11 @@ public class UnresolvedTypeMetadata extends MetadataExtensions implements Comple
 
     public String getTypeName() {
         return typeName;
+    }
+
+    @Override
+    public String getName(Locale locale) {
+        return getName();
     }
 
     @Override
@@ -204,5 +210,9 @@ public class UnresolvedTypeMetadata extends MetadataExtensions implements Comple
 
     @Override
     public void setSubTypes(List<ComplexTypeMetadata> subTypes) {
+    }
+
+    @Override
+    public void registerName(Locale locale, String label) {
     }
 }

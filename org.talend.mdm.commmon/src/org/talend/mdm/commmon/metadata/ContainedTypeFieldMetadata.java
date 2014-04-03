@@ -15,9 +15,7 @@ import org.talend.mdm.commmon.metadata.validation.CompositeValidationRule;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -36,6 +34,8 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
 
     private final boolean isMandatory;
 
+    private final Map<Locale, String> localeToLabel = new HashMap<Locale, String>();
+
     private TypeMetadata declaringType;
 
     private ComplexTypeMetadata fieldType;
@@ -47,13 +47,13 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
     private int cachedHashCode;
 
     public ContainedTypeFieldMetadata(ComplexTypeMetadata containingType,
-                                      boolean isMany,
-                                      boolean isMandatory,
-                                      String name,
-                                      ComplexTypeMetadata fieldType,
-                                      List<String> allowWriteUsers,
-                                      List<String> hideUsers,
-                                      List<String> workflowAccessRights) {
+            boolean isMany,
+            boolean isMandatory,
+            String name,
+            ComplexTypeMetadata fieldType,
+            List<String> allowWriteUsers,
+            List<String> hideUsers,
+            List<String> workflowAccessRights) {
         if (fieldType == null) {
             throw new IllegalArgumentException("Contained type cannot be null.");
         }
@@ -130,6 +130,20 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
     @Override
     public String getEntityTypeName() {
         return containingType.getEntity().getName();
+    }
+
+    @Override
+    public void registerName(Locale locale, String name) {
+        localeToLabel.put(locale, name);
+    }
+
+    @Override
+    public String getName(Locale locale) {
+        String localizedName = localeToLabel.get(locale);
+        if (localizedName == null) {
+            return getName();
+        }
+        return localizedName;
     }
 
     public TypeMetadata getDeclaringType() {

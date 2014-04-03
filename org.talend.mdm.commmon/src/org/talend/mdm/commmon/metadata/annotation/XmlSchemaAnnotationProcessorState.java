@@ -15,9 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * A simple bean that keeps track of information parsed by {@link XmlSchemaAnnotationProcessor} implementations.
@@ -36,6 +34,8 @@ public class XmlSchemaAnnotationProcessorState {
 
     private final List<FieldMetadata> foreignKeyInfo = new LinkedList<FieldMetadata>();
 
+    private final Map<Locale, String> localeToLabel = new HashMap<Locale, String>();
+
     private boolean fkIntegrity = true; // Default is to enforce FK integrity
 
     private boolean fkIntegrityOverride = false; // Default is to disable FK integrity check
@@ -53,7 +53,7 @@ public class XmlSchemaAnnotationProcessorState {
     private List<FieldMetadata> primaryKeyInfo = Collections.emptyList();
 
     private List<FieldMetadata> lookupFields = Collections.emptyList();
-    
+
     private final List<String> workflowAccessRights = new LinkedList<String>();
 
     public void setFkIntegrity(boolean fkIntegrity) {
@@ -158,5 +158,13 @@ public class XmlSchemaAnnotationProcessorState {
 
     public List<String> getWorkflowAccessRights() {
         return this.workflowAccessRights;
+    }
+
+    public void registerTypeName(Locale locale, String label) {
+        localeToLabel.put(locale, label);
+    }
+
+    public Map<Locale, String> getLocaleToLabel() {
+        return localeToLabel;
     }
 }
