@@ -157,7 +157,7 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
     }
 
     public FieldMetadata copy() {
-        return new ContainedTypeFieldMetadata(containingType,
+        ContainedTypeFieldMetadata copy = new ContainedTypeFieldMetadata(containingType,
                 isMany,
                 isMandatory,
                 name,
@@ -165,6 +165,8 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
                 allowWriteUsers,
                 hideUsers,
                 workflowAccessRights);
+        copy.localeToLabel.putAll(localeToLabel);
+        return copy;
     }
 
     public List<String> getHideUsers() {

@@ -258,7 +258,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
             foreignKeyInfoCopy = Collections.emptyList();
         }
         ComplexTypeMetadata containingTypeCopy = (ComplexTypeMetadata) containingType.copyShallow();
-        return new ReferenceFieldMetadata(containingTypeCopy,
+        ReferenceFieldMetadata copy = new ReferenceFieldMetadata(containingTypeCopy,
                 isKey,
                 isMany,
                 isMandatory,
@@ -272,6 +272,8 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                 writeUsers,
                 hideUsers,
                 workflowAccessRights);
+        copy.localeToLabel.putAll(localeToLabel);
+        return copy;
     }
 
     @Override

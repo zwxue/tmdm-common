@@ -173,6 +173,7 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
                 hideUsers,
                 workflowAccessRights);
         copy.setDeclaringType(declaringType);
+        copy.localeToLabel.putAll(localeToLabel);
         return copy;
     }
 

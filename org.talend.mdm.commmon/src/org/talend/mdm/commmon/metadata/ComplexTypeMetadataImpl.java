@@ -361,11 +361,12 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
             copy.registerKey(typeKeyField.copy());
         }
         copy.isFrozen = false;
+        copy.localeToLabel.putAll(localeToLabel);
         return copy;
     }
 
     public TypeMetadata copyShallow() {
-        return new ComplexTypeMetadataImpl(getNamespace(),
+        ComplexTypeMetadataImpl copy = new ComplexTypeMetadataImpl(getNamespace(),
                 getName(),
                 allowWrite,
                 denyCreate,
@@ -375,6 +376,8 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
                 schematron,
                 primaryKeyInfo,
                 Collections.<FieldMetadata>emptyList(), isInstantiable, workflowAccessRights);
+        copy.localeToLabel.putAll(localeToLabel);
+        return copy;
     }
 
     public List<String> getWriteUsers() {

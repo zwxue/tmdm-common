@@ -151,7 +151,7 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
     }
 
     public FieldMetadata copy() {
-        return new EnumerationFieldMetadata(containingType,
+        EnumerationFieldMetadata copy = new EnumerationFieldMetadata(containingType,
                 isKey(),
                 isMany,
                 isMandatory,
@@ -160,6 +160,8 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
                 allowWriteUsers,
                 hideUsers,
                 workflowAccessRights);
+        copy.localeToLabel.putAll(localeToLabel);
+        return copy;
     }
 
     public List<String> getHideUsers() {
