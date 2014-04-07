@@ -160,6 +160,11 @@ public class ContainedComplexTypeMetadata implements ComplexTypeMetadata {
     }
 
     @Override
+    public List<ContainedComplexTypeMetadata> getUsages() {
+        return containedType.getUsages();
+    }
+
+    @Override
     public void freezeUsages() {
     }
 

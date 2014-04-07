@@ -198,6 +198,10 @@ public class UnresolvedTypeMetadata extends MetadataExtensions implements Comple
     public void declareUsage(ContainedComplexTypeMetadata usage) {
     }
 
+    public List<ContainedComplexTypeMetadata> getUsages() {
+        return Collections.emptyList();
+    }
+
     @Override
     public void freezeUsages() {
     }
@@ -205,4 +209,5 @@ public class UnresolvedTypeMetadata extends MetadataExtensions implements Comple
     @Override
     public void setSubTypes(List<ComplexTypeMetadata> subTypes) {
     }
+
 }

@@ -350,6 +350,8 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
             copy.registerKey(typeKeyField.copy());
         }
         copy.isFrozen = false;
+        copy.usages.addAll(usages);
+        copy.usages.addAll(usages);
         return copy;
     }
 
@@ -410,6 +412,11 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
     @Override
     public void declareUsage(ContainedComplexTypeMetadata usage) {
         usages.add(usage);
+    }
+
+    @Override
+    public List<ContainedComplexTypeMetadata> getUsages() {
+        return usages;
     }
 
     @Override

@@ -47,7 +47,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
 
     public static final String XSD_DOM_ELEMENT = "metadata.xsd.dom.element"; //$NON-NLS-1$
 
-    public static final String ANONYMOUS_PREFIX = "X_ANONYMOUS";
+    public static final String ANONYMOUS_PREFIX = "X_ANONYMOUS"; //$NON-NLS-1$
 
     private static final Logger LOGGER = Logger.getLogger(MetadataRepository.class);
 

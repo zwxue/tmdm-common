@@ -144,6 +144,8 @@ public interface ComplexTypeMetadata extends TypeMetadata {
 
     void declareUsage(ContainedComplexTypeMetadata usage);
 
+    List<ContainedComplexTypeMetadata> getUsages();
+
     void freezeUsages();
 
     void setSubTypes(List<ComplexTypeMetadata> subTypes);
