@@ -322,6 +322,11 @@ public class SoftTypeRef implements ComplexTypeMetadata {
     }
 
     @Override
+    public List<ContainedComplexTypeMetadata> getUsages() {
+        return usages;
+    }
+
+    @Override
     public void freezeUsages() {
         throw new IllegalStateException("Usage freeze must be called on resolved type references.");
     }

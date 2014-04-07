@@ -362,6 +362,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         }
         copy.isFrozen = false;
         copy.localeToLabel.putAll(localeToLabel);
+        copy.usages.addAll(usages);
         return copy;
     }
 
@@ -424,6 +425,11 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
     @Override
     public void declareUsage(ContainedComplexTypeMetadata usage) {
         usages.add(usage);
+    }
+
+    @Override
+    public List<ContainedComplexTypeMetadata> getUsages() {
+        return usages;
     }
 
     @Override

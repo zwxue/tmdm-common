@@ -13,10 +13,7 @@ package org.talend.mdm.commmon.metadata;
 
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class ContainedComplexTypeMetadata implements ComplexTypeMetadata {
 
@@ -163,6 +160,11 @@ public class ContainedComplexTypeMetadata implements ComplexTypeMetadata {
 
     @Override
     public void declareUsage(ContainedComplexTypeMetadata usage) {
+    }
+
+    @Override
+    public List<ContainedComplexTypeMetadata> getUsages() {
+        return containedType.getUsages();
     }
 
     @Override
