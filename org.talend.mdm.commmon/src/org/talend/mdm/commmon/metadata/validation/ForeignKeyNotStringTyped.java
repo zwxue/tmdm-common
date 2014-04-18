@@ -26,20 +26,8 @@ class ForeignKeyNotStringTyped implements ValidationRule {
 
     @Override
     public boolean perform(ValidationHandler handler) {
-        TypeMetadata currentType = field.getType();
-        // TODO Reuse MetadataUtils!!
-        if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace())) {
-            while (!currentType.getSuperTypes().isEmpty()) {
-                TypeMetadata superType = currentType.getSuperTypes().iterator().next();
-                if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(superType.getNamespace())
-                        && (Types.ANY_TYPE.equals(superType.getName())
-                        || Types.ANY_SIMPLE_TYPE.equals(superType.getName()))) {
-                    break;
-                }
-                currentType = superType;
-            }
-        }
-        if (!Types.STRING.equals(currentType.getName())) {
+        TypeMetadata type = MetadataUtils.getSuperConcreteType(field.getType());
+        if (!Types.STRING.equals(type.getName())) {
             handler.error(field,
                     "FK field '" + field.getName() + "' is invalid because it isn't typed as string (nor a string restriction).",
                     field.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
