@@ -589,12 +589,27 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
         if (schemaType instanceof XSDSimpleTypeDefinition) {
             XSDSimpleTypeDefinition simpleSchemaType = (XSDSimpleTypeDefinition) schemaType;
             XSDSimpleTypeDefinition content = simpleSchemaType.getBaseTypeDefinition();
-            if (schemaType.getQName() != null) { // Null QNames may happen for anonymous types extending other types.
+            if (schemaType.getQName() != null) { 
                 fieldType = new SoftTypeRef(this, schemaType.getTargetNamespace(), schemaType.getName(), false);
-                fieldType.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
-                fieldType.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
-                fieldType.setData(XSD_DOM_ELEMENT, element.getElement());
+            } else {
+                // Null QNames may happen for anonymous types extending other types.
+                fieldType = new SimpleTypeMetadata(targetNamespace, ANONYMOUS_PREFIX + String.valueOf(anonymousCounter++));
+                if (content != null) {
+                    fieldType.addSuperType(new SoftTypeRef(this, content.getTargetNamespace(), content.getName(), false));
+                }
+                EList<XSDConstrainingFacet> facets = simpleSchemaType.getFacetContents();
+                for (XSDConstrainingFacet currentFacet : facets) {
+                    if (currentFacet instanceof XSDMaxLengthFacet) {
+                        fieldType.setData(MetadataRepository.DATA_MAX_LENGTH,
+                                String.valueOf(((XSDMaxLengthFacet) currentFacet).getValue()));
+                    } else if (LOGGER.isTraceEnabled()) {
+                        LOGGER.trace("Ignore simple type facet on type '" + fieldName + "': " + currentFacet);
+                    }
+                }
             }
+            fieldType.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
+            fieldType.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
+            fieldType.setData(XSD_DOM_ELEMENT, element.getElement());
             if (isReference) {
                 ReferenceFieldMetadata referenceField = new ReferenceFieldMetadata(containingType,
                         false,
@@ -617,17 +632,6 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
                 return referenceField;
             }
             if (content != null) {
-                if (fieldType == null) {
-                    fieldType = new SimpleTypeMetadata(content.getTargetNamespace(), content.getName());
-                    EList<XSDConstrainingFacet> facets = simpleSchemaType.getFacetContents();
-                    for (XSDConstrainingFacet currentFacet : facets) {
-                        if (currentFacet instanceof XSDMaxLengthFacet) {
-                            fieldType.setData(MetadataRepository.DATA_MAX_LENGTH, String.valueOf(((XSDMaxLengthFacet) currentFacet).getValue()));
-                        } else if (LOGGER.isTraceEnabled()) {
-                            LOGGER.trace("Ignore simple type facet on type '" + fieldName + "': " + currentFacet);
-                        }
-                    }
-                }
                 if (content.getFacets().size() > 0) {
                     boolean isEnumeration = false;
                     for (int i = 0; i < content.getFacets().size(); i++) {
