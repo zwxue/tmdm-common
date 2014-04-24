@@ -158,7 +158,7 @@ public class MetadataUtils {
      *                                                                     information on where the cycle is.
      */
     public static List<ComplexTypeMetadata> sortTypes(MetadataRepository repository) {
-        ArrayList<ComplexTypeMetadata> types = new ArrayList<ComplexTypeMetadata>(repository.getUserComplexTypes());
+        List<ComplexTypeMetadata> types = new ArrayList<ComplexTypeMetadata>(repository.getUserComplexTypes());
         return _sortTypes(repository, false, types);
     }
 
@@ -176,14 +176,21 @@ public class MetadataUtils {
      * <p>
      * This method is thread safe.
      * </p>
-     *
+     * 
      * @param repository This is used to display information in case of cycle.
-     * @param types      The list of types to be sorted. This list should provide a transitive closure of types (all references
-     *                   to other types must be satisfied in this list), if it isn't the unresolved FK will be ignored.
-     * @return A sorted list of {@link ComplexTypeMetadata} types. First type of list is a type that has no dependency on
-     * any other type of the list.
-     * @throws org.talend.mdm.commmon.metadata.CircularDependencyException If repository contains types that creates a cyclic dependency. Error message contains
-     *                                                                     information on where the cycle is.
+     * @param types The list of types to be sorted. About the list:
+     * <ul>
+     * <li>
+     * This list should provide a transitive closure of types (all references to other types must be satisfied in this
+     * list), if it isn't the unresolved FK will be ignored.</li>
+     * <li>
+     * If one of the type is a {@link org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata contained type},
+     * please note sort will consider its containing (top-level) entity type.</li>
+     * </ul>
+     * @return A sorted list of {@link ComplexTypeMetadata} types. First type of list is a type that has no dependency
+     * on any other type of the list.
+     * @throws org.talend.mdm.commmon.metadata.CircularDependencyException If repository contains types that creates a
+     * cyclic dependency. Error message contains information on where the cycle is.
      */
     public static List<ComplexTypeMetadata> sortTypes(MetadataRepository repository, List<ComplexTypeMetadata> types) {
         return _sortTypes(repository, true, types);
@@ -191,10 +198,20 @@ public class MetadataUtils {
 
     private static List<ComplexTypeMetadata> _sortTypes(MetadataRepository repository,
                                                         final boolean sortAllTypes,
-                                                        final List<ComplexTypeMetadata> types) {
+                                                        List<ComplexTypeMetadata> typesSubSet) {
         /*
          * Compute additional data for topological sorting
          */
+        // Ensure to get only top level types (TMDM-7235)
+        final List<ComplexTypeMetadata> types = new ArrayList<ComplexTypeMetadata>();
+        for (ComplexTypeMetadata currentType : typesSubSet) {
+            if (currentType instanceof ContainedComplexTypeMetadata) {
+                types.add(currentType.getEntity());
+            } else if (!types.contains(currentType)) {
+                types.add(currentType);
+            }
+        }
+        // Create the dependency matrix
         final int typeNumber = types.size();
         byte[][] dependencyGraph = new byte[typeNumber][typeNumber];
         for (final ComplexTypeMetadata type : types) {
@@ -453,6 +470,9 @@ public class MetadataUtils {
 
     // internal method for sortTypes
     private static int getId(ComplexTypeMetadata type, List<ComplexTypeMetadata> types) {
+        if (type instanceof ContainedComplexTypeMetadata) {
+            type = type.getEntity();
+        }
         if (!types.contains(type)) {
             types.add(type);
         }
