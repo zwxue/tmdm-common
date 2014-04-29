@@ -479,5 +479,21 @@ public class MetadataUtils {
         return types.indexOf(type);
     }
 
+    /**
+     * Counts how many times a type (usually a reusable type) is used throughout the data model.
+     * 
+     * @param type A data model type.
+     * @return For entity types, this method returns 0. For reusable types, return a number greater or equals to 0.
+     */
+    public static int countEntityUsageCount(ComplexTypeMetadata type) {
+        int leftUsageCount = 0;
+        for (ContainedComplexTypeMetadata usage : type.getUsages()) {
+            ComplexTypeMetadata containingType = usage.getContainer().getContainingType();
+            if (containingType.getEntity().isInstantiable()) {
+                leftUsageCount++;
+            }
+        }
+        return leftUsageCount;
+    }
 }
 
