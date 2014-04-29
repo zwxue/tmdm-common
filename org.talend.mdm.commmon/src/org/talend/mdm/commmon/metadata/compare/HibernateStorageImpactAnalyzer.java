@@ -86,12 +86,9 @@ public class HibernateStorageImpactAnalyzer implements ImpactAnalyzer {
                     impactSort.get(Impact.HIGH).add(modifyAction);
                     continue;
                 }
-                /*
-                 * MEDIUM IMPACT CHANGES
-                 */
-                // Won't be able to change constraint, but constraint won't be applied in database.
+                // Won't be able to change constraint
                 if (previous.isMandatory() != current.isMandatory()) {
-                    impactSort.get(Impact.MEDIUM).add(modifyAction);
+                    impactSort.get(Impact.HIGH).add(modifyAction);
                 }
             }
         }
