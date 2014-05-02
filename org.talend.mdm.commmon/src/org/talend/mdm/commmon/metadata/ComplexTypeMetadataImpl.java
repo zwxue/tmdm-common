@@ -63,7 +63,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
 
     private FieldMetadata containingField;
 
-    private List<ContainedComplexTypeMetadata> usages = new ArrayList<ContainedComplexTypeMetadata>();
+    private List<ComplexTypeMetadata> usages = new ArrayList<ComplexTypeMetadata>();
 
     public ComplexTypeMetadataImpl(String nameSpace, String name, boolean instantiable) {
         this(nameSpace,
@@ -423,19 +423,21 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
     }
 
     @Override
-    public void declareUsage(ContainedComplexTypeMetadata usage) {
+    public void declareUsage(ComplexTypeMetadata usage) {
         usages.add(usage);
     }
 
     @Override
-    public List<ContainedComplexTypeMetadata> getUsages() {
+    public List<ComplexTypeMetadata> getUsages() {
         return usages;
     }
 
     @Override
     public void freezeUsages() {
-        for (ContainedComplexTypeMetadata usage : usages) {
-            usage.finalizeUsage();
+        for (ComplexTypeMetadata usage : usages) {
+            if (usage instanceof ContainedComplexTypeMetadata) {
+                ((ContainedComplexTypeMetadata) usage).finalizeUsage();
+            }
         }
     }
 

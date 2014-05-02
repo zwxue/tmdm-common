@@ -52,6 +52,18 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
 
     private static final Logger LOGGER = Logger.getLogger(MetadataRepository.class);
 
+    private Map<XSDTypeDefinition, List<ComplexTypeMetadata>> entityTypeUsage = new HashMap<XSDTypeDefinition, List<ComplexTypeMetadata>>() {
+        @Override
+        public List<ComplexTypeMetadata> get(Object key) {
+            List<ComplexTypeMetadata> types = super.get(key);
+            if (types == null) {
+                types = new LinkedList<ComplexTypeMetadata>();
+                super.put((XSDTypeDefinition) key, types);
+            }
+            return types;
+        }
+    };
+
     private final static List<XmlSchemaAnnotationProcessor> XML_ANNOTATIONS_PROCESSORS = Arrays.asList(new ForeignKeyProcessor(),
             new UserAccessProcessor(),
             new SchematronProcessor(),
@@ -383,6 +395,11 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
             nonInstantiableType.setData(XSD_DOM_ELEMENT, type.getElement());
             addTypeMetadata(nonInstantiableType);
             currentTypeStack.push(nonInstantiableType);
+            // If type is used, declare usage
+            List<ComplexTypeMetadata> usages = entityTypeUsage.get(type);
+            for (ComplexTypeMetadata usage : usages) {
+                nonInstantiableType.declareUsage(usage);
+            }
         } else {
             // Keep track of the complex type used for entity type (especially for inheritance).
             if (typeName != null) {
@@ -413,7 +430,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
                         contentModel.getName(),
                         false);
                 if (currentTypeStack.peek() instanceof ContainedComplexTypeMetadata) {
-                    superType.declareUsage((ContainedComplexTypeMetadata) currentTypeStack.peek());
+                    superType.declareUsage(currentTypeStack.peek());
                 }
                 currentTypeStack.peek().addSuperType(superType);
                 particle = type.getContent();
@@ -494,6 +511,8 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
                 type.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
                 type.setData(XSD_DOM_ELEMENT, element.getElement());
                 addTypeMetadata(type);
+                // Keep usage information
+                entityTypeUsage.get(element.getType()).add(type);
             }
             // Walk the fields
             currentTypeStack.push(type);

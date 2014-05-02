@@ -486,14 +486,25 @@ public class MetadataUtils {
      * @return For entity types, this method returns 0. For reusable types, return a number greater or equals to 0.
      */
     public static int countEntityUsageCount(ComplexTypeMetadata type) {
-        int leftUsageCount = 0;
-        for (ContainedComplexTypeMetadata usage : type.getUsages()) {
-            ComplexTypeMetadata containingType = usage.getContainer().getContainingType();
-            if (containingType.getEntity().isInstantiable()) {
-                leftUsageCount++;
+        int usageCount = 0;
+        for (ComplexTypeMetadata usage : type.getUsages()) {
+            FieldMetadata container = usage.getContainer();
+            if (container != null) {
+                ComplexTypeMetadata containingType = container.getContainingType();
+                ComplexTypeMetadata entity = containingType.getEntity();
+                if (entity.isInstantiable()) {
+                    usageCount++;
+                } else if(!type.equals(entity)) {
+                    // In case the non instance type is used in an entity.
+                    usageCount += countEntityUsageCount(entity);
+                } else if (type.equals(entity)) {
+                    return 0; // entity is not instantiable, thus no entity here.
+                }
+            } else {
+                usageCount++;
             }
         }
-        return leftUsageCount;
+        return usageCount;
     }
 }
 

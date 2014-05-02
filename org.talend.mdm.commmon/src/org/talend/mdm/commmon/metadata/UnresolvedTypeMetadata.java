@@ -201,11 +201,11 @@ public class UnresolvedTypeMetadata extends MetadataExtensions implements Comple
     }
 
     @Override
-    public void declareUsage(ContainedComplexTypeMetadata usage) {
+    public void declareUsage(ComplexTypeMetadata usage) {
     }
 
     @Override
-    public List<ContainedComplexTypeMetadata> getUsages() {
+    public List<ComplexTypeMetadata> getUsages() {
         return Collections.emptyList();
     }
 

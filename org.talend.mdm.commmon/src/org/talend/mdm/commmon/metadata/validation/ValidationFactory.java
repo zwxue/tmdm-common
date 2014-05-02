@@ -105,6 +105,9 @@ public class ValidationFactory {
         rules.add(new LookupFieldsValidationRule(type));
         rules.add(new PrimaryKeyInfoValidationRule(type));
         rules.add(new XSDAttributeValidationRule(type));
+        if (!type.isInstantiable()) {
+            rules.add(new UnusedReusableTypeValidationRule(type));
+        }
         return new CompositeValidationRule(rules.toArray(new ValidationRule[rules.size()]));
     }
 

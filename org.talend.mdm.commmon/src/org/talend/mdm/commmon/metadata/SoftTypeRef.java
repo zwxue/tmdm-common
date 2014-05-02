@@ -38,7 +38,7 @@ public class SoftTypeRef implements ComplexTypeMetadata {
 
     private TypeMetadata frozenType;
 
-    private List<ContainedComplexTypeMetadata> usages = new ArrayList<ContainedComplexTypeMetadata>();
+    private List<ComplexTypeMetadata> usages = new ArrayList<ComplexTypeMetadata>();
 
     private SoftTypeRef(MetadataRepository repository, FieldMetadata fieldRef) {
         if (fieldRef == null) {
@@ -317,12 +317,12 @@ public class SoftTypeRef implements ComplexTypeMetadata {
     }
 
     @Override
-    public void declareUsage(ContainedComplexTypeMetadata usage) {
+    public void declareUsage(ComplexTypeMetadata usage) {
         usages.add(usage);
     }
 
     @Override
-    public List<ContainedComplexTypeMetadata> getUsages() {
+    public List<ComplexTypeMetadata> getUsages() {
         return usages;
     }
 

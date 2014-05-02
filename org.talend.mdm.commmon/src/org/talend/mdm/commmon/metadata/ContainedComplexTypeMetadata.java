@@ -159,11 +159,11 @@ public class ContainedComplexTypeMetadata implements ComplexTypeMetadata {
     }
 
     @Override
-    public void declareUsage(ContainedComplexTypeMetadata usage) {
+    public void declareUsage(ComplexTypeMetadata usage) {
     }
 
     @Override
-    public List<ContainedComplexTypeMetadata> getUsages() {
+    public List<ComplexTypeMetadata> getUsages() {
         return containedType.getUsages();
     }
 

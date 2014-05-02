@@ -151,9 +151,9 @@ public interface ComplexTypeMetadata extends TypeMetadata {
 
     List<FieldMetadata> getLookupFields();
 
-    void declareUsage(ContainedComplexTypeMetadata usage);
+    void declareUsage(ComplexTypeMetadata usage);
 
-    List<ContainedComplexTypeMetadata> getUsages();
+    List<ComplexTypeMetadata> getUsages();
 
     void freezeUsages();
 
