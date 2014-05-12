@@ -282,14 +282,14 @@ public class ContainedComplexTypeMetadata implements ComplexTypeMetadata {
 
         if (!container.getContainingType().equals(that.container.getContainingType())) return false;
         if (!container.getName().equals(that.container.getName())) return false;
-        if (!containedType.equals(that.containedType)) return false;
+        if (!containedType.getName().equals(that.containedType.getName())) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = containedType.hashCode();
+        int result = containedType.getName().hashCode();
         result = 31 * result + container.getContainingType().hashCode();
         result = 31 * result + container.getName().hashCode();
         return result;
