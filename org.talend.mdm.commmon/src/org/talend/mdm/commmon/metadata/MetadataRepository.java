@@ -73,9 +73,12 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
 
     private final static String USER_NAMESPACE = StringUtils.EMPTY;
 
-    private final Map<String, Map<String, TypeMetadata>> entityTypes = new TreeMap<String, Map<String, TypeMetadata>>();
+    // Keep a version of types that doesn't change from one model to another
+    private final static MetadataRepository commonTypes = new MetadataRepository();
 
-    private final Map<String, Map<String, TypeMetadata>> nonInstantiableTypes = new TreeMap<String, Map<String, TypeMetadata>>();
+    private final Map<String, Map<String, TypeMetadata>> entityTypes = new HashMap<String, Map<String, TypeMetadata>>();
+
+    private final Map<String, Map<String, TypeMetadata>> nonInstantiableTypes = new HashMap<String, Map<String, TypeMetadata>>();
 
     private final Stack<ComplexTypeMetadata> currentTypeStack = new Stack<ComplexTypeMetadata>();
 
@@ -83,20 +86,42 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
 
     private int anonymousCounter = 0;
 
-    public MetadataRepository() {
+    static {
         NoOpValidationHandler noOpValidationHandler = new NoOpValidationHandler();
         // Load XML Schema types
         InputStream xmlSchemaDef = MetadataRepository.class.getResourceAsStream("XMLSchema.xsd"); //$NON-NLS-1$
         if (xmlSchemaDef == null) {
             throw new IllegalStateException("Could not find XML schema definition.");
         }
-        load(xmlSchemaDef, noOpValidationHandler);
+        commonTypes.load(xmlSchemaDef, noOpValidationHandler);
         // TMDM-4444: Adds standard Talend types such as UUID.
         InputStream internalTypes = MetadataRepository.class.getResourceAsStream("talend_types.xsd"); //$NON-NLS-1$
         if (internalTypes == null) {
             throw new IllegalStateException("Could not find internal type data model.");
         }
-        load(internalTypes, noOpValidationHandler);
+        commonTypes.load(internalTypes, noOpValidationHandler);
+        // Prevent further modifications on common types
+        for (Map.Entry<String, Map<String, TypeMetadata>> entry : commonTypes.nonInstantiableTypes.entrySet()) {
+            commonTypes.nonInstantiableTypes.put(entry.getKey(), Collections.unmodifiableMap(entry.getValue()));
+        }
+        for (Map.Entry<String, Map<String, TypeMetadata>> entry : commonTypes.entityTypes.entrySet()) {
+            if (entry.getValue() != null) {
+                commonTypes.entityTypes.put(entry.getKey(), Collections.unmodifiableMap(entry.getValue()));
+            }
+        }
+   }
+    
+    public MetadataRepository() {
+        if (commonTypes != null) {
+            for (Map.Entry<String, Map<String, TypeMetadata>> entry : commonTypes.nonInstantiableTypes.entrySet()) {
+                this.nonInstantiableTypes.put(entry.getKey(), new TreeMap<String, TypeMetadata>(entry.getValue()));
+            }
+            for (Map.Entry<String, Map<String, TypeMetadata>> entry : commonTypes.entityTypes.entrySet()) {
+                if (entry.getValue() != null) {
+                    this.entityTypes.put(entry.getKey(), new TreeMap<String, TypeMetadata>(entry.getValue()));
+                }
+            }
+        }
     }
 
     public TypeMetadata getType(String name) {
@@ -255,7 +280,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
         if (typesToFreeze == null) {
             return null;
         }
-        Map<String, TypeMetadata> workingTypes = new HashMap<String, TypeMetadata>(typesToFreeze);
+        Map<String, TypeMetadata> workingTypes = new TreeMap<String, TypeMetadata>(typesToFreeze);
         for (TypeMetadata type : typesToFreeze.values()) {
             workingTypes.put(type.getName(), type.freeze());
         }
@@ -304,7 +329,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
         }
         Map<String, TypeMetadata> nameSpace = typeMap.get(namespace);
         if (nameSpace == null) {
-            nameSpace = new HashMap<String, TypeMetadata>();
+            nameSpace = new TreeMap<String, TypeMetadata>();
             typeMap.put(namespace, nameSpace);
         }
         typeMap.get(namespace).put(typeMetadata.getName(), typeMetadata);
@@ -719,8 +744,6 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
                     if (schemaType instanceof XSDComplexTypeDefinition) {
                         fieldType = new SoftTypeRef(this, schemaType.getTargetNamespace(), schemaType.getName(), false);
                         isContained = true;
-                    } else if (schemaType instanceof XSDSimpleTypeDefinition) {
-                        fieldType = new SoftTypeRef(this, schemaType.getTargetNamespace(), schemaType.getName(), false);
                     } else {
                         throw new NotImplementedException("Support for '" + schemaType.getClass() + "'.");
                     }
