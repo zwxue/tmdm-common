@@ -1,21 +1,20 @@
 /*
  * Copyright (C) 2006-2014 Talend Inc. - www.talend.com
- *
+ * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
- *
- * You should have received a copy of the agreement
- * along with this program; if not, write to Talend SA
- * 9 rue Pages 92150 Suresnes, France
+ * 
+ * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
+ * 92150 Suresnes, France
  */
 
 package org.talend.mdm.commmon.metadata;
 
-import org.talend.mdm.commmon.metadata.validation.ValidationRule;
-
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 
 public class ContainedComplexTypeMetadata implements ComplexTypeMetadata {
 
@@ -267,21 +266,31 @@ public class ContainedComplexTypeMetadata implements ComplexTypeMetadata {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ContainedComplexTypeMetadata)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ContainedComplexTypeMetadata)) {
+            return false;
+        }
 
         ContainedComplexTypeMetadata that = (ContainedComplexTypeMetadata) o;
 
-        if (!container.getContainingType().equals(that.container.getContainingType())) return false;
-        if (!container.getName().equals(that.container.getName())) return false;
-        if (!containedType.equals(that.containedType)) return false;
+        if (!container.getContainingType().equals(that.container.getContainingType())) {
+            return false;
+        }
+        if (!container.getName().equals(that.container.getName())) {
+            return false;
+        }
+        if (!containedType.getName().equals(that.containedType.getName())) {
+            return false;
+        }
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = containedType.hashCode();
+        int result = containedType.getName().hashCode();
         result = 31 * result + container.getContainingType().hashCode();
         result = 31 * result + container.getName().hashCode();
         return result;
@@ -289,6 +298,7 @@ public class ContainedComplexTypeMetadata implements ComplexTypeMetadata {
 
     @Override
     public String toString() {
-        return "Contained([" + containedType.getNamespace() + ':' + containedType.getName() + "], container=" + container.getName() + ')';
+        return "Contained([" + containedType.getNamespace() + ':' + containedType.getName() + "], container="
+                + container.getName() + ')';
     }
 }
