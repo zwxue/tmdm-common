@@ -1,20 +1,24 @@
 /*
  * Copyright (C) 2006-2014 Talend Inc. - www.talend.com
- *
+ * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
- *
- * You should have received a copy of the agreement
- * along with this program; if not, write to Talend SA
- * 9 rue Pages 92150 Suresnes, France
+ * 
+ * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
+ * 92150 Suresnes, France
  */
 
 package org.talend.mdm.commmon.metadata.xsd;
 
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.xsd.*;
-
 import javax.xml.XMLConstants;
+
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.xsd.XSDComplexTypeDefinition;
+import org.eclipse.xsd.XSDConcreteComponent;
+import org.eclipse.xsd.XSDElementDeclaration;
+import org.eclipse.xsd.XSDSchema;
+import org.eclipse.xsd.XSDSimpleTypeDefinition;
+import org.eclipse.xsd.XSDTypeDefinition;
 
 /**
  *
@@ -53,6 +57,9 @@ public class XmlSchemaWalker {
 
     public static void walk(XSDElementDeclaration element, XSDVisitor visitor) {
         if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(element.getTargetNamespace())) {
+            return;
+        }
+        if (element.isElementDeclarationReference()) {
             return;
         }
         visitor.visitElement(element);
