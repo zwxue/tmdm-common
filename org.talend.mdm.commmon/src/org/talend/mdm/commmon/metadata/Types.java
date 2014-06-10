@@ -73,4 +73,5 @@ public interface Types {
     String G_MONTH = "gMonth"; //$NON-NLS-1$
     String ANY_TYPE = "anyType"; //$NON-NLS-1$
     String ANY_SIMPLE_TYPE = "anySimpleType"; //$NON-NLS-1$
+    String TOKEN = "token"; //$NON-NLS-1$
 }
