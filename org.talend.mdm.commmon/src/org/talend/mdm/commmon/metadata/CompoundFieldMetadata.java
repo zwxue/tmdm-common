@@ -92,27 +92,32 @@ public class CompoundFieldMetadata extends MetadataExtensions implements FieldMe
 
     @Override
     public String getPath() {
-        throw new UnsupportedOperationException();
+        FieldMetadata containingField = getContainingType().getContainer();
+        if (containingField != null) {
+            return containingField.getPath() + '/' + getName();
+        } else {
+            return getName();
+        }
     }
 
     @Override
     public String getEntityTypeName() {
-        throw new UnsupportedOperationException();
+        return getContainingType().getEntity().getName();
     }
 
     public TypeMetadata getDeclaringType() {
         return fields[0].getDeclaringType();
     }
 
-    public void adopt(ComplexTypeMetadata metadata, MetadataRepository repository) {
+    public void adopt(ComplexTypeMetadata metadata) {
         throw new UnsupportedOperationException();
     }
 
-    public FieldMetadata copy(MetadataRepository repository) {
+    public FieldMetadata copy() {
         FieldMetadata[] fieldsCopy = new FieldMetadata[fields.length];
         int i = 0;
         for (FieldMetadata field : fields) {
-            fieldsCopy[i++] = field.copy(repository);
+            fieldsCopy[i++] = field.copy();
         }
         return new CompoundFieldMetadata(fieldsCopy);
     }

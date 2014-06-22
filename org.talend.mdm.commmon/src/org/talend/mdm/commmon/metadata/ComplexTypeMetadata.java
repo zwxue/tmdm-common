@@ -19,6 +19,12 @@ import java.util.List;
  */
 public interface ComplexTypeMetadata extends TypeMetadata {
 
+    ComplexTypeMetadata getEntity();
+
+    FieldMetadata getContainer();
+
+    void setContainer(FieldMetadata field);
+
     /**
      * @return A {@link List} of {@link FieldMetadata} that represents key information for the complex type. This method
      *         might return an empty list if no key field is defined for this type.
@@ -123,6 +129,12 @@ public interface ComplexTypeMetadata extends TypeMetadata {
     void registerSubType(ComplexTypeMetadata type);
 
     List<FieldMetadata> getLookupFields();
+
+    void declareUsage(ContainedComplexTypeMetadata usage);
+
+    void freezeUsages();
+
+    void setSubTypes(List<ComplexTypeMetadata> subTypes);
 
     enum DeleteType {
         /**

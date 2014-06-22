@@ -16,7 +16,6 @@ import java.util.List;
 import javax.xml.XMLConstants;
 
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -42,15 +41,12 @@ class PrimaryKeyInfoValidationRule implements ValidationRule {
         for (FieldMetadata pkInfo : primaryKeyInfo) {
             // PK Info must be defined in the entity (can't reference other entity field).
             ComplexTypeMetadata ctm = pkInfo.getContainingType();
-            while (ctm instanceof ContainedComplexTypeMetadata) {
-                ctm = ((ContainedComplexTypeMetadata) ctm).getContainerType();
-            }
             if (!type.equals(ctm)) {
-                if (!validateDefinedInEntity(type.getFields(),ctm)) {
+                if (!validateDefinedInEntity(type.getFields(), ctm)) {
                     handler.error(type, "Primary key info must refer a field of the same entity.",
-                            pkInfo.<Element> getData(MetadataRepository.XSD_DOM_ELEMENT),
-                            pkInfo.<Integer> getData(MetadataRepository.XSD_LINE_NUMBER),
-                            pkInfo.<Integer> getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                            pkInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
+                            pkInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                            pkInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                             ValidationError.PRIMARY_KEY_INFO_NOT_IN_ENTITY);
                     success &= false;
                     continue;
@@ -61,18 +57,18 @@ class PrimaryKeyInfoValidationRule implements ValidationRule {
             // No need to check isMany() if field definition is already wrong.
             if (pkInfo.isMany()) {
                 handler.error(type, "Primary key info element cannot be a repeatable element.",
-                        pkInfo.<Element> getData(MetadataRepository.XSD_DOM_ELEMENT),
-                        pkInfo.<Integer> getData(MetadataRepository.XSD_LINE_NUMBER),
-                        pkInfo.<Integer> getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                        pkInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
+                        pkInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                        pkInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                         ValidationError.PRIMARY_KEY_INFO_CANNOT_BE_REPEATABLE);
                 success &= false;
                 continue;
             }
             if (!isPrimitiveTypeField(pkInfo)) {
                 handler.warning(type, "Primary key info should refer to a field with a primitive XSD type.",
-                        pkInfo.<Element> getData(MetadataRepository.XSD_DOM_ELEMENT),
-                        pkInfo.<Integer> getData(MetadataRepository.XSD_LINE_NUMBER),
-                        pkInfo.<Integer> getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                        pkInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
+                        pkInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                        pkInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
                         ValidationError.PRIMARY_KEY_INFO_TYPE_NOT_PRIMITIVE);
             }
         }
@@ -94,8 +90,8 @@ class PrimaryKeyInfoValidationRule implements ValidationRule {
         }
         return XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(currentType.getNamespace());
     }
-    
-    private boolean validateDefinedInEntity(Collection<FieldMetadata> fieldCollection,ComplexTypeMetadata complexTypeMetadata) {
+
+    private boolean validateDefinedInEntity(Collection<FieldMetadata> fieldCollection, ComplexTypeMetadata complexTypeMetadata) {
         ComplexTypeMetadata typeMetadata = null;
         for (FieldMetadata fieldMetadata : fieldCollection) {
             if (typeMetadata == null && fieldMetadata instanceof SimpleTypeFieldMetadata) {
@@ -105,8 +101,8 @@ class PrimaryKeyInfoValidationRule implements ValidationRule {
                 }
             }
             if (fieldMetadata instanceof ContainedTypeFieldMetadata) {
-                ContainedComplexTypeMetadata containedComplexTypeMetadata = (ContainedComplexTypeMetadata)((ContainedTypeFieldMetadata) fieldMetadata).getType();
-                return validateDefinedInEntity(containedComplexTypeMetadata.getFields(), complexTypeMetadata);                
+                ComplexTypeMetadata containedComplexTypeMetadata = (ComplexTypeMetadata) fieldMetadata.getType();
+                return validateDefinedInEntity(containedComplexTypeMetadata.getFields(), complexTypeMetadata);
             }
         }
         return false;

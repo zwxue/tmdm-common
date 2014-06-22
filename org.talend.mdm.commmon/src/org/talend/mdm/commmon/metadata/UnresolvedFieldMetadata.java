@@ -90,11 +90,11 @@ public class UnresolvedFieldMetadata implements FieldMetadata {
     }
 
     @Override
-    public void adopt(ComplexTypeMetadata metadata, MetadataRepository repository) {
+    public void adopt(ComplexTypeMetadata metadata) {
     }
 
     @Override
-    public FieldMetadata copy(MetadataRepository repository) {
+    public FieldMetadata copy() {
         return this;
     }
 

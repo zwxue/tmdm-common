@@ -11,7 +11,6 @@
 
 package org.talend.mdm.commmon.metadata;
 
-import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 import org.w3c.dom.Element;
@@ -37,8 +36,6 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
     private final String name;
 
     private final TypeMetadata declaringType;
-
-    private final String path;
 
     private TypeMetadata fieldType;
 
@@ -68,8 +65,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                                   boolean allowFKIntegrityOverride,
                                   TypeMetadata fieldType,
                                   List<String> allowWriteUsers,
-                                  List<String> hideUsers,
-                                  String path) {
+                                  List<String> hideUsers) {
         this(containingType,
                 isKey,
                 isMany,
@@ -83,8 +79,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                 fieldType,
                 allowWriteUsers,
                 hideUsers,
-                Collections.<String>emptyList(),
-                path);
+                Collections.<String>emptyList());
     }
 
     public ReferenceFieldMetadata(ComplexTypeMetadata containingType,
@@ -100,8 +95,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                                   TypeMetadata fieldType,
                                   List<String> allowWriteUsers,
                                   List<String> hideUsers,
-                                  List<String> workflowAccessRights,
-                                  String path) {
+                                  List<String> workflowAccessRights) {
         this.isMandatory = isMandatory;
         this.name = name;
         this.referencedField = referencedField;
@@ -118,7 +112,6 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         this.writeUsers = allowWriteUsers;
         this.hideUsers = hideUsers;
         this.workflowAccessRights = workflowAccessRights;
-        this.path = path;
     }
 
     public FieldMetadata getReferencedField() {
@@ -193,12 +186,17 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
 
     @Override
     public String getPath() {
-        return StringUtils.substringAfter(path, "/"); //$NON-NLS-1$
+        FieldMetadata containingField = containingType.getContainer();
+        if (containingField != null) {
+            return containingField.getPath() + '/' + name;
+        } else {
+            return name;
+        }
     }
 
     @Override
     public String getEntityTypeName() {
-        return StringUtils.substringBefore(path, "/"); //$NON-NLS-1$
+        return containingType.getEntity().getName();
     }
 
     public TypeMetadata getDeclaringType() {
@@ -213,8 +211,8 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         return allowFKIntegrityOverride;
     }
 
-    public void adopt(ComplexTypeMetadata metadata, MetadataRepository repository) {
-        FieldMetadata copy = copy(repository);
+    public void adopt(ComplexTypeMetadata metadata) {
+        FieldMetadata copy = copy();
         copy.setContainingType(metadata);
         metadata.addField(copy);
     }
@@ -231,19 +229,19 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         return visitor.visit(this);
     }
 
-    public FieldMetadata copy(MetadataRepository repository) {
-        ComplexTypeMetadata referencedTypeCopy = (ComplexTypeMetadata) referencedType.copy(repository);
-        FieldMetadata referencedFieldCopy = referencedField.copy(repository);
+    public FieldMetadata copy() {
+        ComplexTypeMetadata referencedTypeCopy = referencedType;
+        FieldMetadata referencedFieldCopy = referencedField.copy();
         List<FieldMetadata> foreignKeyInfoCopy;
         if (hasForeignKeyInfo()) {
             foreignKeyInfoCopy = new ArrayList<FieldMetadata>(foreignKeyInfoFields.size());
             for (FieldMetadata foreignKeyInfoField : foreignKeyInfoFields) {
-                foreignKeyInfoCopy.add(foreignKeyInfoField.copy(repository));
+                foreignKeyInfoCopy.add(foreignKeyInfoField.copy());
             }
         } else {
             foreignKeyInfoCopy = Collections.emptyList();
         }
-        ComplexTypeMetadata containingTypeCopy = (ComplexTypeMetadata) containingType.copy(repository);
+        ComplexTypeMetadata containingTypeCopy = (ComplexTypeMetadata) containingType.copyShallow();
         return new ReferenceFieldMetadata(containingTypeCopy,
                 isKey,
                 isMany,
@@ -257,8 +255,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                 fieldType,
                 writeUsers,
                 hideUsers,
-                workflowAccessRights,
-                path);
+                workflowAccessRights);
     }
 
     @Override

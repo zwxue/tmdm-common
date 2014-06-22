@@ -72,10 +72,10 @@ public class SimpleTypeMetadata extends MetadataExtensions implements TypeMetada
         return getName().equals(type.getName());
     }
 
-    public TypeMetadata copy(MetadataRepository repository) {
+    public TypeMetadata copy() {
         SimpleTypeMetadata copy = new SimpleTypeMetadata(nameSpace, name);
         for (TypeMetadata superType : superTypes) {
-            copy.addSuperType(superType.copy(repository), repository);
+            copy.addSuperType(superType.copy());
         }
         return copy;
     }
@@ -138,7 +138,7 @@ public class SimpleTypeMetadata extends MetadataExtensions implements TypeMetada
         }
     }
 
-    public void addSuperType(TypeMetadata superType, MetadataRepository repository) {
+    public void addSuperType(TypeMetadata superType) {
         superTypes.add(superType);
     }
 
