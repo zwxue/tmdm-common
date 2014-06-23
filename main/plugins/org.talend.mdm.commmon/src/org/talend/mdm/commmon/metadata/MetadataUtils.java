@@ -18,7 +18,7 @@ import java.util.*;
 
 public class MetadataUtils {
 
-    protected static final Logger LOGGER = Logger.getLogger(MetadataUtils.class);
+    private static final Logger LOGGER = Logger.getLogger(MetadataUtils.class);
 
     private MetadataUtils() {
     }
@@ -217,11 +217,11 @@ public class MetadataUtils {
         for (final ComplexTypeMetadata type : types) {
             dependencyGraph[getId(type, types)] = type.accept(new DefaultMetadataVisitor<byte[]>() {
 
-                Set<TypeMetadata> processedTypes = new HashSet<TypeMetadata>();
+                final Set<TypeMetadata> processedTypes = new HashSet<TypeMetadata>();
 
-                Set<TypeMetadata> processedReferences = new HashSet<TypeMetadata>();
+                final Set<TypeMetadata> processedReferences = new HashSet<TypeMetadata>();
 
-                byte[] lineContent = new byte[typeNumber]; // Stores dependencies of current type
+                final byte[] lineContent = new byte[typeNumber]; // Stores dependencies of current type
 
                 @Override
                 public byte[] visit(ComplexTypeMetadata complexType) {
@@ -378,7 +378,7 @@ public class MetadataUtils {
                     } while (currentLineNumber != lineNumber);
                     if (dependencyPath.size() >= 1) {
                         dependencyPath.add(getType(types, lineNumber)); // Include cycle start to get a better exception
-                                                                        // message.
+                        // message.
                         cycles.add(dependencyPath);
                     }
                 }
@@ -505,6 +505,16 @@ public class MetadataUtils {
             }
         }
         return usageCount;
+    }
+
+    /**
+     * Checks whether provided <code>field</code> is using a primitive type (i.e. a XSD datatype) or not.
+     * @param field A {@link org.talend.mdm.commmon.metadata.FieldMetadata field}.
+     * @return <code>true</code> if field's type is a XSD datatype, <code>false</code> otherwise.
+     */
+    public static boolean isPrimitiveTypeField(FieldMetadata field) {
+        TypeMetadata fieldType = getSuperConcreteType(field.getType());
+        return XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(fieldType.getNamespace());
     }
 }
 

@@ -86,7 +86,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
 
     private static final Logger LOGGER = Logger.getLogger(MetadataRepository.class);
 
-    private Map<XSDTypeDefinition, List<ComplexTypeMetadata>> entityTypeUsage = new HashMap<XSDTypeDefinition, List<ComplexTypeMetadata>>() {
+    private final Map<XSDTypeDefinition, List<ComplexTypeMetadata>> entityTypeUsage = new HashMap<XSDTypeDefinition, List<ComplexTypeMetadata>>() {
 
         @Override
         public List<ComplexTypeMetadata> get(Object key) {
@@ -278,10 +278,10 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
         resolveAdditionalSuperTypes(this);
         // "Freeze" all types (ensure all soft references now point to actual types in the repository).
         nonInstantiableTypes.put(getUserNamespace(), freezeTypes(nonInstantiableTypes.get(getUserNamespace())));
-        entityTypes.put(getUserNamespace(), freezeTypes(entityTypes.get(getUserNamespace())));
         // "Freeze" all reusable type usages in the data model.
-        freezeUsages(nonInstantiableTypes.get(getUserNamespace()));
-        freezeUsages(entityTypes.get(getUserNamespace()));
+        freezeUsages();
+        entityTypes.put(getUserNamespace(), freezeTypes(entityTypes.get(getUserNamespace())));
+        // Validate types
         for (TypeMetadata type : getUserComplexTypes()) {
             if (!XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(type.getNamespace())) {
                 type.validate(handler);
@@ -299,13 +299,20 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
         }
     }
 
-    private void freezeUsages(Map<String, TypeMetadata> types) {
-        if (types == null) {
-            return;
-        }
-        for (TypeMetadata type : types.values()) {
-            if (type instanceof ComplexTypeMetadata) {
-                ((ComplexTypeMetadata) type).freezeUsages();
+    protected void freezeUsages() {
+        for (List<ComplexTypeMetadata> entityTypes : entityTypeUsage.values()) {
+            for (ComplexTypeMetadata entityType : entityTypes) {
+                entityType.accept(new DefaultMetadataVisitor<Void>() {
+                    @Override
+                    public Void visit(ContainedComplexTypeMetadata containedType) {
+                        containedType.getContainedType().declareUsage(containedType);
+                        containedType.finalizeUsage();
+                        for (ComplexTypeMetadata subType : containedType.getSubTypes()) {
+                            subType.accept(this);
+                        }
+                        return super.visit(containedType);
+                    }
+                });
             }
         }
     }
@@ -515,11 +522,8 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
     public void visitElement(XSDElementDeclaration element) {
         if (currentTypeStack.isEmpty()) { // "top level" elements means new MDM entity type
             String typeName = element.getName();
-            if (entityTypes.get(getUserNamespace()) != null) {
-                if (entityTypes.get(getUserNamespace()).containsKey(typeName)) {
-                    // Ignore another definition (already processed).
-                    return;
-                }
+            if (getComplexType(typeName) != null) { // Don't process twice type
+                return;
             }
             // Id fields
             Map<String, XSDXPathDefinition> idFields = new LinkedHashMap<String, XSDXPathDefinition>();
@@ -530,39 +534,36 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
                     idFields.put(field.getValue(), field);
                 }
             }
-            ComplexTypeMetadata type = getComplexType(typeName); // Take type from repository if already built
-            if (type == null) {
-                XmlSchemaAnnotationProcessorState state;
-                try {
-                    XSDAnnotation annotation = element.getAnnotation();
-                    state = new XmlSchemaAnnotationProcessorState();
-                    for (XmlSchemaAnnotationProcessor processor : XML_ANNOTATIONS_PROCESSORS) {
-                        processor.process(this, null, annotation, state);
-                    }
-                } catch (Exception e) {
-                    throw new RuntimeException("Annotation processing exception while parsing info for type '" + typeName + "'.",
-                            e);
+            XmlSchemaAnnotationProcessorState state;
+            try {
+                XSDAnnotation annotation = element.getAnnotation();
+                state = new XmlSchemaAnnotationProcessorState();
+                for (XmlSchemaAnnotationProcessor processor : XML_ANNOTATIONS_PROCESSORS) {
+                    processor.process(this, null, annotation, state);
                 }
-                // If write is not allowed for everyone, at least add "administration".
-                if (state.getAllowWrite().isEmpty()) {
-                    state.getAllowWrite().add(ICoreConstants.ADMIN_PERMISSION);
-                }
-                type = new ComplexTypeMetadataImpl(targetNamespace, typeName, state.getAllowWrite(), state.getDenyCreate(),
-                        state.getHide(), state.getDenyPhysicalDelete(), state.getDenyLogicalDelete(), state.getSchematron(),
-                        state.getPrimaryKeyInfo(), state.getLookupFields(), true, state.getWorkflowAccessRights());
-                // Register parsed localized labels
-                Map<Locale, String> localeToLabel = state.getLocaleToLabel();
-                for (Map.Entry<Locale, String> entry : localeToLabel.entrySet()) {
-                    type.registerName(entry.getKey(), entry.getValue());
-                }
-                // Keep line and column of definition
-                type.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
-                type.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
-                type.setData(XSD_DOM_ELEMENT, element.getElement());
-                addTypeMetadata(type);
-                // Keep usage information
-                entityTypeUsage.get(element.getType()).add(type);
+            } catch (Exception e) {
+                throw new RuntimeException("Annotation processing exception while parsing info for type '" + typeName + "'.",
+                        e);
             }
+            // If write is not allowed for everyone, at least add "administration".
+            if (state.getAllowWrite().isEmpty()) {
+                state.getAllowWrite().add(ICoreConstants.ADMIN_PERMISSION);
+            }
+            ComplexTypeMetadata type = new ComplexTypeMetadataImpl(targetNamespace, typeName, state.getAllowWrite(), state.getDenyCreate(),
+                    state.getHide(), state.getDenyPhysicalDelete(), state.getDenyLogicalDelete(), state.getSchematron(),
+                    state.getPrimaryKeyInfo(), state.getLookupFields(), true, state.getWorkflowAccessRights());
+            // Register parsed localized labels
+            Map<Locale, String> localeToLabel = state.getLocaleToLabel();
+            for (Map.Entry<Locale, String> entry : localeToLabel.entrySet()) {
+                type.registerName(entry.getKey(), entry.getValue());
+            }
+            // Keep line and column of definition
+            type.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
+            type.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
+            type.setData(XSD_DOM_ELEMENT, element.getElement());
+            addTypeMetadata(type);
+            // Keep usage information
+            entityTypeUsage.get(element.getType()).add(type);
             // Walk the fields
             currentTypeStack.push(type);
             {

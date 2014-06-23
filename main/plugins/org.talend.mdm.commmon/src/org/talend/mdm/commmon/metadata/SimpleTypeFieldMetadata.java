@@ -174,6 +174,9 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
                 workflowAccessRights);
         copy.setDeclaringType(declaringType);
         copy.localeToLabel.putAll(localeToLabel);
+        if (dataMap != null) {
+            copy.dataMap = new HashMap<String, Object>(dataMap);
+        }
         return copy;
     }
 

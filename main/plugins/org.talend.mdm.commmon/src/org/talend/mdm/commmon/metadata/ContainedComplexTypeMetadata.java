@@ -23,39 +23,48 @@ public class ContainedComplexTypeMetadata implements ComplexTypeMetadata {
 
     private boolean isFrozen;
 
+    private boolean hasFrozenUsages;
+
     private ContainedComplexTypeMetadata(ComplexTypeMetadata containedType, FieldMetadata container) {
         this.containedType = containedType;
         this.container = container;
-        if (containedType.getName().startsWith(MetadataRepository.ANONYMOUS_PREFIX)) {
-            this.containedType = (ComplexTypeMetadata) containedType.copy();
-            for (FieldMetadata field : this.containedType.getFields()) {
-                field.setContainingType(this);
-            }
-        } else {
-            this.containedType.declareUsage(this);
-        }
     }
 
     public static ComplexTypeMetadata contain(ComplexTypeMetadata type, FieldMetadata containingField) {
         return new ContainedComplexTypeMetadata(type, containingField);
     }
 
+    public boolean isHasFrozenUsages() {
+        return hasFrozenUsages;
+    }
+
     void finalizeUsage() {
-        containedType = (ComplexTypeMetadata) containedType.copy();
-        for (FieldMetadata field : containedType.getFields()) {
-            field.setContainingType(this);
-        }
-        List<ComplexTypeMetadata> subTypes = new LinkedList<ComplexTypeMetadata>();
-        for (ComplexTypeMetadata subType : containedType.getSubTypes()) {
-            ComplexTypeMetadata copy = (ComplexTypeMetadata) subType.copy();
-            ComplexTypeMetadata containedCopy = ContainedComplexTypeMetadata.contain(copy, container);
-            for (FieldMetadata subTypeField : copy.getFields()) {
-                subTypeField.setContainingType(containedCopy);
+        if (!hasFrozenUsages) {
+            hasFrozenUsages = true;
+            containedType = (ComplexTypeMetadata) containedType.freeze().copy();
+            containedType.setContainer(container);
+            setContainedTypeData(containedType);
+            for (FieldMetadata field : containedType.getFields()) {
+                field.setContainingType(this);
             }
-            subTypes.add(containedCopy);
+            List<ComplexTypeMetadata> subTypes = new LinkedList<ComplexTypeMetadata>();
+            for (ComplexTypeMetadata subType : containedType.getSubTypes()) {
+                ComplexTypeMetadata subTypeCopy = (ComplexTypeMetadata) subType.copy();
+                ComplexTypeMetadata containedCopy = ContainedComplexTypeMetadata.contain(subTypeCopy, container);
+                for (FieldMetadata subTypeField : subTypeCopy.getFields()) {
+                    subTypeField.setContainingType(containedCopy);
+                }
+                setContainedTypeData(subTypeCopy);
+                subTypes.add(subTypeCopy);
+            }
+            containedType.setSubTypes(subTypes);
         }
-        containedType.setSubTypes(subTypes);
-        containedType = (ComplexTypeMetadata) containedType.freeze();
+    }
+
+    private void setContainedTypeData(ComplexTypeMetadata type) {
+        type.setData(MetadataRepository.XSD_DOM_ELEMENT, container.getData(MetadataRepository.XSD_DOM_ELEMENT));
+        type.setData(MetadataRepository.XSD_LINE_NUMBER, container.getData(MetadataRepository.XSD_LINE_NUMBER));
+        type.setData(MetadataRepository.XSD_COLUMN_NUMBER, container.getData(MetadataRepository.XSD_COLUMN_NUMBER));
     }
 
     @Override
@@ -160,15 +169,14 @@ public class ContainedComplexTypeMetadata implements ComplexTypeMetadata {
 
     @Override
     public void declareUsage(ComplexTypeMetadata usage) {
+        for (ComplexTypeMetadata subType : containedType.getSubTypes()) {
+            subType.declareUsage(usage);
+        }
     }
 
     @Override
-    public List<ComplexTypeMetadata> getUsages() {
+    public Collection<ComplexTypeMetadata> getUsages() {
         return containedType.getUsages();
-    }
-
-    @Override
-    public void freezeUsages() {
     }
 
     @Override
@@ -292,11 +300,23 @@ public class ContainedComplexTypeMetadata implements ComplexTypeMetadata {
         int result = containedType.getName().hashCode();
         result = 31 * result + container.getContainingType().hashCode();
         result = 31 * result + container.getName().hashCode();
+        result = 31 * result + container.getEntityTypeName().hashCode();
         return result;
     }
 
     @Override
     public String toString() {
-        return "Contained([" + containedType.getNamespace() + ':' + containedType.getName() + "], container=" + container.getName() + ')';
+        if (container != null) {
+            if (container.getContainingType() != null) {
+                return "Contained(" + containedType + ", container=" + container.getEntityTypeName() + "/" + container.getPath() + ')';
+            } else {
+                return "Contained(" + containedType + ", container=.../" + container.getName() + ')';
+            }
+        }
+        return "Contained(" + containedType + ", container=<not set>)";
+    }
+
+    public ComplexTypeMetadata getContainedType() {
+        return containedType;
     }
 }

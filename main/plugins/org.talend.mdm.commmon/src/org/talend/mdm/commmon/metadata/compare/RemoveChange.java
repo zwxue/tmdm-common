@@ -12,7 +12,7 @@ package org.talend.mdm.commmon.metadata.compare;
 
 import org.talend.mdm.commmon.metadata.MetadataVisitable;
 
-public class RemoveChange extends Change {
+class RemoveChange extends Change {
 
     RemoveChange(MetadataVisitable element) {
         super(element, "Removed " + element);

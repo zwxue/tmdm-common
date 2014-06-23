@@ -12,7 +12,7 @@ package org.talend.mdm.commmon.metadata.compare;
 
 import org.talend.mdm.commmon.metadata.MetadataVisitable;
 
-public class ModifyChange extends Change {
+class ModifyChange extends Change {
 
     private final MetadataVisitable current;
 

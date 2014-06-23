@@ -1,28 +1,27 @@
 /*
  * Copyright (C) 2006-2014 Talend Inc. - www.talend.com
- *
+ * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
- *
- * You should have received a copy of the agreement
- * along with this program; if not, write to Talend SA
- * 9 rue Pages 92150 Suresnes, France
+ * 
+ * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
+ * 92150 Suresnes, France
  */
 
 package org.talend.mdm.commmon.metadata.validation;
 
-import org.apache.commons.lang.BooleanUtils;
-import org.talend.mdm.commmon.metadata.*;
-
 import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.commons.lang.BooleanUtils;
+import org.talend.mdm.commmon.metadata.*;
 
 public class ValidationFactory {
 
     private static final String VALIDATION_MARKER = "validation.validated"; //$NON-NLS-1$
 
     private static boolean isValidated(MetadataExtensible metadataElement) {
-        return BooleanUtils.isTrue(metadataElement.<Boolean>getData(VALIDATION_MARKER));
+        return BooleanUtils.isTrue(metadataElement.<Boolean> getData(VALIDATION_MARKER));
     }
 
     public static ValidationRule getRule(FieldMetadata field) {

@@ -205,12 +205,8 @@ public class UnresolvedTypeMetadata extends MetadataExtensions implements Comple
     }
 
     @Override
-    public List<ComplexTypeMetadata> getUsages() {
+    public Collection<ComplexTypeMetadata> getUsages() {
         return Collections.emptyList();
-    }
-
-    @Override
-    public void freezeUsages() {
     }
 
     @Override

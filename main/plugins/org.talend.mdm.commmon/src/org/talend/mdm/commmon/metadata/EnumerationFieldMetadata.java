@@ -34,7 +34,7 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
 
     private final List<String> workflowAccessRights;
 
-    private TypeMetadata declaringType;
+    private final TypeMetadata declaringType;
 
     private final boolean isMany;
 
@@ -44,7 +44,7 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
 
     private ComplexTypeMetadata containingType;
 
-    private String name;
+    private final String name;
 
     private boolean isFrozen;
 
@@ -161,6 +161,9 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
                 hideUsers,
                 workflowAccessRights);
         copy.localeToLabel.putAll(localeToLabel);
+        if (dataMap != null) {
+            copy.dataMap = new HashMap<String, Object>(dataMap);
+        }
         return copy;
     }
 

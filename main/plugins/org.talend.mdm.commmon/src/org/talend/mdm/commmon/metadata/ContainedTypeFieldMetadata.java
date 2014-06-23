@@ -166,6 +166,9 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
                 hideUsers,
                 workflowAccessRights);
         copy.localeToLabel.putAll(localeToLabel);
+        if (dataMap != null) {
+            copy.dataMap = new HashMap<String, Object>(dataMap);
+        }
         copy.declaringType = this.declaringType;
         return copy;
     }

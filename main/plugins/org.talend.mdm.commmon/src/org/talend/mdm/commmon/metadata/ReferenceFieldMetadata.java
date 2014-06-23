@@ -45,7 +45,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
 
     private List<FieldMetadata> foreignKeyInfoFields = Collections.emptyList();
 
-    private Map<Locale, String> localeToLabel = new HashMap<Locale, String>();
+    private final Map<Locale, String> localeToLabel = new HashMap<Locale, String>();
 
     private ComplexTypeMetadata referencedType;
 
@@ -54,35 +54,6 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
     private boolean isFrozen;
 
     private int cachedHashCode;
-
-    public ReferenceFieldMetadata(ComplexTypeMetadata containingType,
-                                  boolean isKey,
-                                  boolean isMany,
-                                  boolean isMandatory,
-                                  String name,
-                                  ComplexTypeMetadata referencedType,
-                                  FieldMetadata referencedField,
-                                  List<FieldMetadata> foreignKeyInfo,
-                                  boolean fkIntegrity,
-                                  boolean allowFKIntegrityOverride,
-                                  TypeMetadata fieldType,
-                                  List<String> allowWriteUsers,
-                                  List<String> hideUsers) {
-        this(containingType,
-                isKey,
-                isMany,
-                isMandatory,
-                name,
-                referencedType,
-                referencedField,
-                foreignKeyInfo,
-                fkIntegrity,
-                allowFKIntegrityOverride,
-                fieldType,
-                allowWriteUsers,
-                hideUsers,
-                Collections.<String>emptyList());
-    }
 
     public ReferenceFieldMetadata(ComplexTypeMetadata containingType,
                                   boolean isKey,
@@ -246,7 +217,6 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
     }
 
     public FieldMetadata copy() {
-        ComplexTypeMetadata referencedTypeCopy = referencedType;
         FieldMetadata referencedFieldCopy = referencedField.copy();
         List<FieldMetadata> foreignKeyInfoCopy;
         if (hasForeignKeyInfo()) {
@@ -257,13 +227,12 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         } else {
             foreignKeyInfoCopy = Collections.emptyList();
         }
-        ComplexTypeMetadata containingTypeCopy = (ComplexTypeMetadata) containingType.copyShallow();
-        ReferenceFieldMetadata copy = new ReferenceFieldMetadata(containingTypeCopy,
+        ReferenceFieldMetadata copy = new ReferenceFieldMetadata(containingType,
                 isKey,
                 isMany,
                 isMandatory,
                 name,
-                referencedTypeCopy,
+                referencedType,
                 referencedFieldCopy,
                 foreignKeyInfoCopy,
                 isFKIntegrity,
@@ -273,6 +242,9 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                 hideUsers,
                 workflowAccessRights);
         copy.localeToLabel.putAll(localeToLabel);
+        if (dataMap != null) {
+            copy.dataMap = new HashMap<String, Object>(dataMap);
+        }
         return copy;
     }
 
