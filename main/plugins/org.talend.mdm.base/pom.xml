@@ -28,7 +28,7 @@
         <product.revision>000000</product.revision>
         <product.qualifier>NB</product.qualifier>
         <product.version>${product.version.major}.${product.version.minor}.${product.version.rev}</product.version>
-        <mdm.build.version>${product.version}${product.qualifier}-r${product.revision}</mdm.build.version>
+        <mdm.build.version>${product.version}${product.qualifier}-${product.revision}</mdm.build.version>
         <version.properties>version.properties</version.properties>
         <ear.name></ear.name>
 
