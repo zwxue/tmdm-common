@@ -4,9 +4,9 @@ public class Version {
 	private int major;
 	private int minor;
 	private int rev;
-	private int build;
+	private String build;
 	
-	public Version(int major, int minor, int rev, int build) {
+	public Version(int major, int minor, int rev, String build) {
 		super();
 		this.major = major;
 		this.minor = minor;
@@ -14,10 +14,10 @@ public class Version {
 		this.build = build;
 	}
 	
-	public int getBuild() {
+	public String getBuild() {
 		return build;
 	}
-	public void setBuild(int build) {
+	public void setBuild(String build) {
 		this.build = build;
 	}
 	public int getMajor() {
