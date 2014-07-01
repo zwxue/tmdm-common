@@ -35,7 +35,7 @@ class CircularDependencyValidationRule implements ValidationRule {
     public boolean perform(ValidationHandler handler) {
         try {
             // Attempts to sort all types in dependency order (throw exception if can't be done).
-            MetadataUtils.sortTypes(repository);
+            MetadataUtils.sortTypes(repository, MetadataUtils.SortType.STRICT);
             return true;
         } catch (CircularDependencyException e) {
             Map<ComplexTypeMetadata, List<FieldMetadata>> cycleHints = e.getCycleHints();

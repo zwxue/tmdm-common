@@ -11,6 +11,7 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 
 import javax.xml.XMLConstants;
@@ -51,7 +52,7 @@ public class MetadataUtils {
      * @return A {@link Map} that maps a entity to its entity rank value.
      */
     public static Map<ComplexTypeMetadata, Long> computeEntityRank(MetadataRepository repository) {
-        List<ComplexTypeMetadata> sortedTypes = sortTypes(repository);
+        List<ComplexTypeMetadata> sortedTypes = sortTypes(repository, SortType.LENIENT);
         int totalNumber = sortedTypes.size();
 
         Map<ComplexTypeMetadata, Long> entityRank = new HashMap<ComplexTypeMetadata, Long>();
@@ -138,8 +139,29 @@ public class MetadataUtils {
     }
 
     /**
+     * Allow configuration of {@link #sortTypes(MetadataRepository) sort} for types.
+     */
+    public static enum SortType {
+        /**
+         * Follow only <b>mandatory</b> FK for the dependency sort (all optional FK or FK contained in optional elements are
+         * ignored).
+         * @see #LENIENT
+         */
+        STRICT,
+        /**
+         * Follow both mandatory <b>and</b> optional. This leads to a more accurate dependency order, but may lead to
+         * cycles issues. In this case, sort is "best effort", meaning sort will decide of an order for remaining cycles
+         * (cycle resolutions might not be always the same from one sort to another).
+         * @see #STRICT
+         */
+        LENIENT
+    }
+
+    /**
      * <p>
-     * Sorts type in inverse order of dependency (topological sort). A dependency to <i>type</i> might be:
+     * Sorts type in inverse order of dependency (topological sort) using
+     * {@link org.talend.mdm.commmon.metadata.MetadataUtils.SortType#STRICT strict} order. A dependency to <i>type</i>
+     * might be:
      * <ul>
      * <li>FK reference to <i>type</i> (sub types of <i>type</i> are all included as a dependency).</li>
      * <li>Use of <i>type</i> as a super type.</li>
@@ -150,16 +172,41 @@ public class MetadataUtils {
      * <p>
      * This method is thread safe.
      * </p>
-     *
+     * 
      * @param repository The repository that contains entity types to sort.
-     * @return A sorted list of {@link ComplexTypeMetadata} types. First type of list is a type that has no dependency on
-     * any other type of the list.
-     * @throws org.talend.mdm.commmon.metadata.CircularDependencyException If repository contains types that creates a cyclic dependency. Error message contains
-     *                                                                     information on where the cycle is.
+     * @return A sorted list of {@link ComplexTypeMetadata} types. First type of list is a type that has no dependency
+     * on any other type of the list.
+     * @throws org.talend.mdm.commmon.metadata.CircularDependencyException If repository contains types that creates a
+     * cyclic dependency. Error message contains information on where the cycle is.
      */
     public static List<ComplexTypeMetadata> sortTypes(MetadataRepository repository) {
+        return sortTypes(repository, SortType.STRICT);
+    }
+    
+    /**
+     * <p>
+     * Sorts type in inverse order of dependency (topological sort) using <code>sortType</code> order. A dependency to
+     * <i>type</i> might be:
+     * <ul>
+     * <li>FK reference to <i>type</i> (sub types of <i>type</i> are all included as a dependency).</li>
+     * <li>Use of <i>type</i> as a super type.</li>
+     * </ul>
+     * This method runs in linear time <i>O(n+p)</i> (<i>n</i> number of types and <i>p</i> number of dependencies
+     * between types). This method uses <i>n²</i> bytes in memory for processing.
+     * </p>
+     * <p>
+     * This method is thread safe.
+     * </p>
+     * 
+     * @param repository The repository that contains entity types to sort.
+     * @return A sorted list of {@link ComplexTypeMetadata} types. First type of list is a type that has no dependency
+     * on any other type of the list.
+     * @throws org.talend.mdm.commmon.metadata.CircularDependencyException If repository contains types that creates a
+     * cyclic dependency. Error message contains information on where the cycle is.
+     */
+    public static List<ComplexTypeMetadata> sortTypes(MetadataRepository repository, SortType sortType) {
         List<ComplexTypeMetadata> types = new ArrayList<ComplexTypeMetadata>(repository.getUserComplexTypes());
-        return _sortTypes(repository, false, types);
+        return _sortTypes(repository, types, sortType);
     }
 
     /**
@@ -176,7 +223,7 @@ public class MetadataUtils {
      * <p>
      * This method is thread safe.
      * </p>
-     * 
+     *
      * @param repository This is used to display information in case of cycle.
      * @param types The list of types to be sorted. About the list:
      * <ul>
@@ -193,12 +240,12 @@ public class MetadataUtils {
      * cyclic dependency. Error message contains information on where the cycle is.
      */
     public static List<ComplexTypeMetadata> sortTypes(MetadataRepository repository, List<ComplexTypeMetadata> types) {
-        return _sortTypes(repository, true, types);
+        return _sortTypes(repository, types, SortType.STRICT);
     }
 
-    private static List<ComplexTypeMetadata> _sortTypes(MetadataRepository repository,
-                                                        final boolean sortAllTypes,
-                                                        List<ComplexTypeMetadata> typesSubSet) {
+    // Internal method for type sort
+    private static List<ComplexTypeMetadata> _sortTypes(MetadataRepository repository, List<ComplexTypeMetadata> typesSubSet,
+            final SortType sortType) {
         /*
          * Compute additional data for topological sorting
          */
@@ -230,7 +277,7 @@ public class MetadataUtils {
                     } else {
                         processedTypes.add(complexType);
                     }
-                    if (sortAllTypes || complexType.isInstantiable()) {
+                    if (complexType.isInstantiable()) {
                         Collection<TypeMetadata> superTypes = complexType.getSuperTypes();
                         for (TypeMetadata superType : superTypes) {
                             if (superType instanceof ComplexTypeMetadata) {
@@ -278,8 +325,8 @@ public class MetadataUtils {
                         return lineContent;
                     }
                     // Only takes into account mandatory and FK integrity-enabled FKs.
-                    if (isMandatory(referenceField) && referenceField.isFKIntegrity()) {
-                        if (sortAllTypes || referencedType.isInstantiable()) {
+                    if (include(referenceField) && referenceField.isFKIntegrity()) {
+                        if (referencedType.isInstantiable()) {
                             if (types.contains(referencedType)) {
                                 lineContent[getId(referencedType, types)]++;
                                 // Implicitly include reference to sub types of referenced type.
@@ -292,13 +339,20 @@ public class MetadataUtils {
                     return lineContent;
                 }
 
-                private boolean isMandatory(FieldMetadata field) {
-                    ComplexTypeMetadata containingType = field.getContainingType();
-                    FieldMetadata containerField = containingType.getContainer();
-                    if (containerField != null) {
-                        return isMandatory(containerField) && field.isMandatory();
-                    } else {
-                        return field.isMandatory();
+                private boolean include(FieldMetadata field) {
+                    switch (sortType) {
+                    case STRICT:
+                        ComplexTypeMetadata containingType = field.getContainingType();
+                        FieldMetadata containerField = containingType.getContainer();
+                        if (containerField != null) {
+                            return include(containerField) && field.isMandatory();
+                        } else {
+                            return field.isMandatory();
+                        }
+                    case LENIENT:
+                        return true;
+                    default:
+                        throw new NotImplementedException("Sort '" + sortType + "' is not implemented.");
                     }
                 }
             });
@@ -384,29 +438,40 @@ public class MetadataUtils {
                 }
                 lineNumber++;
             }
-            if (!cycles.isEmpty()) { // Found cycle(s): report it/them as exception
-                Iterator<List<ComplexTypeMetadata>> cyclesIterator = cycles.iterator();
-                Map<ComplexTypeMetadata, List<FieldMetadata>> cycleHints = new HashMap<ComplexTypeMetadata, List<FieldMetadata>>();
-                while (cyclesIterator.hasNext()) {
-                    Iterator<ComplexTypeMetadata> dependencyPathIterator = cyclesIterator.next().iterator();
-                    ComplexTypeMetadata previous = null;
-                    while (dependencyPathIterator.hasNext()) {
-                        ComplexTypeMetadata currentType = dependencyPathIterator.next();
-                        ArrayList<FieldMetadata> fields = new ArrayList<FieldMetadata>();
-                        cycleHints.put(currentType, fields);
-                        if (previous != null) {
-                            Set<ReferenceFieldMetadata> inboundReferences = repository.accept(new InboundReferences(currentType));
-                            for (ReferenceFieldMetadata inboundReference : inboundReferences) {
-                                ComplexTypeMetadata entity = repository.getComplexType(inboundReference.getEntityTypeName());
-                                if (entity != null) {
-                                    fields.add(inboundReference);
+            // Depending on sort type, report as exception or switch to a "best effort" sort
+            switch (sortType) {
+            case STRICT:
+                if (!cycles.isEmpty()) { // Found cycle(s): report it/them as exception
+                    Iterator<List<ComplexTypeMetadata>> cyclesIterator = cycles.iterator();
+                    Map<ComplexTypeMetadata, List<FieldMetadata>> cycleHints = new HashMap<ComplexTypeMetadata, List<FieldMetadata>>();
+                    while (cyclesIterator.hasNext()) {
+                        Iterator<ComplexTypeMetadata> dependencyPathIterator = cyclesIterator.next().iterator();
+                        ComplexTypeMetadata previous = null;
+                        while (dependencyPathIterator.hasNext()) {
+                            ComplexTypeMetadata currentType = dependencyPathIterator.next();
+                            ArrayList<FieldMetadata> fields = new ArrayList<FieldMetadata>();
+                            cycleHints.put(currentType, fields);
+                            if (previous != null) {
+                                Set<ReferenceFieldMetadata> inboundReferences = repository.accept(new InboundReferences(currentType));
+                                for (ReferenceFieldMetadata inboundReference : inboundReferences) {
+                                    ComplexTypeMetadata entity = repository.getComplexType(inboundReference.getEntityTypeName());
+                                    if (entity != null) {
+                                        fields.add(inboundReference);
+                                    }
                                 }
                             }
+                            previous = currentType;
                         }
-                        previous = currentType;
                     }
+                    throw new CircularDependencyException(cycleHints);
                 }
-                throw new CircularDependencyException(cycleHints);
+            case LENIENT:
+                for (List<ComplexTypeMetadata> cycle : cycles) {
+                    sortedTypes.addAll(cycle);
+                }
+                break;
+            default:
+                throw new NotImplementedException("Sort '" + sortType + "' is not implemented.");
             }
         }
         return sortedTypes;
