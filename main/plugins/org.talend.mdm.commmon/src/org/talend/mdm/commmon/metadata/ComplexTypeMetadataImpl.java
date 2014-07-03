@@ -133,65 +133,68 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         return nameSpace;
     }
 
-    public FieldMetadata getField(String fieldName) {
-        if (fieldName == null || fieldName.isEmpty()) {
+    public FieldMetadata getField(String path) {
+        if (path == null || path.isEmpty()) {
             throw new IllegalArgumentException("Field name can not be null nor empty.");
         }
-        if (fieldName.indexOf('/') < 0) {
-            return fieldMetadata.get(fieldName); // Shortcut for direct look up for a field (no hierarchy involved).
+        if (path.indexOf('/') < 0) {
+            return fieldMetadata.get(path); // Shortcut for direct look up for a field (no path involved).
         } else {
-            StringTokenizer tokenizer = new StringTokenizer(fieldName, "/"); //$NON-NLS-1$
-            // think about reusable type, e.g: Employee/Address[@xsi:type="CNAddressType"]/Province
-            ComplexTypeMetadata currentType = this;
-            FieldMetadata currentField = null;
-            while (tokenizer.hasMoreTokens()) {
-                String nextToken = tokenizer.nextToken();
-                String currentFieldName = StringUtils.substringBefore(nextToken, "["); //$NON-NLS-1$
-                // Handle xsi:type in XPath query
-                if (nextToken.contains("xsi:type")) { //$NON-NLS-1$
-                    String reusableTypeName = StringUtils.substringAfter(nextToken, "@xsi:type").replace('=', ' ').replace(']', ' ').trim(); //$NON-NLS-1$
-                    if (reusableTypeName.isEmpty()) {
-                        throw new IllegalArgumentException("Reusable type could not be null for fieldName '" + fieldName + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-                    }
-                    if (!currentType.getName().equals(reusableTypeName)) { // Look real type in sub types
-                        boolean foundRealType = false;
-                        for (TypeMetadata subType : currentType.getSubTypes()) {
-                            if (subType instanceof ComplexTypeMetadata && subType.getName().equals(reusableTypeName)) {
-                                currentType = (ComplexTypeMetadata) subType;
-                                foundRealType = true;
-                                break;
-                            }
-                        }
-                        // xsi:type not found, assume type is default field type.
-                        if (!foundRealType) {
-                            LOGGER.error("Type '" + reusableTypeName + "' does not exist. Assuming '" + currentType.getName()
-                                    + "' has field type.");
-                        }
-                    }
+            FieldMetadata foundField = _getField(this, path);
+            if (foundField == null) {
+                throw new IllegalArgumentException("Type '" + getName() + "' does not own field '" + path + "'.");
+            }
+            return foundField;
+        }
+    }
+    
+    private static FieldMetadata _getField(ComplexTypeMetadata type, String path) {
+        String fieldName = StringUtils.substringBefore(path, "/"); //$NON-NLS-1$
+        String remainingPath = StringUtils.substringAfter(path, "/"); //$NON-NLS-1$
+        if (type.hasField(fieldName)) {
+            FieldMetadata field = type.getField(fieldName);
+            if (!remainingPath.isEmpty()) {
+                TypeMetadata fieldType = field.getType();
+                if (fieldType instanceof ComplexTypeMetadata) {
+                    return _getField((ComplexTypeMetadata) fieldType, remainingPath);
+                } else {
+                    return null; // Simple type field shouldn't have remaining path, this is dead end.
                 }
-                // Find field in current type (or sub types, since query might refer to a field not declared in type)
-                if (!currentType.hasField(currentFieldName)) {
-                    boolean foundInSubTypes = false;
-                    for (ComplexTypeMetadata subType : currentType.getSubTypes()) {
-                        if (subType.hasField(currentFieldName)) {
-                            currentField = subType.getField(currentFieldName);
-                            foundInSubTypes = true;
+            } else {
+                return field;
+            }
+        } else {
+            // Handle xsi:type in XPath query
+            if (fieldName.contains("xsi:type")) { //$NON-NLS-1$
+                String reusableTypeName = StringUtils.substringAfter(fieldName, "@xsi:type").replace('=', ' ').replace(']', ' ').trim(); //$NON-NLS-1$
+                if (reusableTypeName.isEmpty()) {
+                    throw new IllegalArgumentException("Reusable type could not be null for fieldName '" + fieldName + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+                if (!type.getName().equals(reusableTypeName)) { // Look real type in sub types
+                    boolean foundRealType = false;
+                    for (TypeMetadata subType : type.getSubTypes()) {
+                        if (subType instanceof ComplexTypeMetadata && subType.getName().equals(reusableTypeName)) {
+                            type = (ComplexTypeMetadata) subType;
+                            foundRealType = true;
                             break;
                         }
                     }
-                    if (!foundInSubTypes) {
-                        throw new IllegalArgumentException("Type '" + getName() + "' does not own field '" + fieldName
-                                + "' (could not find '" + currentFieldName + "').");
+                    // xsi:type not found, assume type is default field type.
+                    if (!foundRealType) {
+                        LOGGER.error("Type '" + reusableTypeName + "' does not exist. Assuming '" + type.getName()
+                                + "' has field type.");
                     }
-                } else {
-                    currentField = currentType.getField(currentFieldName);
                 }
-                // Move to the next type (if any element to process).
-                if (tokenizer.hasMoreTokens()) {
-                    currentType = (ComplexTypeMetadata) currentField.getType();
+                return _getField(type, path);
+            } else { // Or implicit assumption on a field accessible from sub types.
+                for (ComplexTypeMetadata subType : type.getSubTypes()) {
+                    FieldMetadata subTypeField = _getField(subType, path);
+                    if (subTypeField != null) {
+                        return subTypeField;
+                    }
                 }
             }
-            return currentField;
+            return null; // Not found
         }
     }
 
