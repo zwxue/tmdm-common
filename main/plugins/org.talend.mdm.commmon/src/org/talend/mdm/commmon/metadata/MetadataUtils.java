@@ -570,8 +570,6 @@ public class MetadataUtils {
                 } else if(!type.equals(entity)) {
                     // In case the non instance type is used in an entity.
                     usageCount += countEntityUsageCount(entity);
-                } else if (type.equals(entity)) {
-                    return 0; // entity is not instantiable, thus no entity here.
                 }
             } else {
                 usageCount++;
