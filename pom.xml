@@ -6,6 +6,12 @@
   <artifactId>tmdm-common</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
+    <parent>
+    <groupId>org.talend.studio</groupId>
+    <artifactId>parent-pom</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>talend.studio.parent.pom/pom.xml</relativePath>
+  </parent>
   <modules>
     <module>main/plugins/org.talend.mdm.commmon</module>
   </modules>
