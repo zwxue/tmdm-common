@@ -1083,7 +1083,6 @@
                 <groupId>com.extjs</groupId>
                 <artifactId>gxt</artifactId>
                 <version>${gwt.gxt.version}</version>
-                <scope>provided</scope>
             </dependency>
             
 
