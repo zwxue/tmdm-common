@@ -1046,7 +1046,7 @@
             <dependency>
                 <groupId>org.restlet.gwt</groupId>
                 <artifactId>org.restlet</artifactId>
-                <version>${gwt.restlet.version}</version>
+                <version>${gwt.restlet.version}-TalendPatch</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
