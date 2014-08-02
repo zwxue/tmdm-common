@@ -55,6 +55,8 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
 
     private int cachedHashCode;
 
+    private String visibilityRule;
+
     public ReferenceFieldMetadata(ComplexTypeMetadata containingType,
                                   boolean isKey,
                                   boolean isMany,
@@ -68,7 +70,8 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                                   TypeMetadata fieldType,
                                   List<String> allowWriteUsers,
                                   List<String> hideUsers,
-                                  List<String> workflowAccessRights) {
+                                  List<String> workflowAccessRights,
+                                  String visibilityRule) {
         this.isMandatory = isMandatory;
         this.name = name;
         this.referencedField = referencedField;
@@ -85,6 +88,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         this.writeUsers = allowWriteUsers;
         this.hideUsers = hideUsers;
         this.workflowAccessRights = workflowAccessRights;
+        this.visibilityRule = visibilityRule;
     }
 
     public FieldMetadata getReferencedField() {
@@ -186,6 +190,11 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         return localizedName;
     }
 
+    @Override
+    public String getVisibilityRule() {
+        return visibilityRule;
+    }
+
     public TypeMetadata getDeclaringType() {
         return containingType;
     }
@@ -240,7 +249,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                 fieldType,
                 writeUsers,
                 hideUsers,
-                workflowAccessRights);
+                workflowAccessRights, visibilityRule);
         copy.localeToLabel.putAll(localeToLabel);
         if (dataMap != null) {
             copy.dataMap = new HashMap<String, Object>(dataMap);

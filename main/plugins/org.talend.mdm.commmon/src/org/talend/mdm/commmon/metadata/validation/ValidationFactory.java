@@ -10,11 +10,11 @@
 
 package org.talend.mdm.commmon.metadata.validation;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.apache.commons.lang.BooleanUtils;
 import org.talend.mdm.commmon.metadata.*;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class ValidationFactory {
 
@@ -62,7 +62,10 @@ public class ValidationFactory {
     }
 
     public static ValidationRule getRule(SimpleTypeFieldMetadata field) {
-        return new FieldTypeValidationRule(field);
+        List<ValidationRule> rules = new LinkedList<ValidationRule>();
+        rules.add(new FieldTypeValidationRule(field)); // All fields common rule
+        rules.add(new VisibilityValidationRule(field));
+        return new CompositeValidationRule(rules.toArray(new ValidationRule[rules.size()]));
     }
 
     public static ValidationRule getRule(SoftIdFieldRef field) {
@@ -74,11 +77,17 @@ public class ValidationFactory {
     }
 
     public static ValidationRule getRule(ContainedTypeFieldMetadata field) {
-        return new FieldTypeValidationRule(field);
+        List<ValidationRule> rules = new LinkedList<ValidationRule>();
+        rules.add(new FieldTypeValidationRule(field)); // All fields common rule
+        rules.add(new VisibilityValidationRule(field));
+        return new CompositeValidationRule(rules.toArray(new ValidationRule[rules.size()]));
     }
 
     public static ValidationRule getRule(EnumerationFieldMetadata field) {
-        return new FieldTypeValidationRule(field);
+        List<ValidationRule> rules = new LinkedList<ValidationRule>();
+        rules.add(new FieldTypeValidationRule(field)); // All fields common rule
+        rules.add(new VisibilityValidationRule(field));
+        return new CompositeValidationRule(rules.toArray(new ValidationRule[rules.size()]));
     }
 
     public static ValidationRule getRule(TypeMetadata type) {

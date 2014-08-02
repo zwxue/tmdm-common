@@ -151,6 +151,11 @@ public class SoftFieldRef implements FieldMetadata {
     }
 
     @Override
+    public String getVisibilityRule() {
+        return getField().getVisibilityRule();
+    }
+
+    @Override
     public TypeMetadata getDeclaringType() {
         return getField().getDeclaringType();
     }

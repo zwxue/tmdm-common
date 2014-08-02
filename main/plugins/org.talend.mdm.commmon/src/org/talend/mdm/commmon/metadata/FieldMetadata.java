@@ -10,10 +10,10 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.talend.mdm.commmon.metadata.validation.ValidationRule;
+
 import java.util.List;
 import java.util.Locale;
-
-import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 
 /**
  * Represents a "field" in a {@link ComplexTypeMetadata}. A field is an element in a MDM entity where user can specify
@@ -146,4 +146,6 @@ public interface FieldMetadata extends MetadataVisitable, MetadataExtensible {
     void registerName(Locale locale, String name);
 
     String getName(Locale locale);
+
+    String getVisibilityRule();
 }

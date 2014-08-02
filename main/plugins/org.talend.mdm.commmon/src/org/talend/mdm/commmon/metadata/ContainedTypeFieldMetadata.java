@@ -46,17 +46,21 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
 
     private int cachedHashCode;
 
+    private String visibilityRule;
+
     public ContainedTypeFieldMetadata(ComplexTypeMetadata containingType,
-            boolean isMany,
-            boolean isMandatory,
-            String name,
-            ComplexTypeMetadata fieldType,
-            List<String> allowWriteUsers,
-            List<String> hideUsers,
-            List<String> workflowAccessRights) {
+                                      boolean isMany,
+                                      boolean isMandatory,
+                                      String name,
+                                      ComplexTypeMetadata fieldType,
+                                      List<String> allowWriteUsers,
+                                      List<String> hideUsers,
+                                      List<String> workflowAccessRights,
+                                      String visibilityRule) {
         if (fieldType == null) {
             throw new IllegalArgumentException("Contained type cannot be null.");
         }
+        this.visibilityRule = visibilityRule;
         this.isMandatory = isMandatory;
         this.fieldType = ContainedComplexTypeMetadata.contain(fieldType, this);
         this.containingType = containingType;
@@ -146,6 +150,11 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
         return localizedName;
     }
 
+    @Override
+    public String getVisibilityRule() {
+        return visibilityRule;
+    }
+
     public TypeMetadata getDeclaringType() {
         return declaringType;
     }
@@ -164,7 +173,7 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
                 fieldType,
                 allowWriteUsers,
                 hideUsers,
-                workflowAccessRights);
+                workflowAccessRights, visibilityRule);
         copy.localeToLabel.putAll(localeToLabel);
         if (dataMap != null) {
             copy.dataMap = new HashMap<String, Object>(dataMap);

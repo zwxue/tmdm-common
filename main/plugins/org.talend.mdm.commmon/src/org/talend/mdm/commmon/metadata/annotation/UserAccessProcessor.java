@@ -24,21 +24,23 @@ public class UserAccessProcessor implements XmlSchemaAnnotationProcessor {
         if (annotation != null) {
             EList<Element> appInfoElements = annotation.getApplicationInformation();
             for (Element appInfo : appInfoElements) {
-                String source = appInfo.getAttribute("source");
+                String source = appInfo.getAttribute("source"); //$NON-NLS-1$
                 String textContent = appInfo.getTextContent();
-                if ("X_Hide".equals(source)) { //$NON-NLS-1$ //$NON-NLS-2$
+                if ("X_Hide".equals(source)) { //$NON-NLS-1$
                     state.getHide().add(textContent);
-                } else if ("X_Write".equals(source)) { //$NON-NLS-1$ //$NON-NLS-2$
+                } else if ("X_Write".equals(source)) { //$NON-NLS-1$
                     state.getAllowWrite().add(textContent);
-                } else if ("X_Deny_Create".equals(source)) { //$NON-NLS-1$ //$NON-NLS-2$
+                } else if ("X_Deny_Create".equals(source)) { //$NON-NLS-1$
                     state.getDenyCreate().add(textContent);
-                } else if ("X_Deny_LogicalDelete".equals(source)) { //$NON-NLS-1$ //$NON-NLS-2$
+                } else if ("X_Deny_LogicalDelete".equals(source)) { //$NON-NLS-1$
                     state.getDenyLogicalDelete().add(textContent);
-                } else if ("X_Deny_PhysicalDelete".equals(source)) { //$NON-NLS-1$ //$NON-NLS-2$
+                } else if ("X_Deny_PhysicalDelete".equals(source)) { //$NON-NLS-1$
                     state.getDenyPhysicalDelete().add(textContent);
-                } else if ("X_Workflow".equals(source)) {  //$NON-NLS-1$//$NON-NLS-2$
+                } else if ("X_Workflow".equals(source)) {  //$NON-NLS-1$
                     // including Writable, Read-only and Hidden
                     state.getWorkflowAccessRights().add(textContent);
+                } else if ("X_Visible_Rule".equals(source)) { //$NON-NLS-1$
+                    state.setVisibilityRule(textContent);
                 }
             }
         }

@@ -55,6 +55,7 @@ public class XmlSchemaAnnotationProcessorState {
     private List<FieldMetadata> lookupFields = Collections.emptyList();
 
     private final List<String> workflowAccessRights = new LinkedList<String>();
+    private String visibilityRule;
 
     public void setFkIntegrity(boolean fkIntegrity) {
         this.fkIntegrity = fkIntegrity;
@@ -166,5 +167,13 @@ public class XmlSchemaAnnotationProcessorState {
 
     public Map<Locale, String> getLocaleToLabel() {
         return localeToLabel;
+    }
+
+    public void setVisibilityRule(String visibilityRule) {
+        this.visibilityRule = visibilityRule;
+    }
+
+    public String getVisibilityRule() {
+        return visibilityRule;
     }
 }
