@@ -11,6 +11,8 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import java.util.UUID;
+
 /**
  * Constants for all Xml Schema simple types supported in MDM.
  *
@@ -83,4 +85,8 @@ public interface Types {
     String ANY_TYPE             = "anyType"; //$NON-NLS-1$
     String ANY_SIMPLE_TYPE      = "anySimpleType"; //$NON-NLS-1$
     String TOKEN                = "token"; //$NON-NLS-1$
+    /**
+     * Length of a field to contain a {@link #UUID} value.
+     */
+    int UUID_LENGTH = java.util.UUID.randomUUID().toString().length() + 10;
 }
