@@ -15,9 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * A simple bean that keeps track of information parsed by {@link XmlSchemaAnnotationProcessor} implementations.
@@ -55,6 +53,8 @@ public class XmlSchemaAnnotationProcessorState {
     private List<FieldMetadata> lookupFields = Collections.emptyList();
     
     private final List<String> workflowAccessRights = new LinkedList<String>();
+
+    private String foreignKeyFilter = StringUtils.EMPTY;
 
     public void setFkIntegrity(boolean fkIntegrity) {
         this.fkIntegrity = fkIntegrity;
@@ -158,5 +158,13 @@ public class XmlSchemaAnnotationProcessorState {
 
     public List<String> getWorkflowAccessRights() {
         return this.workflowAccessRights;
+    }
+
+    public void setForeignKeyFilter(String foreignKeyFilter) {
+        this.foreignKeyFilter = foreignKeyFilter;
+    }
+
+    public String getForeignKeyFilter() {
+        return foreignKeyFilter;
     }
 }

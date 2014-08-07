@@ -12,7 +12,17 @@ package org.talend.mdm.commmon.metadata;
 
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Stack;
+import java.util.TreeMap;
 
 import javax.xml.XMLConstants;
 
@@ -30,6 +40,7 @@ import org.eclipse.xsd.XSDDiagnosticSeverity;
 import org.eclipse.xsd.XSDElementDeclaration;
 import org.eclipse.xsd.XSDEnumerationFacet;
 import org.eclipse.xsd.XSDIdentityConstraintDefinition;
+import org.eclipse.xsd.XSDLengthFacet;
 import org.eclipse.xsd.XSDMaxLengthFacet;
 import org.eclipse.xsd.XSDModelGroup;
 import org.eclipse.xsd.XSDParticle;
@@ -39,18 +50,16 @@ import org.eclipse.xsd.XSDSimpleTypeDefinition;
 import org.eclipse.xsd.XSDTypeDefinition;
 import org.eclipse.xsd.XSDXPathDefinition;
 import org.eclipse.xsd.util.XSDParser;
-import org.talend.mdm.commmon.metadata.annotation.ForeignKeyProcessor;
-import org.talend.mdm.commmon.metadata.annotation.LookupFieldProcessor;
-import org.talend.mdm.commmon.metadata.annotation.PrimaryKeyInfoProcessor;
-import org.talend.mdm.commmon.metadata.annotation.SchematronProcessor;
-import org.talend.mdm.commmon.metadata.annotation.UserAccessProcessor;
-import org.talend.mdm.commmon.metadata.annotation.XmlSchemaAnnotationProcessor;
-import org.talend.mdm.commmon.metadata.annotation.XmlSchemaAnnotationProcessorState;
+import org.talend.mdm.commmon.metadata.annotation.*;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.xsd.XSDVisitor;
 import org.talend.mdm.commmon.metadata.xsd.XmlSchemaWalker;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
-import org.w3c.dom.Element;
+
+import javax.xml.XMLConstants;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  *
@@ -107,7 +116,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
     private int anonymousCounter = 0;
 
     static {
-        NoOpValidationHandler noOpValidationHandler = new NoOpValidationHandler();
+        ValidationHandler noOpValidationHandler = NoOpValidationHandler.INSTANCE;
         // Load XML Schema types
         InputStream xmlSchemaDef = MetadataRepository.class.getResourceAsStream("XMLSchema.xsd"); //$NON-NLS-1$
         if (xmlSchemaDef == null) {
@@ -123,7 +132,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
         // Prevent further modifications on common types
         for (Map.Entry<String, Map<String, TypeMetadata>> entry : commonTypes.nonInstantiableTypes.entrySet()) {
             commonTypes.nonInstantiableTypes.put(entry.getKey(), Collections.unmodifiableMap(entry.getValue()));
-    }
+        }
         for (Map.Entry<String, Map<String, TypeMetadata>> entry : commonTypes.entityTypes.entrySet()) {
             if (entry.getValue() != null) {
                 commonTypes.entityTypes.put(entry.getKey(), Collections.unmodifiableMap(entry.getValue()));
@@ -653,7 +662,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
             if (isReference) {
                 ReferenceFieldMetadata referenceField = new ReferenceFieldMetadata(containingType, false, isMany, isMandatory,
                         fieldName, (ComplexTypeMetadata) referencedType, referencedField, foreignKeyInfo, fkIntegrity,
-                        fkIntegrityOverride, fieldType, allowWriteUsers, hideUsers, workflowAccessRights);
+                        fkIntegrityOverride, fieldType, allowWriteUsers, hideUsers, workflowAccessRights, state.getForeignKeyFilter());
                 referenceField.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
                 referenceField.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
                 referenceField.setData(XSD_DOM_ELEMENT, element.getElement());
@@ -774,52 +783,4 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
         return repositoryCopy;
     }
 
-    private static class NoOpValidationHandler implements ValidationHandler {
-
-        @Override
-        public void error(TypeMetadata type, String message, Element element, Integer lineNumber, Integer columnNumber,
-                ValidationError error) {
-            // Nothing to do (No op validation)
-        }
-
-        @Override
-        public void fatal(FieldMetadata field, String message, Element element, Integer lineNumber, Integer columnNumber,
-                ValidationError error) {
-            // Nothing to do (No op validation)
-        }
-
-        @Override
-        public void error(FieldMetadata field, String message, Element element, Integer lineNumber, Integer columnNumber,
-                ValidationError error) {
-            // Nothing to do (No op validation)
-        }
-
-        @Override
-        public void warning(FieldMetadata field, String message, Element element, Integer lineNumber, Integer columnNumber,
-                ValidationError error) {
-            // Nothing to do (No op validation)
-        }
-
-        @Override
-        public void fatal(TypeMetadata type, String message, Element element, Integer lineNumber, Integer columnNumber,
-                ValidationError error) {
-            // Nothing to do (No op validation)
-        }
-
-        @Override
-        public void warning(TypeMetadata type, String message, Element element, Integer lineNumber, Integer columnNumber,
-                ValidationError error) {
-            // Nothing to do (No op validation)
-        }
-
-        @Override
-        public void end() {
-            // Nothing to do (No op validation)
-        }
-
-        @Override
-        public int getErrorCount() {
-            return 0;
-        }
-    }
 }

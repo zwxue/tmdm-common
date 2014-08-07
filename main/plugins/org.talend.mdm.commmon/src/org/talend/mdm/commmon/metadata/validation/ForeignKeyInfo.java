@@ -3,19 +3,27 @@
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
- *
- * You should have received a copy of the agreement
- * along with this program; if not, write to Talend SA
- * 9 rue Pages 92150 Suresnes, France
+ * 
+ * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
+ * 92150 Suresnes, France
  */
 
 package org.talend.mdm.commmon.metadata.validation;
 
+import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.*;
 import org.w3c.dom.Element;
 
 import javax.xml.XMLConstants;
 
+/**
+ * Performs several checks on the foreign key info:
+ * <ul>
+ * <li>Foreign key info is typed with a primitive XSD type.</li>
+ * <li>Foreign key info is not a repeatable element.</li>
+ * <li>Foreign key info references an element in referenced type.</li>
+ * </ul>
+ */
 class ForeignKeyInfo implements ValidationRule {
 
     private final ReferenceFieldMetadata field;
@@ -28,12 +36,20 @@ class ForeignKeyInfo implements ValidationRule {
     public boolean perform(ValidationHandler handler) {
         // Foreign key info checks
         for (FieldMetadata foreignKeyInfo : field.getForeignKeyInfoFields()) {
-            if(!ValidationFactory.getRule(foreignKeyInfo).perform(handler)) {
+            if(StringUtils.isNotEmpty(field.getForeignKeyFilter())) {
+                boolean isValidForeignKeyInfo = ValidationFactory.getRule(foreignKeyInfo).perform(NoOpValidationHandler.INSTANCE);
+                if(!isValidForeignKeyInfo) {
+                    handler.warning(foreignKeyInfo, "Foreign key info is invalid (but foreign key filter may make it valid).",
+                            foreignKeyInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
+                            foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                            foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
+                            ValidationError.FOREIGN_KEY_INFO_INVALID);
+                }
+            } else if (!ValidationFactory.getRule(foreignKeyInfo).perform(handler)) {
                 continue;
             }
             if (!isPrimitiveTypeField(foreignKeyInfo)) {
-                handler.warning(foreignKeyInfo,
-                        "Foreign key info is not typed as primitive XSD.",
+                handler.warning(foreignKeyInfo, "Foreign key info is not typed as primitive XSD.",
                         foreignKeyInfo.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
                         foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                         foreignKeyInfo.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
