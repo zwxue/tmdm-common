@@ -108,83 +108,6 @@
         <directory>${mdm.build.dir}</directory>
 
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <!-- Display build version -->
-                    <execution>
-                        <id>display-version</id>
-                        <phase>validate</phase>
-                        <inherited>true</inherited>
-                        <configuration>
-                            <tasks>
-                                <echo>MDM BUILD ${mdm.build.version}</echo>
-                                <echo>ear name = ${ear.name}</echo>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <!-- Generate version.properties file -->
-                    <execution>
-                        <id>generate-version</id>
-                        <phase>generate-resources</phase>
-                        <inherited>true</inherited>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks>
-                                <mkdir dir="${project.build.directory}/generated-version" />
-                                <tstamp>
-                                    <format property="product.build.date" pattern="yyyy/MM/dd hh:mm" />
-                                </tstamp>
-                                <copy
-                                    file="${common.location}/org.talend.mdm.base/version.properties.template"
-                                    tofile="${project.build.directory}/generated-version/${version.properties}"
-                                    preservelastmodified="true">
-                                    <filterset>
-                                        <filter token="product.version.major" value="${product.version.major}" />
-                                        <filter token="product.version.minor" value="${product.version.minor}" />
-                                        <filter token="product.version.rev" value="${product.version.rev}" />
-                                        <filter token="product.revision" value="${product.revision}" />
-                                        <filter token="product.description" value="${product.description}" />
-                                        <filter token="product.build.date" value="${product.build.date}" />
-                                    </filterset>
-                                </copy>
-                            </tasks>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <!-- Attach generated version.properties file -->
-                    <execution>
-                        <id>add-generated-version</id>
-                        <phase>generate-resources</phase>
-                        <inherited>true</inherited>
-                        <goals>
-                            <goal>add-resource</goal>
-                        </goals>
-                        <configuration>
-                            <resources>
-                                <resource>
-                                    <directory>${project.build.directory}/generated-version</directory>
-                                    <targetPath>.</targetPath>
-                                    <includes>
-                                        <include>${version.properties}</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
 
         <pluginManagement>
@@ -349,93 +272,6 @@
                     </dependencies>
                 </plugin>
 
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <version>2.3</version>
-                    <configuration>
-                        <warSourceDirectory>${basedir}/war</warSourceDirectory>
-                        <webappDirectory>${project.build.directory}/war</webappDirectory>
-                        <webXml>${project.build.directory}/web.xml</webXml>
-                        <useCache>false</useCache>
-                        <!-- WAR is packaged within an EAR, so exclude all dependencies -->
-                        <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
-                        <archive>
-                            <addMavenDescriptor>false</addMavenDescriptor>
-                            <manifestEntries>
-                                <Build-Version>${mdm.build.version}</Build-Version>
-                                <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                            </manifestEntries>
-                        </archive>
-                    </configuration>
-                </plugin>
-
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no 
-                    influence on the Maven build itself. -->
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.codehaus.mojo</groupId>
-                                        <artifactId>gwt-maven-plugin</artifactId>
-                                        <versionRange>[1.2,)</versionRange>
-                                        <goals>
-                                            <goal>compile</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore></ignore>
-                                    </action>
-                                </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.apache.maven.plugins</groupId>
-                                        <artifactId>maven-dependency-plugin</artifactId>
-                                        <versionRange>[1.0.0,)</versionRange>
-                                        <goals>
-                                            <goal>copy-dependencies</goal>
-                                            <goal>unpack</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.apache.maven.plugins</groupId>
-                                        <artifactId>maven-antrun-plugin</artifactId>
-                                        <versionRange>[1.0.0,)</versionRange>
-                                        <goals>
-                                            <goal>run</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.codehaus.mojo</groupId>
-                                        <artifactId>build-helper-maven-plugin</artifactId>
-                                        <versionRange>[1.0.0,)</versionRange>
-                                        <goals>
-                                            <goal>add-resource</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
@@ -1190,7 +1026,6 @@
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>1.2.16</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>commons-fileupload</groupId>
@@ -1208,7 +1043,6 @@
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
                 <version>1.1.1</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.poi-old</groupId>
@@ -1221,32 +1055,21 @@
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>2.1</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>2.2</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.ws.commons.schema</groupId>
-                <artifactId>XmlSchema</artifactId>
-                <version>1.4.5</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.sun.xsom</groupId>
                 <artifactId>xsom</artifactId>
-                <version>20060306</version>
-                <scope>system</scope>
-                <systemPath>${tom.location}/talend.mdm.libraries/deploy/lib/z.xsom.jar</systemPath>
+                <version>20110809</version>
             </dependency>
             <dependency>
                 <groupId>commons-jxpath</groupId>
                 <artifactId>commons-jxpath</artifactId>
                 <version>1.3</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.sun.xml.rpc</groupId>
@@ -1300,7 +1123,6 @@
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
                 <version>3.2.1</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>net.sf.jazzy</groupId>
@@ -1371,8 +1193,7 @@
             <dependency>
                 <groupId>org.apache.neethi</groupId>
                 <artifactId>neethi</artifactId>
-                <version>2.0.4</version>
-                <scope>provided</scope>
+                <version>3.0.3</version>
             </dependency>
             <dependency>
                 <groupId>wsdl4j</groupId>
@@ -1399,7 +1220,6 @@
                 <groupId>dom4j</groupId>
                 <artifactId>dom4j</artifactId>
                 <version>1.6.1</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -1462,25 +1282,21 @@
                 <groupId>xerces</groupId>
                 <artifactId>xercesImpl</artifactId>
                 <version>2.9.1</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>xalan</groupId>
                 <artifactId>xalan</artifactId>
                 <version>2.7.1</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>xalan</groupId>
                 <artifactId>serializer</artifactId>
                 <version>2.7.1</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>xml-resolver</groupId>
                 <artifactId>xml-resolver</artifactId>
                 <version>1.2</version>
-                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
