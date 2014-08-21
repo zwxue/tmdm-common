@@ -12,6 +12,7 @@ package org.talend.mdm.commmon.metadata.compare;
 
 import java.util.*;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.*;
 
@@ -60,7 +61,18 @@ public class Compare {
                             removedElementNames.put(field.getName(), field);
                         }
                     } else {
-                        rightContent.remove(index);
+                        // Field exists on both sides, but checks max length
+                        MetadataVisitable rightElement = rightContent.get(index);
+                        if (leftVisitable instanceof FieldMetadata) {
+                            TypeMetadata leftVisitableType = ((FieldMetadata) leftVisitable).getType();
+                            TypeMetadata rightVisitableType = ((FieldMetadata) rightElement).getType();
+                            Object leftLength = leftVisitableType.getData(MetadataRepository.DATA_MAX_LENGTH);
+                            Object rightLength = rightVisitableType.getData(MetadataRepository.DATA_MAX_LENGTH);
+                            if (!ObjectUtils.equals(leftLength, rightLength)) {
+                                diffResults.modifyChanges.add(new ModifyChange(leftVisitable, rightElement));
+                            }
+                        }
+                        rightContent.remove(index); // Same or already marked as diff, so remove from things to compare
                     }
                 }
                 if (!rightContent.isEmpty()) {

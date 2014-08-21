@@ -12,10 +12,8 @@
 package org.talend.mdm.commmon.metadata.compare;
 
 import org.apache.commons.lang.NotImplementedException;
-import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
-import org.talend.mdm.commmon.metadata.FieldMetadata;
-import org.talend.mdm.commmon.metadata.MetadataVisitable;
+import org.apache.commons.lang.ObjectUtils;
+import org.talend.mdm.commmon.metadata.*;
 
 import java.util.EnumMap;
 import java.util.LinkedList;
@@ -68,26 +66,25 @@ public class HibernateStorageImpactAnalyzer implements ImpactAnalyzer {
             } else if (element instanceof FieldMetadata) {
                 FieldMetadata previous = (FieldMetadata) modifyAction.getPrevious();
                 FieldMetadata current = (FieldMetadata) modifyAction.getCurrent();
+                Object previousLength = previous.getType().getData(MetadataRepository.DATA_MAX_LENGTH);
+                Object currentLength = current.getType().getData(MetadataRepository.DATA_MAX_LENGTH);
                 /*
                  * HIGH IMPACT CHANGES
                  */
                 if (!previous.getType().equals(current.getType())) {
                     // Type modification has high impact (values might not be following correct format).
                     impactSort.get(Impact.HIGH).add(modifyAction);
-                    continue;
-                }
-                // Collection mapping undo (or creation) has a high impact on schema
-                if (previous.isMany() != current.isMany()) {
+                } else if (previous.isMany() != current.isMany()) {
+                    // Collection mapping undo (or creation) has a high impact on schema
                     impactSort.get(Impact.HIGH).add(modifyAction);
-                    continue;
-                }
-                // Key creation might have high impact (in case of duplicated values).
-                if (previous.isKey() != current.isKey()) {
+                } else if (previous.isKey() != current.isKey()) {
+                    // Key creation might have high impact (in case of duplicated values).
                     impactSort.get(Impact.HIGH).add(modifyAction);
-                    continue;
-                }
-                // Won't be able to change constraint
-                if (previous.isMandatory() != current.isMandatory()) {
+                } else if (previous.isMandatory() != current.isMandatory()) {
+                    // Won't be able to change constraint
+                    impactSort.get(Impact.HIGH).add(modifyAction);
+                } else if (!ObjectUtils.equals(previousLength, currentLength)) {
+                    // Won't be able to change constraint for max length
                     impactSort.get(Impact.HIGH).add(modifyAction);
                 }
             }
