@@ -11,8 +11,7 @@ Require-Bundle: org.eclipse.xsd,
 Import-Package: org.apache.log4j
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.talend.mdm.commmon,
- org.talend.mdm.commmon.metadata,
+Export-Package: org.talend.mdm.commmon.metadata,
  org.talend.mdm.commmon.metadata.validation,
  org.talend.mdm.commmon.util.bean,
  org.talend.mdm.commmon.util.core,
