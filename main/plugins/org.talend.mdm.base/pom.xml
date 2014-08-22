@@ -724,9 +724,9 @@
                 <version>3.2.1.Final</version>
             </dependency>
             <dependency>
-                <groupId>javassist</groupId>
+                <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
-                <version>3.12.1.GA</version>
+                <version>3.18.2-GA</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.jettison</groupId>
@@ -1199,7 +1199,6 @@
                 <groupId>wsdl4j</groupId>
                 <artifactId>wsdl4j</artifactId>
                 <version>1.6.2</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>svnkit</groupId>
