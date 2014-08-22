@@ -318,13 +318,20 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
                 if (!nonInstantiableType.getSuperTypes().isEmpty() && !nonInstantiableType.isFrozen()) {
                     TypeMetadata superType = nonInstantiableType.getSuperTypes().iterator().next();
                     ComplexTypeMetadata entitySuperType = null;
+                    int entitySuperTypeCandidateCount = 0;
                     for (TypeMetadata entity : types) {
                         if (superType.getName().equals(entity.getData(COMPLEX_TYPE_NAME))) {
                             entitySuperType = (ComplexTypeMetadata) entity;
-                            break;
+                            entitySuperTypeCandidateCount++;
                         }
                     }
-                    if (entitySuperType != null) {
+                    if (entitySuperTypeCandidateCount > 1) {
+                        // TMDM-7583: Found multiple entity types as candidate for entity super types, consider type will only
+                        // inherit from reusable and won't have entity super type.
+                        LOGGER.warn("Type '" + current.getName()
+                                + "' uses multiple inheritance (following reusable type usages), consider inheritance from '"
+                                + superType.getName() + "' as a reuse.");
+                    } else if (entitySuperType != null) {
                         current.addSuperType(entitySuperType);
                     }
                 }

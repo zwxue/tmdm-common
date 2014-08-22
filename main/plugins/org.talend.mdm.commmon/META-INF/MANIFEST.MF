@@ -3,11 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Commmon Plug-in
 Bundle-SymbolicName: org.talend.mdm.commmon;singleton:=true
 Bundle-Version: 3.2.0.qualifier
-Bundle-Activator: org.talend.mdm.commmon.Activator
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.xsd,
- org.eclipse.ui.intro,
+Require-Bundle: org.eclipse.xsd,
  org.talend.libraries.apache,
  org.apache.commons.lang,
  org.apache.commons.collections,
@@ -15,8 +11,7 @@ Require-Bundle: org.eclipse.ui,
 Import-Package: org.apache.log4j
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.talend.mdm.commmon,
- org.talend.mdm.commmon.metadata,
+Export-Package: org.talend.mdm.commmon.metadata,
  org.talend.mdm.commmon.metadata.validation,
  org.talend.mdm.commmon.util.bean,
  org.talend.mdm.commmon.util.core,
