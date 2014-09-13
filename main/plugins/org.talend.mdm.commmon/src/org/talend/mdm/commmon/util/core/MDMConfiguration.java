@@ -12,12 +12,12 @@
 // ============================================================================
 package org.talend.mdm.commmon.util.core;
 
+import org.apache.log4j.Logger;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
-
-import org.apache.log4j.Logger;
 
 /**
  * Handles the mdm.conf file
@@ -179,7 +179,7 @@ public final class MDMConfiguration {
      */
     public static boolean isSqlDataBase() {
         String xmlServerClass = getConfiguration().getProperty("xmlserver.class"); //$NON-NLS-1$
-        return "com.amalto.core.storage.DispatchWrapper".equals(xmlServerClass) //$NON-NLS-1$
-                || "com.amalto.core.storage.SQLWrapper".equals(xmlServerClass); //$NON-NLS-1$
+        return "org.talend.mdm.storage.DispatchWrapper".equals(xmlServerClass) //$NON-NLS-1$
+                || "org.talend.mdm.storage.SQLWrapper".equals(xmlServerClass); //$NON-NLS-1$
     }
 }
