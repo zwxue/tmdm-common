@@ -17,6 +17,8 @@ public interface ICoreConstants {
 
     String DEFAULT_CATEGORY_ROOT = "category"; //$NON-NLS-1$
 
+    String AUTHENTICATED_PERMISSION = "authenticated"; //$NON-NLS-1$
+
     /**
      * cross referencing init datacluster & datamodel
      */
