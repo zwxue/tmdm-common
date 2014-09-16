@@ -32,6 +32,10 @@ public interface ICoreConstants {
 
     String ADMIN_PERMISSION = "administration"; //$NON-NLS-1$
 
+    public static final String TALEND_NAMESPACE = "http://www.talend.com/mdm"; //$NON-NLS-1$
+
+    public static final String AUTHENTICATED_PERMISSION = "authenticated";
+
     String SYSTEM_ADMIN_ROLE = "System_Admin"; //$NON-NLS-1$
 
     public static class rolesConvert {
