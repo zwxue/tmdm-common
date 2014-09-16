@@ -34,6 +34,8 @@ public interface ICoreConstants {
 
     String SYSTEM_ADMIN_ROLE = "System_Admin"; //$NON-NLS-1$
 
+    String TALEND_NAMESPACE = "http://www.talend.com/mdm"; //$NON-NLS-1$
+
     public static class rolesConvert {
 
         public static final HashMap<String, String> oldRoleToNewRoleMap = new HashMap<String, String>();
