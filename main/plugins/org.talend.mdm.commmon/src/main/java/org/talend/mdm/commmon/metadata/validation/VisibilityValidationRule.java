@@ -18,7 +18,7 @@ public class VisibilityValidationRule implements ValidationRule {
     @Override
     public boolean perform(ValidationHandler handler) {
         if(StringUtils.isNotEmpty(field.getVisibilityRule()) && isMandatory(field)) {
-            handler.warning(field, "Mandatory field may not visible during record edition dur to visibility rule.",
+            handler.warning(field, "Mandatory field may not visible during record edition due to visibility rule.",
                     field.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
                     field.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                     field.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER),
