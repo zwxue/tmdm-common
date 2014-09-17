@@ -50,13 +50,16 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
 
     private int cachedHashCode;
 
+    private String visibilityRule;
+
     public EnumerationFieldMetadata(ComplexTypeMetadata containingType,
-            boolean isKey,
-            boolean isMany, boolean isMandatory, String name,
-            TypeMetadata fieldType,
-            List<String> allowWriteUsers,
-            List<String> hideUsers,
-            List<String> workflowAccessRights) {
+                                    boolean isKey,
+                                    boolean isMany, boolean isMandatory, String name,
+                                    TypeMetadata fieldType,
+                                    List<String> allowWriteUsers,
+                                    List<String> hideUsers,
+                                    List<String> workflowAccessRights,
+                                    String visibilityRule) {
         this.containingType = containingType;
         this.declaringType = containingType;
         this.isKey = isKey;
@@ -67,6 +70,7 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
         this.allowWriteUsers = allowWriteUsers;
         this.hideUsers = hideUsers;
         this.workflowAccessRights = workflowAccessRights;
+        this.visibilityRule = visibilityRule;
     }
 
     public String getName() {
@@ -141,6 +145,11 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
         return localizedName;
     }
 
+    @Override
+    public String getVisibilityRule() {
+        return visibilityRule;
+    }
+
     public TypeMetadata getDeclaringType() {
         return declaringType;
     }
@@ -159,7 +168,7 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
                 fieldType,
                 allowWriteUsers,
                 hideUsers,
-                workflowAccessRights);
+                workflowAccessRights, visibilityRule);
         copy.localeToLabel.putAll(localeToLabel);
         if (dataMap != null) {
             copy.dataMap = new HashMap<String, Object>(dataMap);

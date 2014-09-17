@@ -45,6 +45,14 @@ public interface FieldMetadata extends MetadataVisitable, MetadataExtensible {
     ComplexTypeMetadata getContainingType();
 
     /**
+     * Changes containing type for this field. Use this method with extra caution.
+     * 
+     * @param typeMetadata The new containing type for this field.
+     * @see #getContainingType()
+     */
+    void setContainingType(ComplexTypeMetadata typeMetadata);
+
+    /**
      * @return Returns the {@link TypeMetadata} that <b>declares</b> the field. Field might be contained by a type but
      * declared in another (in case of inheritance).
      * @see #getContainingType()
@@ -94,14 +102,6 @@ public interface FieldMetadata extends MetadataVisitable, MetadataExtensible {
     FieldMetadata copy();
 
     /**
-     * Changes containing type for this field. Use this method with extra caution.
-     * 
-     * @param typeMetadata The new containing type for this field.
-     * @see #getContainingType()
-     */
-    void setContainingType(ComplexTypeMetadata typeMetadata);
-
-    /**
      * Freezes all modifications that can be done to a field. Similar to {@link TypeMetadata#freeze()}.
      * 
      * @return A frozen field metadata.
@@ -130,8 +130,8 @@ public interface FieldMetadata extends MetadataVisitable, MetadataExtensible {
     ValidationRule createValidationRule();
 
     /**
-     * @return A XPath-like path from the top level entity type down to this field. Path <b>DOES NOT</b> include the
-     * MDM entity type name. Returned values look like "address/address/street" or "id".
+     * @return A XPath-like path from the top level entity type down to this field. Path <b>DOES NOT</b> include the MDM
+     * entity type name. Returned values look like "address/address/street" or "id".
      * @since 5.4
      */
     String getPath();
@@ -146,4 +146,6 @@ public interface FieldMetadata extends MetadataVisitable, MetadataExtensible {
     void registerName(Locale locale, String name);
 
     String getName(Locale locale);
+
+    String getVisibilityRule();
 }
