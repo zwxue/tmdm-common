@@ -50,18 +50,22 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
 
     private final Map<Locale, String> localeToLabel = new HashMap<Locale, String>();
 
+    private String visibilityRule;
+
     public SimpleTypeFieldMetadata(ComplexTypeMetadata containingType,
-            boolean isKey,
-            boolean isMany,
-            boolean isMandatory,
-            String name,
-            TypeMetadata fieldType,
-            List<String> allowWriteUsers,
-            List<String> hideUsers,
-            List<String> workflowAccessRights) {
+                                   boolean isKey,
+                                   boolean isMany,
+                                   boolean isMandatory,
+                                   String name,
+                                   TypeMetadata fieldType,
+                                   List<String> allowWriteUsers,
+                                   List<String> hideUsers,
+                                   List<String> workflowAccessRights,
+                                   String visibilityRule) {
         if (fieldType == null) {
             throw new IllegalArgumentException("Field type cannot be null.");
         }
+        this.visibilityRule = visibilityRule;
         this.isMandatory = isMandatory;
         this.containingType = containingType;
         this.declaringType = containingType;
@@ -152,6 +156,11 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
         return localizedName;
     }
 
+    @Override
+    public String getVisibilityRule() {
+        return visibilityRule;
+    }
+
     public TypeMetadata getDeclaringType() {
         return declaringType;
     }
@@ -171,7 +180,7 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
                 fieldType,
                 allowWriteUsers,
                 hideUsers,
-                workflowAccessRights);
+                workflowAccessRights, visibilityRule);
         copy.setDeclaringType(declaringType);
         copy.localeToLabel.putAll(localeToLabel);
         if (dataMap != null) {

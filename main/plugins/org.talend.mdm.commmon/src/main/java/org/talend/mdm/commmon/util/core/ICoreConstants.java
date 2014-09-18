@@ -17,6 +17,8 @@ public interface ICoreConstants {
 
     String DEFAULT_CATEGORY_ROOT = "category"; //$NON-NLS-1$
 
+    String AUTHENTICATED_PERMISSION = "authenticated"; //$NON-NLS-1$
+
     /**
      * cross referencing init datacluster & datamodel
      */
@@ -37,6 +39,8 @@ public interface ICoreConstants {
     public static final String AUTHENTICATED_PERMISSION = "authenticated";
 
     String SYSTEM_ADMIN_ROLE = "System_Admin"; //$NON-NLS-1$
+
+    String TALEND_NAMESPACE = "http://www.talend.com/mdm"; //$NON-NLS-1$
 
     public static class rolesConvert {
 

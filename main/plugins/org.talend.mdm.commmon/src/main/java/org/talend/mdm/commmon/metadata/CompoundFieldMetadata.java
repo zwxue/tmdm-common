@@ -115,6 +115,11 @@ public class CompoundFieldMetadata extends MetadataExtensions implements FieldMe
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public String getVisibilityRule() {
+        throw new UnsupportedOperationException();
+    }
+
     public TypeMetadata getDeclaringType() {
         return fields[0].getDeclaringType();
     }
