@@ -179,7 +179,7 @@ public final class MDMConfiguration {
      */
     public static boolean isSqlDataBase() {
         String xmlServerClass = getConfiguration().getProperty("xmlserver.class"); //$NON-NLS-1$
-        return "org.talend.mdm.storage.DispatchWrapper".equals(xmlServerClass) //$NON-NLS-1$
-                || "org.talend.mdm.storage.SQLWrapper".equals(xmlServerClass); //$NON-NLS-1$
+        return "com.amalto.core.storage.DispatchWrapper".equals(xmlServerClass) //$NON-NLS-1$
+                || "com.amalto.core.storage.SQLWrapper".equals(xmlServerClass); //$NON-NLS-1$
     }
 }
