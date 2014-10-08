@@ -71,8 +71,15 @@ public class HibernateStorageImpactAnalyzer implements ImpactAnalyzer {
                  * HIGH IMPACT CHANGES
                  */
                 if (!previous.getType().equals(current.getType())) {
-                    // Type modification has high impact (values might not be following correct format).
-                    impactSort.get(Impact.HIGH).add(modifyAction);
+                    TypeMetadata superPreviousType = MetadataUtils.getSuperConcreteType(previous.getType());
+                    TypeMetadata superCurrentType = MetadataUtils.getSuperConcreteType(current.getType());
+                    if (superPreviousType.equals(superCurrentType)) {
+                        // TMDM-7748: Type modification is ok as long as the super type remains the same.
+                        impactSort.get(Impact.LOW).add(modifyAction);
+                    } else {
+                        // Type modification has high impact (values might not be following correct format).
+                        impactSort.get(Impact.HIGH).add(modifyAction);
+                    }
                 } else if (previous.isMany() != current.isMany()) {
                     // Collection mapping undo (or creation) has a high impact on schema
                     impactSort.get(Impact.HIGH).add(modifyAction);
