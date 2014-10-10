@@ -28,15 +28,11 @@ public class VisibilityValidationRule implements ValidationRule {
     }
 
     private static boolean isMandatory(FieldMetadata field) {
-        if(field.isMandatory()) {
-            return true;
-        }
         ComplexTypeMetadata entity = field.getContainingType().getEntity();
         ComplexTypeMetadata containingType = field.getContainingType();
         if (containingType.equals(entity)) {
-            // Already at entity level, returns whether isMandatory() result (very likely false, following check at
-            // method's beginning).
-            return false;
+            // Already at entity level, returns isMandatory() result.
+            return field.isMandatory();
         }
         while(!containingType.equals(entity)) {
             FieldMetadata container = containingType.getContainer();
