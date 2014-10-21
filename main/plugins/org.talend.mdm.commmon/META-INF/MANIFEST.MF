@@ -3,10 +3,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Commmon Plug-in
 Bundle-SymbolicName: org.talend.mdm.commmon;singleton:=true
 Bundle-Version: 6.0.0.qualifier
-Bundle-Activator: org.talend.mdm.commmon.Activator
 Require-Bundle: org.eclipse.xsd,
+ org.talend.libraries.apache,
  org.apache.commons.lang,
- org.apache.commons.collections
+ org.apache.commons.collections,
+ org.apache.commons.jxpath
 Import-Package: org.apache.log4j
 Bundle-ActivationPolicy: lazy
 Export-Package: org.talend.mdm.commmon.metadata,
