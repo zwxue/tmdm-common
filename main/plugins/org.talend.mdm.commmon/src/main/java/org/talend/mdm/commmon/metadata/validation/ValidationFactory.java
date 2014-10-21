@@ -66,6 +66,7 @@ public class ValidationFactory {
         List<ValidationRule> rules = new LinkedList<ValidationRule>();
         rules.add(new FieldInheritanceOverrideRule(field));
         rules.add(new FieldTypeValidationRule(field));
+        rules.add(new VisibilityValidationRule(field));
         return new CompositeValidationRule(rules.toArray(new ValidationRule[rules.size()]));
     }
 
@@ -81,6 +82,7 @@ public class ValidationFactory {
         List<ValidationRule> rules = new LinkedList<ValidationRule>();
         rules.add(new FieldInheritanceOverrideRule(field));
         rules.add(new FieldTypeValidationRule(field));
+        rules.add(new VisibilityValidationRule(field));
         return new CompositeValidationRule(rules.toArray(new ValidationRule[rules.size()]));
     }
 
@@ -88,6 +90,7 @@ public class ValidationFactory {
         List<ValidationRule> rules = new LinkedList<ValidationRule>();
         rules.add(new FieldInheritanceOverrideRule(field));
         rules.add(new FieldTypeValidationRule(field));
+        rules.add(new VisibilityValidationRule(field));
         return new CompositeValidationRule(rules.toArray(new ValidationRule[rules.size()]));
     }
 

@@ -14,6 +14,7 @@ import java.util.*;
 
 import javax.xml.XMLConstants;
 
+import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 
@@ -142,6 +143,11 @@ public class UnresolvedFieldMetadata implements FieldMetadata {
     @Override
     public String getName(Locale locale) {
         return getName();
+    }
+
+    @Override
+    public String getVisibilityRule() {
+        return StringUtils.EMPTY;
     }
 
     @Override

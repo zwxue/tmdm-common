@@ -56,6 +56,8 @@ public class XmlSchemaAnnotationProcessorState {
 
     private final List<String> workflowAccessRights = new LinkedList<String>();
 
+    private String visibilityRule;
+
     private String foreignKeyFilter = StringUtils.EMPTY;
 
     public void setFkIntegrity(boolean fkIntegrity) {
@@ -176,5 +178,13 @@ public class XmlSchemaAnnotationProcessorState {
 
     public String getForeignKeyFilter() {
         return foreignKeyFilter;
+    }
+
+    public void setVisibilityRule(String visibilityRule) {
+        this.visibilityRule = visibilityRule;
+    }
+
+    public String getVisibilityRule() {
+        return visibilityRule;
     }
 }
