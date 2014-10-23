@@ -1485,4 +1485,17 @@
         </dependencies>
     </dependencyManagement>
 
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Talend Releases Repository</name>
+            <url>${talend.releases.repo.url}</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Talend Snapshots Repository</name>
+            <url>${talend.snapshots.repo.url}</url>
+        </snapshotRepository>
+    </distributionManagement>
+    
 </project>
