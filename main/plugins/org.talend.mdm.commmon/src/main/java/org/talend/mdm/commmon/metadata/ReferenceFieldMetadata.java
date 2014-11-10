@@ -320,10 +320,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
             return false;
         if (foreignKeyInfoFields != null ? !foreignKeyInfoFields.equals(that.foreignKeyInfoFields) : that.foreignKeyInfoFields != null)
             return false;
-        if (hideUsers != null ? !hideUsers.equals(that.hideUsers) : that.hideUsers != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (writeUsers != null ? !writeUsers.equals(that.writeUsers) : that.writeUsers != null) return false;
-        if (workflowAccessRights != null ? !workflowAccessRights.equals(that.workflowAccessRights) : that.workflowAccessRights != null) return false;
 
         return true;
     }
