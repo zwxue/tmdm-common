@@ -32,6 +32,11 @@ class AddChange extends Change {
         return element.accept(new DefaultMetadataVisitor<String>() {
 
             @Override
+            public String visit(ContainedComplexTypeMetadata containedType) {
+                return MessageFormat.format(bundle.getString("add_reusable_type"), containedType.getName()); //$NON-NLS-1$
+            }
+
+            @Override
             public String visit(ComplexTypeMetadata complexType) {
                 return MessageFormat.format(bundle.getString("add_entity_type"), complexType.getName()); //$NON-NLS-1$
             }
