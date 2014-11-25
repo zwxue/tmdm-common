@@ -225,17 +225,12 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
         if (isKey != that.isKey) return false;
         if (isMandatory != that.isMandatory) return false;
         if (isMany != that.isMany) return false;
-        if (allowWriteUsers != null ? !allowWriteUsers.equals(that.allowWriteUsers) : that.allowWriteUsers != null)
-            return false;
         if (containingType != null ? !containingType.equals(that.containingType) : that.containingType != null)
             return false;
         if (declaringType != null ? !declaringType.equals(that.declaringType) : that.declaringType != null)
             return false;
         if (fieldType != null ? !fieldType.equals(that.fieldType) : that.fieldType != null) return false;
-        if (hideUsers != null ? !hideUsers.equals(that.hideUsers) : that.hideUsers != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (workflowAccessRights != null ? !workflowAccessRights.equals(that.workflowAccessRights) : that.workflowAccessRights != null)
-            return false;
 
         return true;
     }
@@ -247,14 +242,11 @@ public class EnumerationFieldMetadata extends MetadataExtensions implements Fiel
         }
         int result = (isKey ? 1 : 0);
         result = 31 * result + (fieldType != null ? fieldType.hashCode() : 0);
-        result = 31 * result + (allowWriteUsers != null ? allowWriteUsers.hashCode() : 0);
-        result = 31 * result + (hideUsers != null ? hideUsers.hashCode() : 0);
         result = 31 * result + (declaringType != null ? declaringType.hashCode() : 0);
         result = 31 * result + (isMany ? 1 : 0);
         result = 31 * result + (isMandatory ? 1 : 0);
         result = 31 * result + (containingType != null ? containingType.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (workflowAccessRights != null ? workflowAccessRights.hashCode() : 0);
         cachedHashCode = result;
         return result;
     }

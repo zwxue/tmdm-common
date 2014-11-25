@@ -27,14 +27,18 @@ class UnusedReusableTypeValidationRule implements ValidationRule {
     @Override
     public boolean perform(ValidationHandler handler) {
         if (MetadataUtils.countEntityUsageCount(type) == 0) {
+            // TMDM-7865: Don't report not used type if type has sub types (check on sub types would be enough)
+            if (!type.getSubTypes().isEmpty()) {
+                return true;
+            }
             // TMDM-7672: Sub type might not be used, but super type is
             ComplexTypeMetadata topLevelType = (ComplexTypeMetadata) MetadataUtils.getSuperConcreteType(type);
             if (MetadataUtils.countEntityUsageCount(topLevelType) == 0) {
                 // Type isn't directly used nor is its super type, reports a warning
                 handler.warning(type, "Type '" + type.getName() + "' is never used in an entity type.",
-                        type.<Element> getData(MetadataRepository.XSD_DOM_ELEMENT),
-                        type.<Integer> getData(MetadataRepository.XSD_LINE_NUMBER),
-                        type.<Integer> getData(MetadataRepository.XSD_COLUMN_NUMBER), ValidationError.UNUSED_REUSABLE_TYPE);
+                        type.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
+                        type.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
+                        type.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER), ValidationError.UNUSED_REUSABLE_TYPE);
                 return false;
             }
             return true;
