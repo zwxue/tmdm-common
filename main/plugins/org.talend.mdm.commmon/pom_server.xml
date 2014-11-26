@@ -12,31 +12,6 @@
     <artifactId>org.talend.mdm.commmon</artifactId>
     <name>org.talend.mdm.commmon</name>
 
-    <properties>
-        <lib>z.mdm.common.lib</lib>
-    </properties>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>deploy-jboss</id>
-                        <configuration>
-                            <tasks>
-                                <delete file="${jboss.lib.dir}/${lib}.jar" />
-                                <copy file="${project.build.directory}/${project.build.finalName}.jar"
-                                    tofile="${jboss.lib.dir}/${lib}.jar" />
-                            </tasks>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
         <dependency>
             <groupId>log4j</groupId>
