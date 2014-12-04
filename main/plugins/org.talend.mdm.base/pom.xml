@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.talend.mdm</groupId>
     <artifactId>mdm-base</artifactId>
-    <version>5.6-SNAPSHOT</version>
+    <version>6.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>org.talend.mdm.base</name>
     <url>http://www.talend.com</url>
@@ -18,7 +18,7 @@
         <!-- GWT and other dependent libraries must be aligned in term of version -->
         <gwt.version>2.4.0</gwt.version>
         <gwt.restlet.version>2.2.1</gwt.restlet.version>
-        <gwt.flot.version>3.2.0</gwt.flot.version>
+        <gwt.flot.version>3.3.0</gwt.flot.version>
         <gwt.log.version>3.1.8</gwt.log.version>
         <gwt.gxt.version>2.2.5-gwt22</gwt.gxt.version>
         
@@ -1485,4 +1485,17 @@
         </dependencies>
     </dependencyManagement>
 
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Talend Releases Repository</name>
+            <url>${talend.releases.repo.url}</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Talend Snapshots Repository</name>
+            <url>${talend.snapshots.repo.url}</url>
+        </snapshotRepository>
+    </distributionManagement>
+    
 </project>
