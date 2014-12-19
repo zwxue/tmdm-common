@@ -61,7 +61,7 @@ public interface ComplexTypeMetadata extends TypeMetadata {
 
     /**
      * Retrieves a {@link FieldMetadata} based on name. Name might either be a field name or a '/'-separated path (like
-     * 'Family/FamilyId'.
+     * 'Family/FamilyId', any '[n]' (index) in the path should be ignored.
      * @param fieldName A field name. Field name is case sensitive and implementations supports path syntax.
      * @return The {@link FieldMetadata} for the given <code>fieldName</code>.
      * @throws IllegalArgumentException If:<ul>

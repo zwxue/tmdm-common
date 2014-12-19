@@ -158,7 +158,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
     }
     
     private static FieldMetadata _getField(ComplexTypeMetadata type, String path) {
-        String fieldName = StringUtils.substringBefore(path, "/"); //$NON-NLS-1$
+        String fieldName = StringUtils.substringBefore(StringUtils.substringBefore(path, "/"), "["); //$NON-NLS-1$
         String remainingPath = StringUtils.substringAfter(path, "/"); //$NON-NLS-1$
         if (type.hasField(fieldName)) {
             FieldMetadata field = type.getField(fieldName);
