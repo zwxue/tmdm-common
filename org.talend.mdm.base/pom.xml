@@ -1008,8 +1008,8 @@
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
-                <version>2.5</version>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.0.1</version>
                 <scope>provided</scope>
             </dependency>
             <!-- 3rd party dependencies (endorsed, see talend.mdm.libraries/deploy/endorsed ) -->
@@ -1029,12 +1029,16 @@
                         <groupId>com.mchange</groupId>
                         <artifactId>mchange-commons-java</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>servlet-api</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.mchange</groupId>
                 <artifactId>mchange-commons-java</artifactId>
-                <version>0.2.3.2</version>
+                <version>0.2.3.3</version>
             </dependency>
             <dependency>
                 <groupId>javax.validation</groupId>
