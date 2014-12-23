@@ -12,6 +12,15 @@
     <artifactId>org.talend.mdm.common</artifactId>
     <name>org.talend.mdm.common</name>
 
+    <build>
+    <sourceDirectory>../main/plugins/org.talend.mdm.commmon/src/main/java/</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>../main/plugins/org.talend.mdm.commmon/src/main/resources</directory>
+            </resource>
+        </resources>
+    </build>
+    
     <dependencies>
         <dependency>
             <groupId>log4j</groupId>

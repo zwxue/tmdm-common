@@ -24,7 +24,7 @@
 		<link>
 			<name>src</name>
 			<type>2</type>
-			<location>/Users/pascal/dev/talend/sources/features/tmdm-common/main/plugins/org.talend.mdm.commmon/src</location>
+			<locationURI>PARENT-1-PROJECT_LOC/main/plugins/org.talend.mdm.commmon/src</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
