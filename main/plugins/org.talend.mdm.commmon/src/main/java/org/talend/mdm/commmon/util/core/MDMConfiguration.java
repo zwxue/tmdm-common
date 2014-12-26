@@ -12,12 +12,12 @@
 // ============================================================================
 package org.talend.mdm.commmon.util.core;
 
-import org.apache.log4j.Logger;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
+
+import org.apache.log4j.Logger;
 
 /**
  * Handles the mdm.conf file
@@ -26,107 +26,97 @@ public final class MDMConfiguration {
 
     private static final Logger logger = Logger.getLogger(MDMConfiguration.class);
 
-    private static final String MDM_CONF = "mdm.conf"; //$NON-NLS-1$
+    private static MDMConfiguration instance;
 
-    private static File file;
+    private String location;
 
-    private static Properties CONFIGURATION = null;
+    private Properties properties = null;
 
-    private MDMConfiguration() {
+    private MDMConfiguration(String location) {
+        this.location = location;
     }
 
-    public static Properties getConfiguration() {
+    public static synchronized MDMConfiguration createConfiguration(String location) {
+        if (instance != null) {
+            throw new IllegalStateException();
+        }
+        instance = new MDMConfiguration(location);
+        instance.getProperties(true);
+        return instance;
+    }
+
+    public static synchronized Properties getConfiguration() {
         return getConfiguration(false);
     }
 
-    public static Properties getConfiguration(boolean reload) {
-        if (reload) {
-            CONFIGURATION = null;
+    public static synchronized Properties getConfiguration(boolean reload) {
+        if (instance == null) {
+            throw new IllegalStateException();
         }
-        if (CONFIGURATION != null) {
-            return CONFIGURATION;
-        }
-        CONFIGURATION = new Properties();
+        return instance.getProperties(reload);
+    }
 
-        // try the current dir
-        String currentDir = System.getProperty("user.dir"); //$NON-NLS-1$
-        file = new File(currentDir, MDM_CONF);
-        if (!file.exists()) {
-            // if not found, try the JBoss configuration directory
-            String jbossServerDir = System.getProperty("jboss.server.home.dir"); //$NON-NLS-1$
-            if (jbossServerDir != null) {
-                file = new File(jbossServerDir + File.separator + "conf", MDM_CONF); //$NON-NLS-1$
-            }
+    public static synchronized void save() {
+        if (instance == null) {
+            throw new IllegalStateException();
         }
+        instance.saveProperties();
+    }
+
+    private Properties getProperties(boolean reload) {
+        if (reload) {
+            properties = null;
+        }
+        if (properties != null) {
+            return properties;
+        }
+        properties = new Properties();
+
+        File file = new File(location);
         if (file.exists()) {
             logger.info("MDM Configuration: found in '" + file.getAbsolutePath() + "'."); //$NON-NLS-1$ //$NON-NLS-2$
+            FileInputStream in = null;
             try {
-                CONFIGURATION.load(new FileInputStream(file));
+                in = new FileInputStream(file);
+                properties.load(in);
             } catch (Exception e) {
                 logger.warn("MDM Configuration: unable to load the configuration from '" + file.getAbsolutePath() + "' :" //$NON-NLS-1$ //$NON-NLS-2$
                         + e.getMessage() + ". The default configurations will be used."); //$NON-NLS-1$ 
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (Exception e) {
+                        if (logger.isDebugEnabled()) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                }
             }
         } else {
             logger.warn("MDM Configuration: unable to load the configuration from '" + file.getAbsolutePath() //$NON-NLS-1$ 
                     + ". The default configurations will be used."); //$NON-NLS-1$ 
         }
-        checkupPropertiesForXDBConf();
-        return CONFIGURATION;
-    }
-
-    /**
-     * check up xdb config properties to add default value if it is unavailable
-     */
-    private static void checkupPropertiesForXDBConf() {
-        if (CONFIGURATION == null) {
-            return;
-        }
-        if (CONFIGURATION.getProperty("xmldb.server.name") == null) { //$NON-NLS-1$
-            CONFIGURATION.setProperty("xmldb.server.name", "localhost"); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        if (CONFIGURATION.getProperty("xmldb.server.port") == null) { //$NON-NLS-1$
-            CONFIGURATION.setProperty("xmldb.server.port", "8180"); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        if (CONFIGURATION.getProperty("xmldb.administrator.username") == null) { //$NON-NLS-1$
-            CONFIGURATION.setProperty("xmldb.administrator.username", "admin"); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        if (CONFIGURATION.getProperty("xmldb.administrator.password") == null) { //$NON-NLS-1$
-            CONFIGURATION.setProperty("xmldb.administrator.password", "1bc29b36f623ba82aaf6724fd3b16718"); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        if (CONFIGURATION.getProperty("xmldb.driver") == null) { //$NON-NLS-1$
-            CONFIGURATION.setProperty("xmldb.driver", "org.exist.xmldb.DatabaseImpl"); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        if (CONFIGURATION.getProperty("xmldb.dbid") == null) { //$NON-NLS-1$
-            CONFIGURATION.setProperty("xmldb.dbid", "exist"); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        if (CONFIGURATION.getProperty("xmldb.dburl") == null) { //$NON-NLS-1$
-            CONFIGURATION.setProperty("xmldb.dburl", "exist/xmlrpc/db"); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        if (CONFIGURATION.getProperty("xmldb.isupurl") == null) { //$NON-NLS-1$
-            CONFIGURATION.setProperty("xmldb.isupurl", "exist/"); //$NON-NLS-1$ //$NON-NLS-2$
-        }
+        return properties;
     }
 
     /**
      * save configure file
      */
-    public static void save() {
-        if (file == null) {
-            throw new IllegalStateException("No MDM configuration was previously loaded.");
-        }
+    private void saveProperties() {
         FileOutputStream out = null;
         try {
-            out = new FileOutputStream(file);
-            CONFIGURATION.store(out, "MDM configuration file"); //$NON-NLS-1$
+            out = new FileOutputStream(location);
+            properties.store(out, "MDM configuration file"); //$NON-NLS-1$
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         } finally {
             if (out != null) {
                 try {
                     out.close();
-                } catch (Exception e2) {
+                } catch (Exception e) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Error occurred during close() operation during configuration save.", e2); //$NON-NLS-1$
+                        logger.error(e.getMessage(), e);
                     }
                 }
             }
