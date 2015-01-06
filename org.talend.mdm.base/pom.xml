@@ -415,6 +415,16 @@
             </dependency>
             <dependency>
                 <groupId>org.talend.mdm</groupId>
+                <artifactId>org.talend.mdm.ext.images.server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.talend.mdm</groupId>
+                <artifactId>org.talend.mdm.ext.publish.component</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.talend.mdm</groupId>
                 <artifactId>org.talend.mdm.webapp.core</artifactId>
                 <version>${project.version}</version>
                 <type>war</type>
@@ -446,12 +456,6 @@
             <dependency>
                 <groupId>org.talend.mdm</groupId>
                 <artifactId>org.talend.mdm.webapp.stagingarea</artifactId>
-                <version>${project.version}</version>
-                <type>war</type>
-            </dependency>
-            <dependency>
-                <groupId>org.talend.mdm</groupId>
-                <artifactId>org.talend.mdm.ext.images.server</artifactId>
                 <version>${project.version}</version>
                 <type>war</type>
             </dependency>
