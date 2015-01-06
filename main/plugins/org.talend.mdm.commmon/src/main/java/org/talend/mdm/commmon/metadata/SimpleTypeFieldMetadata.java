@@ -244,6 +244,8 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
         if (isMandatory != that.isMandatory) return false;
         if (isMany != that.isMany) return false;
         if (fieldType != null ? !fieldType.equals(that.fieldType) : that.fieldType != null) return false;
+        if (containingType != null ? !containingType.equals(that.containingType) : that.containingType != null)
+            return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
 
         return true;
@@ -258,6 +260,7 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (declaringType != null ? declaringType.getName().hashCode() : 0);
         result = 31 * result + (fieldType != null ? fieldType.getName().hashCode() : 0);
+        result = 31 * result + (containingType != null ? containingType.hashCode() : 0);
         result = 31 * result + (hideUsers != null ? hideUsers.hashCode() : 0);
         result = 31 * result + (isKey ? 1 : 0);
         result = 31 * result + (isMandatory ? 1 : 0);
