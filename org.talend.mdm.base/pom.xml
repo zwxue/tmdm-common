@@ -243,6 +243,7 @@
                     <version>2.5</version>
                     <configuration>
                         <useCache>false</useCache>
+                        <archiveClasses>true</archiveClasses>
                         <archive>
                             <addMavenDescriptor>false</addMavenDescriptor>
                             <manifestEntries>
