@@ -35,8 +35,8 @@
         <product.qualifier>NB</product.qualifier>
         <product.version>${product.version.major}.${product.version.minor}.${product.version.rev}</product.version>
         <mdm.build.version>${product.version}${product.qualifier}-${product.revision}</mdm.build.version>
-        <version.properties>version.properties</version.properties>
-        <ear.name></ear.name>
+        <product.build.date>${maven.build.timestamp}</product.build.date>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 
         <mdm.build.dir>${basedir}/target</mdm.build.dir>
         <mdm.reports.dir>${project.build.directory}/surefire-reports</mdm.reports.dir>
@@ -44,18 +44,7 @@
         <tom.location>${basedir}/..</tom.location>
         <tos.location>${basedir}/..</tos.location>
         <top.location>${basedir}/..</top.location>
-        <jboss.dir>${mdm.build.dir}/jboss-4.2.2.GA</jboss.dir>
-        <jboss.bin.dir>${jboss.dir}/bin</jboss.bin.dir>
-        <jboss.endorsed.dir>${jboss.dir}/lib/endorsed</jboss.endorsed.dir>
-        <jboss.instance.dir>${jboss.dir}/server/default</jboss.instance.dir>
-        <jboss.deploy.dir>${jboss.instance.dir}/deploy</jboss.deploy.dir>
-        <jboss.lib.dir>${jboss.instance.dir}/lib</jboss.lib.dir>
-        <jboss.conf.dir>${jboss.instance.dir}/conf</jboss.conf.dir>
-        <jboss.conf.data>${jboss.instance.dir}/data</jboss.conf.data>
         <mdm.extras.dir>${mdm.build.dir}/mdm-extras</mdm.extras.dir>
-
-        <dev.mode.excluded.start></dev.mode.excluded.start>
-        <dev.mode.excluded.end></dev.mode.excluded.end>
     </properties>
 
     <repositories>
