@@ -2,41 +2,44 @@ package org.talend.mdm.commmon.util.core;
 
 import java.util.HashMap;
 
+@SuppressWarnings("nls")
 public interface ICoreConstants {
 
-    String X_Schematron = "X_Schematron"; //$NON-NLS-1$
+    String X_Schematron = "X_Schematron";
 
-    String X_Workflow = "X_Workflow"; //$NON-NLS-1$
+    String X_Workflow = "X_Workflow";
 
-    String[] WORKFLOW_ACCESSES = { "Read-only", "Hidden", "Writable" }; //$NON-NLS-1$ //$NON-NLS-2$
+    String[] WORKFLOW_ACCESSES = { "Read-only", "Hidden", "Writable" };
 
     /**
      * the default svn name in VersionSystem
      */
-    String DEFAULT_SVN = "DEFAULT_SVN"; //$NON-NLS-1$
+    String DEFAULT_SVN = "DEFAULT_SVN";
 
-    String DEFAULT_CATEGORY_ROOT = "category"; //$NON-NLS-1$
-
-    String AUTHENTICATED_PERMISSION = "authenticated"; //$NON-NLS-1$
+    String DEFAULT_CATEGORY_ROOT = "category";
 
     /**
      * cross referencing init datacluster & datamodel
      */
-    String CrossReferencing_datacluster = "crossreferencing"; //$NON-NLS-1$
+    String CrossReferencing_datacluster = "crossreferencing";
 
-    String CrossReferencing_datamodel = "crossreferencing"; //$NON-NLS-1$
+    String CrossReferencing_datamodel = "crossreferencing";
 
-    String SYSTEM_INTERACTIVE_ROLE = "System_Interactive"; //$NON-NLS-1$
+    String SYSTEM_INTERACTIVE_ROLE = "System_Interactive";
 
-    String SYSTEM_WEB_ROLE = "System_Web"; //$NON-NLS-1$
+    String SYSTEM_WEB_ROLE = "System_Web";
 
-    String SYSTEM_VIEW_ROLE = "System_View"; //$NON-NLS-1$
+    String SYSTEM_VIEW_ROLE = "System_View";
 
-    String ADMIN_PERMISSION = "administration"; //$NON-NLS-1$
+    String SYSTEM_ADMIN_ROLE = "System_Admin";
+    
+    String ADMIN_PERMISSION = "administration";
+    
+    String AUTHENTICATED_PERMISSION = "authenticated"; 
+    
+    String UI_AUTHENTICATED_PERMISSION = "UIAuthenticated";
 
-    String SYSTEM_ADMIN_ROLE = "System_Admin"; //$NON-NLS-1$
-
-    String TALEND_NAMESPACE = "http://www.talend.com/mdm"; //$NON-NLS-1$
+    String TALEND_NAMESPACE = "http://www.talend.com/mdm";
 
     public static class rolesConvert {
 
