@@ -1,6 +1,0 @@
-major=@product.version.major@
-minor=@product.version.minor@
-rev=@product.version.rev@
-build.number=@product.revision@
-description=@product.description@
-build.date=@product.build.date@
