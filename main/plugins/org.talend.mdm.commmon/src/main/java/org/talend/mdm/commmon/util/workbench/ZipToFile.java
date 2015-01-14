@@ -231,17 +231,4 @@ public class ZipToFile {
             }
         }
     }
-
-    public static void main(String[] args) {
-        try {
-            //zipFile("C:\\zipfile\\", "C:\\new.jar"); //$NON-NLS-1$ //$NON-NLS-2$
-            //unZipFile("C:\\new.jar", "c:/unzipf/"); //$NON-NLS-1$ //$NON-NLS-2$
-            File barf = new File("/home/achen/MyCustomerProcess_2.3.bar");
-            removeTalendLibsFromBarFile(barf);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-
-        }
-    }
 }
