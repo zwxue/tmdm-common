@@ -135,7 +135,7 @@
                             </goals>
                             <configuration>
                                 <extraJvmArgs>-Xmx512m -XX:-ReduceInitialCardMarks</extraJvmArgs>
-                                <localWorkers>2</localWorkers>
+                                <localWorkers>${gwt.localWorkers}</localWorkers>
                                 <deploy>${project.build.directory}/gwt-deploy</deploy>
                                 <logLevel>INFO</logLevel>
                             </configuration>
