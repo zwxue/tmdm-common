@@ -6,7 +6,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <!-- Properties -->
-    <context:property-placeholder/>
+    <context:property-placeholder ignore-unresolvable="true"/>
 
     <!-- MDM Configuration -->
     <bean id="mdmConfiguration" class="org.talend.mdm.commmon.util.core.MDMConfiguration" factory-method="createConfiguration">
