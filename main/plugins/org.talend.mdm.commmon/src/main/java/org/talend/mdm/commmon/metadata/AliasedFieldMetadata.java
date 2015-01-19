@@ -17,6 +17,7 @@ import java.util.List;
 public class AliasedFieldMetadata extends SimpleTypeFieldMetadata {
 
     private final String realFieldName;
+    private final FieldMetadata aliasedField;
 
     public AliasedFieldMetadata(ComplexTypeMetadata containingType,
                                 boolean isKey,
@@ -38,6 +39,11 @@ public class AliasedFieldMetadata extends SimpleTypeFieldMetadata {
                 aliasedField.getWorkflowAccessRights(),
                 aliasedField.getVisibilityRule());
         this.realFieldName = aliasedField.getName();
+        this.aliasedField = aliasedField;
+    }
+    
+    public FieldMetadata getAliasedField() {
+        return this.aliasedField;
     }
 
     @Override
