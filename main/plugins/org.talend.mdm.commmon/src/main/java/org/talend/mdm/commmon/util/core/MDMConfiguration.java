@@ -80,8 +80,9 @@ public final class MDMConfiguration {
                 in = new FileInputStream(file);
                 properties.load(in);
             } catch (Exception e) {
-                logger.warn("MDM Configuration: unable to load the configuration from '" + file.getAbsolutePath() + "' :" //$NON-NLS-1$ //$NON-NLS-2$
-                        + e.getMessage() + ". The default configurations will be used."); //$NON-NLS-1$ 
+                logger.error(e.getMessage(), e);
+                throw new IllegalStateException("MDM Configuration: unable to load the configuration from '" //$NON-NLS-1$
+                        + file.getAbsolutePath() + "'"); //$NON-NLS-1$
             } finally {
                 if (in != null) {
                     try {
@@ -94,8 +95,8 @@ public final class MDMConfiguration {
                 }
             }
         } else {
-            logger.warn("MDM Configuration: unable to load the configuration from '" + file.getAbsolutePath() //$NON-NLS-1$ 
-                    + ". The default configurations will be used."); //$NON-NLS-1$ 
+            throw new IllegalStateException("MDM Configuration: unable to load the configuration from '" + file.getAbsolutePath() //$NON-NLS-1$
+                    + "'"); //$NON-NLS-1$
         }
         return properties;
     }
