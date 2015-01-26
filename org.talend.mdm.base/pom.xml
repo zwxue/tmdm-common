@@ -1109,28 +1109,6 @@
                 <artifactId>xercesImpl</artifactId>
                 <version>2.9.1</version>
             </dependency>
-            <!-- SSIM: library for resizing pictures -->
-            <dependency>
-                <groupId>com.mchange</groupId>
-                <artifactId>ssim</artifactId>
-                <version>0.6.1</version>
-                <exclusions>
-                    <exclusion>
-                        <!-- 0.6.1 has dependency on a non existing version (0.2.3.2-SNAPSHOT) -->
-                        <groupId>com.mchange</groupId>
-                        <artifactId>mchange-commons-java</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>servlet-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>com.mchange</groupId>
-                <artifactId>mchange-commons-java</artifactId>
-                <version>0.2.3.3</version>
-            </dependency>
             <dependency>
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
