@@ -94,6 +94,13 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>releases</id>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>http://newbuild.talend.com:8081/nexus/content/repositories/releases</url>
+        </repository>
     </repositories>
 
 
@@ -373,6 +380,7 @@
                 <artifactId>org.talend.mdm.webapp.core</artifactId>
                 <classifier>lib</classifier>
                 <version>${project.version}</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.talend.mdm</groupId>
@@ -404,12 +412,14 @@
                 <artifactId>org.talend.mdm.webapp.browserecords</artifactId>
                 <version>${project.version}</version>
                 <classifier>sources</classifier>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.talend.mdm</groupId>
                 <artifactId>org.talend.mdm.webapp.browserecords</artifactId>
                 <version>${project.version}</version>
                 <classifier>lib</classifier>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.talend.mdm</groupId>
