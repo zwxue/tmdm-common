@@ -252,7 +252,7 @@
                             </manifestEntries>
                         </archive>
                     </configuration>
-                </plugin>
+                </plugin>               
 
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build 
                     itself. -->
@@ -311,19 +311,6 @@
                                         <goals>
                                             <goal>add-resource</goal>
                                             <goal>reserve-network-port</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.codehaus.mojo</groupId>
-                                        <artifactId>license-maven-plugin</artifactId>
-                                        <versionRange>[1.0.0,)</versionRange>
-                                        <goals>
-                                            <goal>aggregate-add-third-party</goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
