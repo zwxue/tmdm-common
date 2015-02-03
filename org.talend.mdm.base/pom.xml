@@ -32,12 +32,7 @@
         <trimStackTrace>false</trimStackTrace>
 
         <product.description></product.description>
-        <mdm.build.version>${product.version}${product.qualifier}-${product.revision}</mdm.build.version>
-
-        <common.location>${basedir}/..</common.location>
-        <tom.location>${basedir}/..</tom.location>
-        <tos.location>${basedir}/..</tos.location>
-        <top.location>${basedir}/..</top.location>
+        <mdm.build.version>${product.version}${product.qualifier}-${product.timestamp}</mdm.build.version>
     </properties>
 
     <repositories>
@@ -241,7 +236,7 @@
                             </manifestEntries>
                         </archive>
                     </configuration>
-                </plugin>               
+                </plugin>
 
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build 
                     itself. -->
@@ -1100,89 +1095,81 @@
             <url>${talend.snapshots.repo.url}</url>
         </snapshotRepository>
     </distributionManagement>
-	
-	<profiles>
-		<profile>
-			<id>default</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<product.version.major>X</product.version.major>
-				<product.version.minor>Y</product.version.minor>
-				<product.version.rev>Z</product.version.rev>
-				<product.revision>000000</product.revision>
-				<product.qualifier>NB</product.qualifier>
-				<product.version>${product.version.major}.${product.version.minor}.${product.version.rev}</product.version>
-				<mdm.build.dir>${basedir}/target</mdm.build.dir>
-				<mdm.reports.dir>${project.build.directory}/surefire-reports</mdm.reports.dir>
-				<mdm.extras.dir>${mdm.build.dir}/mdm-extras</mdm.extras.dir>
-				<product.build.date>${maven.build.timestamp}</product.build.date>
-				<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
-			</properties>
-		</profile>
-		<profile>
-			<id>official</id>
-			<properties>
-				<common.location>${git.src}/tmdm-common</common.location>
-				<common.relative.location>../../tmdm-common</common.relative.location>
-				<tom.location>${git.src}/tmdm-server-se</tom.location>
-				<tom.relative.location>../../tmdm-server-se</tom.relative.location>
-				<tem.location>${git.src}/tmdm-server-ee</tem.location>
-				<tos.relative.location>../../tcommon-studio-se/main/plugins</tos.relative.location>
-				<top.relative.location>../../tdq-studio-se/main/plugins</top.relative.location>
-				<dsc.relative.location>../../tdsc</dsc.relative.location>
-				<product.build.date>${product.timestamp}</product.build.date>
-			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<version>1.9.1</version>
-						<executions>
-							<execution>
-								<phase>initialize</phase>
-								<id>parse-version</id>
-								<goals>
-									<goal>parse-version</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>properties-maven-plugin</artifactId>
-						<version>1.0-alpha-2</version>
-						<executions>
-							<execution>
-								<id>read-global-build-properties</id>
-								<phase>initialize</phase>
-								<goals>
-									<goal>read-project-properties</goal>
-								</goals>
-								<configuration>
-									<files>
-										<file>${buildRootDir}/config/build.50more.properties</file>
-									</files>
-								</configuration>
-							</execution>
-							<execution>
-								<id>read-mdm-build-properties</id>
-								<phase>initialize</phase>
-								<goals>
-									<goal>read-project-properties</goal>
-								</goals>
-								<configuration>
-									<files>
-										<file>${git.src}/tmdm-common/org.talend.mdm.base/build_official.properties</file>
-									</files>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <product.version.major>X</product.version.major>
+                <product.version.minor>Y</product.version.minor>
+                <product.version.rev>Z</product.version.rev>
+                <product.timestamp>19700101_0000</product.timestamp>
+                <product.qualifier>NB</product.qualifier>
+                <product.version>${product.version.major}.${product.version.minor}.${product.version.rev}</product.version>
+                <mdm.build.dir>${project.basedir}/target</mdm.build.dir>
+                <mdm.deploy.dir>${mdm.build.dir}/mdm-deploy</mdm.deploy.dir>
+                <mdm.reports.dir>${project.build.directory}/surefire-reports</mdm.reports.dir>
+                <product.build.date>${maven.build.timestamp}</product.build.date>
+                <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+            </properties>
+        </profile>
+        <profile>
+            <id>official</id>
+            <properties>
+                <product.build.date>${product.timestamp}</product.build.date>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>1.9.1</version>
+                        <executions>
+                            <execution>
+                                <phase>initialize</phase>
+                                <id>parse-version</id>
+                                <goals>
+                                    <goal>parse-version</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <version>1.0-alpha-2</version>
+                        <executions>
+                            <execution>
+                                <id>read-global-build-properties</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>read-project-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <files>
+                                        <file>${buildRootDir}/config/build.50more.properties</file>
+                                    </files>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>read-mdm-build-properties</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>read-project-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <files>
+                                        <file>${project.basedir}/build_official.properties</file>
+                                    </files>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
