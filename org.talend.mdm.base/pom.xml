@@ -1111,5 +1111,58 @@
             <url>${talend.snapshots.repo.url}</url>
         </snapshotRepository>
     </distributionManagement>
-
+	
+	<profiles>
+		<profile>
+			<id>official</id>
+			<properties>
+				<common.location>${git.src}/tmdm-common</common.location>
+				<common.relative.location>../../tmdm-common</common.relative.location>
+				<tom.location>${git.src}/tmdm-server-se</tom.location>
+				<tom.relative.location>../../tmdm-server-se</tom.relative.location>
+				<tem.location>${git.src}/tmdm-server-ee</tem.location>
+				<tos.relative.location>../../tcommon-studio-se/main/plugins</tos.relative.location>
+				<top.relative.location>../../tdq-studio-se/main/plugins</top.relative.location>
+				<dsc.relative.location>../../tdsc</dsc.relative.location>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<version>1.9.1</version>
+						<executions>
+							<execution>
+								<phase>initialize</phase>
+								<id>parse-version</id>
+								<goals>
+									<goal>parse-version</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>properties-maven-plugin</artifactId>
+						<version>1.0-alpha-2</version>
+						<executions>
+							<execution>
+								<id>read-build-properties</id>
+								<phase>initialize</phase>
+								<goals>
+									<goal>read-project-properties</goal>
+								</goals>
+								<configuration>
+									<files>
+										<file>${buildRootDir}/config/build.50more.properties</file>
+										<file>./build_official.properties</file>
+									</files>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
