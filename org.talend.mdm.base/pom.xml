@@ -31,13 +31,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <trimStackTrace>false</trimStackTrace>
 
-        <product.version.major>X</product.version.major>
-        <product.version.minor>Y</product.version.minor>
-        <product.version.rev>Z</product.version.rev>
         <product.description></product.description>
-        <product.revision>000000</product.revision>
-        <product.qualifier>NB</product.qualifier>
-        <product.version>${product.version.major}.${product.version.minor}.${product.version.rev}</product.version>
         <mdm.build.version>${product.version}${product.qualifier}-${product.revision}</mdm.build.version>
         <product.build.date>${maven.build.timestamp}</product.build.date>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
@@ -1113,6 +1107,20 @@
     </distributionManagement>
 	
 	<profiles>
+		<profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<product.version.major>X</product.version.major>
+				<product.version.minor>Y</product.version.minor>
+				<product.version.rev>Z</product.version.rev>
+				<product.revision>000000</product.revision>
+				<product.qualifier>NB</product.qualifier>
+				<product.version>${product.version.major}.${product.version.minor}.${product.version.rev}</product.version>
+			</properties>
+		</profile>
 		<profile>
 			<id>official</id>
 			<properties>
