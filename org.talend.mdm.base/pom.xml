@@ -1098,10 +1098,7 @@
 
     <profiles>
         <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+            <id>dev-build</id>
             <properties>
                 <product.version.major>X</product.version.major>
                 <product.version.minor>Y</product.version.minor>
