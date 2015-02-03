@@ -33,16 +33,11 @@
 
         <product.description></product.description>
         <mdm.build.version>${product.version}${product.qualifier}-${product.revision}</mdm.build.version>
-        <product.build.date>${maven.build.timestamp}</product.build.date>
-        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 
-        <mdm.build.dir>${basedir}/target</mdm.build.dir>
-        <mdm.reports.dir>${project.build.directory}/surefire-reports</mdm.reports.dir>
         <common.location>${basedir}/..</common.location>
         <tom.location>${basedir}/..</tom.location>
         <tos.location>${basedir}/..</tos.location>
         <top.location>${basedir}/..</top.location>
-        <mdm.extras.dir>${mdm.build.dir}/mdm-extras</mdm.extras.dir>
     </properties>
 
     <repositories>
@@ -1119,6 +1114,11 @@
 				<product.revision>000000</product.revision>
 				<product.qualifier>NB</product.qualifier>
 				<product.version>${product.version.major}.${product.version.minor}.${product.version.rev}</product.version>
+				<mdm.build.dir>${basedir}/target</mdm.build.dir>
+				<mdm.reports.dir>${project.build.directory}/surefire-reports</mdm.reports.dir>
+				<mdm.extras.dir>${mdm.build.dir}/mdm-extras</mdm.extras.dir>
+				<product.build.date>${maven.build.timestamp}</product.build.date>
+				<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 			</properties>
 		</profile>
 		<profile>
@@ -1132,6 +1132,7 @@
 				<tos.relative.location>../../tcommon-studio-se/main/plugins</tos.relative.location>
 				<top.relative.location>../../tdq-studio-se/main/plugins</top.relative.location>
 				<dsc.relative.location>../../tdsc</dsc.relative.location>
+				<product.build.date>${product.timestamp}</product.build.date>
 			</properties>
 			<build>
 				<plugins>
