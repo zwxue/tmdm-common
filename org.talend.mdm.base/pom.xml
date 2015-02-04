@@ -1159,7 +1159,7 @@
                                 </goals>
                                 <configuration>
                                     <files>
-                                        <file>${project.basedir}/build_official.properties</file>
+                                        <file>${git.src}/tmdm-common/org.talend.mdm.base/build_official.properties</file>
                                     </files>
                                 </configuration>
                             </execution>
