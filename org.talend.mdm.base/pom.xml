@@ -1119,7 +1119,6 @@
                 <product.build.date>${product.timestamp}</product.build.date>
             </properties>
             <build>
-				<directory>/${mdm.build.dir}</directory>
                 <plugins>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
