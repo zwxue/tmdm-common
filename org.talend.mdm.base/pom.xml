@@ -1140,6 +1140,30 @@
                         <artifactId>properties-maven-plugin</artifactId>
                         <version>1.0-alpha-2</version>
                         <executions>
+							<execution>
+								<id>clean-read-global-build-properties</id>
+                                <phase>pre-clean</phase>
+                                <goals>
+                                    <goal>read-project-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <files>
+                                        <file>${buildRootDir}/config/build.50more.properties</file>
+                                    </files>
+                                </configuration>
+                            </execution>
+							<execution>
+                                <id>clean-read-mdm-build-properties</id>
+                                <phase>pre-clean</phase>
+                                <goals>
+                                    <goal>read-project-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <files>
+                                        <file>${git.src}/tmdm-common/org.talend.mdm.base/build_official.properties</file>
+                                    </files>
+                                </configuration>
+                            </execution>
                             <execution>
                                 <id>read-global-build-properties</id>
                                 <phase>initialize</phase>
