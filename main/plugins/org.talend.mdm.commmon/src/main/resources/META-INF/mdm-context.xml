@@ -11,6 +11,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
     <!-- MDM Configuration -->
     <bean id="mdmConfiguration" class="org.talend.mdm.commmon.util.core.MDMConfiguration" factory-method="createConfiguration">
         <constructor-arg value="${mdm.root}/conf/mdm.conf" />
+        <constructor-arg value="#{ T(java.lang.Boolean).getBoolean('mdm.root.ignoreIfNotFound') }"/>
     </bean>
 
 </beans>

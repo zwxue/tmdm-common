@@ -36,12 +36,12 @@ public final class MDMConfiguration {
         this.location = location;
     }
 
-    public static synchronized MDMConfiguration createConfiguration(String location) {
+    public static synchronized MDMConfiguration createConfiguration(String location, boolean ignoreIfNotFound) {
         if (instance != null) {
             throw new IllegalStateException();
         }
         instance = new MDMConfiguration(location);
-        instance.getProperties(true);
+        instance.getProperties(true, ignoreIfNotFound);
         return instance;
     }
 
@@ -53,7 +53,7 @@ public final class MDMConfiguration {
         if (instance == null) {
             throw new IllegalStateException();
         }
-        return instance.getProperties(reload);
+        return instance.getProperties(reload, false);
     }
 
     public static synchronized void save() {
@@ -63,7 +63,7 @@ public final class MDMConfiguration {
         instance.saveProperties();
     }
 
-    private Properties getProperties(boolean reload) {
+    private Properties getProperties(boolean reload, boolean ignoreIfNotFound) {
         if (reload) {
             properties = null;
         }
@@ -80,9 +80,11 @@ public final class MDMConfiguration {
                 in = new FileInputStream(file);
                 properties.load(in);
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-                throw new IllegalStateException("MDM Configuration: unable to load the configuration from '" //$NON-NLS-1$
-                        + file.getAbsolutePath() + "'"); //$NON-NLS-1$
+                if (!ignoreIfNotFound) {
+                    throw new IllegalStateException("Unable to load MDM configuration from '" //$NON-NLS-1$
+                            + file.getAbsolutePath() + "'", e); //$NON-NLS-1$
+                }
+                logger.warn("Unable to load MDM configuration from '" + file.getAbsolutePath() + "'", e); //$NON-NLS-1$ //$NON-NLS-2$
             } finally {
                 if (in != null) {
                     try {
@@ -95,8 +97,11 @@ public final class MDMConfiguration {
                 }
             }
         } else {
-            throw new IllegalStateException("MDM Configuration: unable to load the configuration from '" + file.getAbsolutePath() //$NON-NLS-1$
-                    + "'"); //$NON-NLS-1$
+            if (!ignoreIfNotFound) {
+                throw new IllegalStateException("Unable to load MDM configuration from '" + file.getAbsolutePath() //$NON-NLS-1$
+                        + "'"); //$NON-NLS-1$
+            }
+            logger.warn("Unable to load MDM configuration from '" + file.getAbsolutePath() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return properties;
     }
