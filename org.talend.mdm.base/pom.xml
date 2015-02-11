@@ -383,6 +383,12 @@
             </dependency>
             <dependency>
                 <groupId>org.talend.mdm</groupId>
+                <artifactId>org.talend.mdm.core</artifactId>
+                <version>${project.version}</version>
+                <classifier>jaas</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.talend.mdm</groupId>
                 <artifactId>org.talend.mdm.core.storage.sql</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -1119,7 +1125,7 @@
                 <product.build.date>${product.timestamp}</product.build.date>
             </properties>
             <build>
-				<directory>/${mdm.build.dir}</directory>
+                <directory>/${mdm.build.dir}</directory>
                 <plugins>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
@@ -1140,8 +1146,8 @@
                         <artifactId>properties-maven-plugin</artifactId>
                         <version>1.0-alpha-2</version>
                         <executions>
-							<execution>
-								<id>clean-read-global-build-properties</id>
+                            <execution>
+                                <id>clean-read-global-build-properties</id>
                                 <phase>pre-clean</phase>
                                 <goals>
                                     <goal>read-project-properties</goal>
@@ -1152,7 +1158,7 @@
                                     </files>
                                 </configuration>
                             </execution>
-							<execution>
+                            <execution>
                                 <id>clean-read-mdm-build-properties</id>
                                 <phase>pre-clean</phase>
                                 <goals>
