@@ -75,9 +75,15 @@ public class HibernateStorageImpactAnalyzer implements ImpactAnalyzer {
                 /*
                  * HIGH IMPACT CHANGES
                  */
-                if (!previous.getType().equals(current.getType())) {
+                if (!ObjectUtils.equals(previousLength, currentLength)) {
+                    // Won't be able to change constraint for max length
+                    impactSort.get(Impact.HIGH).add(modifyAction);
+                } else if (!previous.getType().equals(current.getType())) {
                     TypeMetadata superPreviousType = MetadataUtils.getSuperConcreteType(previous.getType());
                     TypeMetadata superCurrentType = MetadataUtils.getSuperConcreteType(current.getType());
+                    if (superPreviousType == null) {
+                        throw new IllegalStateException("Unable to find super type of '" + previous.getType().getName() + "'.");
+                    }
                     if (superPreviousType.equals(superCurrentType)) {
                         // TMDM-7748: Type modification is ok as long as the super type remains the same.
                         impactSort.get(Impact.LOW).add(modifyAction);
@@ -93,9 +99,6 @@ public class HibernateStorageImpactAnalyzer implements ImpactAnalyzer {
                     impactSort.get(Impact.HIGH).add(modifyAction);
                 } else if (previous.isMandatory() != current.isMandatory()) {
                     // Won't be able to change constraint
-                    impactSort.get(Impact.HIGH).add(modifyAction);
-                } else if (!ObjectUtils.equals(previousLength, currentLength)) {
-                    // Won't be able to change constraint for max length
                     impactSort.get(Impact.HIGH).add(modifyAction);
                 }
             }
