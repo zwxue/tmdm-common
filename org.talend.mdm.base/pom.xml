@@ -330,6 +330,7 @@
                                         <versionRange>[1.0.0,)</versionRange>
                                         <goals>
                                             <goal>add-resource</goal>
+                                            <goal>add-source</goal>
                                             <goal>reserve-network-port</goal>
                                         </goals>
                                     </pluginExecutionFilter>
