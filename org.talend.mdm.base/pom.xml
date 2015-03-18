@@ -1175,8 +1175,8 @@
 						<version>1.7</version>
 						<executions>
 							<execution>
-								<!-- Copy build to products directory -->
-								<id>set-product-short-version</id>
+								<!-- Set mdm.deploy.dir -->
+								<id>set-mdm-deploy-dir</id>
 								<phase>initialize</phase>
 								<configuration>
 									<exportAntProperties>true</exportAntProperties>
