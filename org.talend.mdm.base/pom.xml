@@ -1094,6 +1094,8 @@
             <id>official</id>
             <properties>
                 <product.build.date>${product.timestamp}</product.build.date>
+				<storage.dir>tmdmee</storage.dir>
+				<unqualifiedVersion>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}</unqualifiedVersion>
             </properties>
             <build>
                 <directory>/${mdm.build.dir}</directory>
@@ -1167,6 +1169,27 @@
                             </execution>
                         </executions>
                     </plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.7</version>
+						<executions>
+							<execution>
+								<!-- Copy build to products directory -->
+								<id>set-product-short-version</id>
+								<phase>initialize</phase>
+								<configuration>
+									<exportAntProperties>true</exportAntProperties>
+									<target>
+										<propertyregex property="product.version.short" input="${unqualifiedVersion}" regexp="\." replace="" global="true" casesensitive="false" override="true" />
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
                 </plugins>
             </build>
         </profile>
