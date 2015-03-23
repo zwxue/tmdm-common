@@ -274,6 +274,30 @@
 
                 </plugin>
 
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.8</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>ant-contrib</groupId>
+                            <artifactId>ant-contrib</artifactId>
+                            <version>1.0b3</version>
+                            <exclusions>
+                                <exclusion>
+                                    <groupId>ant</groupId>
+                                    <artifactId>ant</artifactId>
+                                </exclusion>
+                            </exclusions>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.ant</groupId>
+                            <artifactId>ant-nodeps</artifactId>
+                            <version>1.8.1</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build 
                     itself. -->
                 <plugin>
@@ -1172,45 +1196,28 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.8</version>
                         <executions>
                             <execution>
-                            <!-- Set mdm.deploy.dir -->
-                            <id>set-mdm-deploy-dir</id>
-                            <phase>initialize</phase>
-                            <configuration>
-                                <exportAntProperties>true</exportAntProperties>
-                                <target>
-                                    <taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="maven.plugin.classpath"/>
-                                    <propertyregex property="product.version.short" input="${unqualifiedVersion}" regexp="\." replace="" global="true" casesensitive="false" override="true" />
-                                    <property name="mdm.deploy.dir" value="${storage}/${product.build.id}/${storage.dir}/V${product.version}${revision.filename}/${storage.dir}_${product.version.short}" />
-                                    <property name="tdsc.deploy.dir" value="${storage}/${product.build.id}/datastewardship" />
-                                    <echo>mdm.deploy.dir ${mdm.deploy.dir}</echo>
-                                </target>
-                            </configuration>
-                            <goals>
-                                <goal>run</goal>
-                            </goals>
-                        </execution>
+                                <!-- Set mdm.deploy.dir -->
+                                <id>set-mdm-deploy-dir</id>
+                                <phase>initialize</phase>
+                                <configuration>
+                                    <exportAntProperties>true</exportAntProperties>
+                                    <target>
+                                        <taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="maven.plugin.classpath" />
+                                        <propertyregex property="product.version.short" input="${unqualifiedVersion}"
+                                            regexp="\." replace="" global="true" casesensitive="false" override="true" />
+                                        <property name="mdm.deploy.dir"
+                                            value="${storage}/${product.build.id}/${storage.dir}/V${product.version}${revision.filename}/${storage.dir}_${product.version.short}" />
+                                        <property name="tdsc.deploy.dir" value="${storage}/${product.build.id}/datastewardship" />
+                                        <echo>mdm.deploy.dir ${mdm.deploy.dir}</echo>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
                         </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>ant-contrib</groupId>
-                                <artifactId>ant-contrib</artifactId>
-                                <version>1.0b3</version>
-                                <exclusions>
-                                    <exclusion>
-                                        <groupId>ant</groupId>
-                                        <artifactId>ant</artifactId>
-                                    </exclusion>
-                                </exclusions>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.apache.ant</groupId>
-                                <artifactId>ant-nodeps</artifactId>
-                                <version>1.8.1</version>
-                            </dependency>
-                        </dependencies>
                     </plugin>
                 </plugins>
             </build>
