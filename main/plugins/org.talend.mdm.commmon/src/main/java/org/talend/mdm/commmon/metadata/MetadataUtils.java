@@ -11,11 +11,20 @@
 
 package org.talend.mdm.commmon.metadata;
 
-import org.apache.commons.lang.NotImplementedException;
-import org.apache.log4j.Logger;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.xml.XMLConstants;
-import java.util.*;
+
+import org.apache.commons.lang.NotImplementedException;
+import org.apache.log4j.Logger;
 
 public class MetadataUtils {
 
@@ -570,7 +579,7 @@ public class MetadataUtils {
                 ComplexTypeMetadata entity = containingType.getEntity();
                 if (entity.isInstantiable()) {
                     usageCount++;
-                } else if(!type.equals(entity)) {
+                } else if (!type.equals(entity)) {
                     // In case the non instance type is used in an entity.
                     usageCount += countEntityUsageCount(entity);
                 }
