@@ -1099,13 +1099,13 @@
 
     <distributionManagement>
         <snapshotRepository>
-            <id>talend_nexus_deployment</id>
+            <id>snapshots</id>
             <url>http://newbuild.talend.com:8081/nexus/content/repositories/snapshots/</url>
             <snapshots><enabled>true</enabled></snapshots>
             <releases><enabled>false</enabled></releases>
         </snapshotRepository>
         <repository>
-            <id>talend_nexus_deployment</id>
+            <id>releases</id>
             <url>http://newbuild.talend.com:8081/nexus/content/repositories/releases/</url>
             <snapshots><enabled>false</enabled></snapshots>
             <releases><enabled>true</enabled></releases>
