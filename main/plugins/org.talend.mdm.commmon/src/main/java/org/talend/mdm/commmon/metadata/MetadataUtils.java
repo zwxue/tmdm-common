@@ -336,7 +336,7 @@ public class MetadataUtils {
                     // Only takes into account mandatory and FK integrity-enabled FKs.
                     if (include(referenceField) && referenceField.isFKIntegrity()) {
                         if (referencedType.isInstantiable()) {
-                            if (types.contains(referencedType)) {
+                            if (types.contains(referencedType) && !processedTypes.contains(referencedType)) {
                                 lineContent[getId(referencedType, types)]++;
                                 if (sortType == SortType.LENIENT) {
                                     // Implicitly include reference to sub types of referenced type for LENIENT sort (STRICT should
@@ -365,7 +365,7 @@ public class MetadataUtils {
                             return field.isMandatory();
                         }
                     case LENIENT:
-                        return include(containerField);
+                        return true;
                     default:
                         throw new NotImplementedException("Sort '" + sortType + "' is not implemented.");
                     }
@@ -375,7 +375,7 @@ public class MetadataUtils {
         // Log dependency matrix (before sort)
         if (LOGGER.isTraceEnabled()) {
             StringBuilder builder = logDependencyMatrix(dependencyGraph);
-            LOGGER.trace(builder.toString());
+            LOGGER.trace("Before sort: " + builder.toString());
         }
         /*
          * TOPOLOGICAL SORTING See "Kahn, A. B. (1962), "Topological sorting of large
@@ -409,7 +409,7 @@ public class MetadataUtils {
         // Log dependency matrix (after sort)
         if (LOGGER.isTraceEnabled()) {
             StringBuilder builder = logDependencyMatrix(dependencyGraph);
-            LOGGER.trace(builder.toString());
+            LOGGER.trace("After sort: "+ builder.toString());
         }
         // Check for cycles
         if (sortedTypes.size() < dependencyGraph.length) {
