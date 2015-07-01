@@ -23,6 +23,15 @@ import org.apache.log4j.Logger;
  * Handles the mdm.conf file
  */
 public final class MDMConfiguration {
+    
+    /**
+     * This is the MDM (mdm.conf) configuration property to indicate current server is running in a clustered
+     * environment. Setting this property to <code>true</code> may have impacts on the choice of implementation for
+     * internal components.
+     * 
+     * @see com.amalto.core.save.generator.AutoIncrementGenerator
+     */
+    private static final String SYSTEM_CLUSTER = "system.cluster"; //$NON-NLS-1$
 
     private static final Logger logger = Logger.getLogger(MDMConfiguration.class);
 
@@ -61,6 +70,11 @@ public final class MDMConfiguration {
             throw new IllegalStateException();
         }
         instance.saveProperties();
+    }
+    
+    public static boolean isClusterEnabled(){
+        Properties properties = MDMConfiguration.getConfiguration();
+        return Boolean.parseBoolean(properties.getProperty(SYSTEM_CLUSTER, Boolean.FALSE.toString()));
     }
 
     private Properties getProperties(boolean reload, boolean ignoreIfNotFound) {
