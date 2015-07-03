@@ -234,7 +234,7 @@ public class ContainedComplexTypeMetadata implements ComplexTypeMetadata {
         if (!isFrozen) {
             isFrozen = true;
             containedType = (ComplexTypeMetadata) containedType.freeze();
-            if (containedType != null) {
+            if (containedType != null && container.getContainingType().isInstantiable()) {
                 containedType.declareUsage(this);
             }
         }
