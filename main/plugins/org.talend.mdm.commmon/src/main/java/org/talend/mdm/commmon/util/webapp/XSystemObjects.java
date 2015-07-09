@@ -35,17 +35,8 @@ public enum XSystemObjects {
     M_RecycleBin(XObjectType.MENU, "RecycleBin", false), //$NON-NLS-1$
     M_CrossReference(XObjectType.MENU, "CrossReference", true), //$NON-NLS-1$
     M_SEARCH(XObjectType.MENU, "Search", true), //$NON-NLS-1$
-    M_BROWSE_VIEWS(XObjectType.MENU, "Browse views", false), //$NON-NLS-1$
-    M_MANAGER_USERS(XObjectType.MENU, "Manage users", true), //$NON-NLS-1$
-    M_LICENSE(XObjectType.MENU, "License", true), //$NON-NLS-1$
-    M_REPORTING(XObjectType.MENU, "Reporting", false), //$NON-NLS-1$
     M_UPDATE_REPORT(XObjectType.MENU, "UpdateReport", false), //$NON-NLS-1$
-    M_ITEMSTRASH(XObjectType.MENU, "ItemsTrash", false), //$NON-NLS-1$
-    M_HIERARCHICAL_VIEW_DERIVED(XObjectType.MENU, "Derived Hierarchy", true), //$NON-NLS-1$
-    M_CROSSREFERENCING(XObjectType.MENU, "Cross Referencing", true), //$NON-NLS-1$
-    M_WORKFLOWTASKS(XObjectType.MENU, "WorkflowTasks", true), //$NON-NLS-1$
     M_DATASTEWARDSHIP(XObjectType.MENU, "Datastewardship", true), //$NON-NLS-1$
-    M_WELCOME(XObjectType.MENU, "Welcome", false), //$NON-NLS-1$
     M_STAGINGAREA(XObjectType.MENU, "StagingArea", false), //$NON-NLS-1$
     M_BROWSE_RECORDS_STAGING(XObjectType.MENU, "BrowseRecordsInStaging", false), //$NON-NLS-1$
     M_BONITAWORKFLOWTASKS(XObjectType.MENU, "BonitaWorkflowTasks", true); //$NON-NLS-1$
