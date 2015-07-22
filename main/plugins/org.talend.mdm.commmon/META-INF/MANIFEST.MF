@@ -11,7 +11,6 @@ Import-Package: org.apache.log4j
 Bundle-ActivationPolicy: lazy
 Export-Package: org.talend.mdm.commmon.metadata,
  org.talend.mdm.commmon.metadata.validation,
- org.talend.mdm.commmon.util.bean,
  org.talend.mdm.commmon.util.core,
  org.talend.mdm.commmon.util.hash,
  org.talend.mdm.commmon.util.hash.impl,
