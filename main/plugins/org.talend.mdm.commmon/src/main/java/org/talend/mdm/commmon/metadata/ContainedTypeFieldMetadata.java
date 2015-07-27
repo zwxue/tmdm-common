@@ -91,6 +91,10 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
     public TypeMetadata getType() {
         return fieldType;
     }
+    
+    public void setFieldType(ComplexTypeMetadata fieldType) {
+        this.fieldType = fieldType;
+    }
 
     @Override
     public ComplexTypeMetadata getContainingType() {
@@ -176,6 +180,16 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
     public void adopt(ComplexTypeMetadata metadata) {
         FieldMetadata copy = copy();
         copy.setContainingType(metadata);
+        // TMDM-8166, when entity's type inherits another type, need to recursively adopt its contained type's fields
+        if (metadata.getEntity().isInstantiable()) {
+            ComplexTypeMetadata copyContainedType = (ComplexTypeMetadata) copy.getType().copy();
+            FieldMetadata container = ((ContainedComplexTypeMetadata) copy.getType()).getContainer();
+            ComplexTypeMetadata copyFiledType = ContainedComplexTypeMetadata.contain(copyContainedType, container);
+            for (FieldMetadata copyField : copyContainedType.getFields()) {
+                copyField.adopt(copyFiledType);
+            }
+            ((ContainedTypeFieldMetadata) copy).setFieldType(copyFiledType);
+        }
         metadata.addField(copy);
     }
 
