@@ -11,13 +11,24 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
-
-import java.util.*;
 
 /**
  * Default implementation for a MDM entity type (i.e. "complex" type).
@@ -464,6 +475,13 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         ComplexTypeMetadata currentType = this;
         while (tokenizer.hasMoreTokens()) {
             String current = tokenizer.nextToken();
+            if (currentType.getSubTypes() != null && currentType.getSubTypes().size() > 0) {
+                for (TypeMetadata typeMetadata : currentType.getSubTypes()) {
+                    if (((ComplexTypeMetadata) typeMetadata).hasField(current)) {
+                        return true;
+                    }
+                }
+            }
             if (!currentType.hasField(current)) {
                 return false;
             }
