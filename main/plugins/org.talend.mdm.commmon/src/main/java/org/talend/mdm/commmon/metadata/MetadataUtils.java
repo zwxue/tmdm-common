@@ -336,7 +336,7 @@ public class MetadataUtils {
                     // Only takes into account mandatory and FK integrity-enabled FKs.
                     if (include(referenceField) && referenceField.isFKIntegrity()) {
                         if (referencedType.isInstantiable()) {
-                            if (types.contains(referencedType) && !processedTypes.contains(referencedType)) {
+                            if (types.contains(referencedType) && (!processedTypes.contains(referencedType) || isReferencedBySelf(referenceField))) {
                                 lineContent[getId(referencedType, types)]++;
                                 if (sortType == SortType.LENIENT) {
                                     // Implicitly include reference to sub types of referenced type for LENIENT sort (STRICT should
@@ -369,6 +369,14 @@ public class MetadataUtils {
                     default:
                         throw new NotImplementedException("Sort '" + sortType + "' is not implemented.");
                     }
+                }
+                
+                private boolean isReferencedBySelf(ReferenceFieldMetadata referenceField) {
+                    ComplexTypeMetadata containingType = referenceField.getContainingType();
+                    if (containingType instanceof ContainedComplexTypeMetadata) {
+                        containingType = containingType.getContainer().getContainingType();
+                    }
+                    return containingType.equals(referenceField.getReferencedType());
                 }
             });
         }
