@@ -607,5 +607,14 @@ public class MetadataUtils {
         TypeMetadata fieldType = getSuperConcreteType(field.getType());
         return XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(fieldType.getNamespace());
     }
+    
+    /**
+     * Check where provided <code>type</code> is an Anonymous type or not
+     * @param type
+     * @return
+     */
+    public static boolean isAnonymousType(ComplexTypeMetadata type) {
+       return type.getName().startsWith("X_ANONYMOUS"); //$NON-NLS-1$
+    }
 }
 
