@@ -31,6 +31,10 @@ class UnusedReusableTypeValidationRule implements ValidationRule {
             if (!type.getSubTypes().isEmpty()) {
                 return true;
             }
+            //TMDM-8997: Don't report anonymous type (it always has parent and its parent will be validated before it, check on parent would be enough)
+            if(MetadataUtils.isAnonymousType(type)) {
+                return true;
+            }
             // TMDM-7672: Sub type might not be used, but super type is
             ComplexTypeMetadata topLevelType = (ComplexTypeMetadata) MetadataUtils.getSuperConcreteType(type);
             if (MetadataUtils.countEntityUsageCount(topLevelType) == 0) {
