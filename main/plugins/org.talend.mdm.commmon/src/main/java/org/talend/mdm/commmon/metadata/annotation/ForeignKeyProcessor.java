@@ -68,7 +68,9 @@ public class ForeignKeyProcessor implements XmlSchemaAnnotationProcessor {
         String typeName = getTypeName(type, path);
         String fieldPath = StringUtils.substringAfter(path, "/").trim(); //$NON-NLS-1$
         FieldMetadata fieldMetadata;
-        if (!fieldPath.isEmpty()) {
+        // If the reference entity has composite key, the foreign key field should be set as entity not its ID.
+        if (!fieldPath.isEmpty()
+                && (repository.getComplexType(typeName) == null || repository.getComplexType(typeName).getKeyFields().size() <= 1)) {
             fieldMetadata = new SoftFieldRef(repository, fieldPath, typeName);
         } else {
             fieldMetadata = new SoftIdFieldRef(repository, typeName);
