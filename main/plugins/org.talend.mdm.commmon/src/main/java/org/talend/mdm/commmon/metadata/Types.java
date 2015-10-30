@@ -11,6 +11,9 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -40,6 +43,18 @@ public interface Types {
             Types.SHORT,
             Types.UNSIGNED_SHORT,
             Types.FLOAT };
+    
+    /**
+     * Convenience constants for all integers type.
+     */    
+    Set<String> INTEGERS = new HashSet<String>(Arrays.asList(
+        Types.INT,
+        Types.UNSIGNED_INT,
+        Types.INTEGER,
+        Types.NEGATIVE_INTEGER,
+        Types.POSITIVE_INTEGER,
+        Types.NON_NEGATIVE_INTEGER,
+        Types.NON_POSITIVE_INTEGER));
 
     /**
      * Convenience constant for all date types.
