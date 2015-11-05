@@ -14,7 +14,12 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.xsd.XSDAnnotation;
 import org.eclipse.xsd.util.XSDParser;
-import org.talend.mdm.commmon.metadata.*;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.SoftFieldRef;
+import org.talend.mdm.commmon.metadata.SoftIdFieldRef;
+import org.talend.mdm.commmon.metadata.SoftTypeRef;
 import org.w3c.dom.Element;
 
 public class ForeignKeyProcessor implements XmlSchemaAnnotationProcessor {
@@ -38,6 +43,8 @@ public class ForeignKeyProcessor implements XmlSchemaAnnotationProcessor {
                 String source = appInfo.getAttribute("source"); //$NON-NLS-1$
                  if ("X_ForeignKeyInfo".equals(source)) { //$NON-NLS-1$
                     handleForeignKeyInfo(repository, state, appInfo);
+                } else if ("X_ForeignKeyInfoFormat".equals(source)) { //$NON-NLS-1$
+                    state.setForeignKeyInfoFormat(String.valueOf(appInfo.getTextContent()));
                 } else if ("X_FKIntegrity".equals(source)) { //$NON-NLS-1$
                     state.setFkIntegrity(Boolean.valueOf(appInfo.getTextContent()));
                 } else if ("X_FKIntegrity_Override".equals(source)) { //$NON-NLS-1$

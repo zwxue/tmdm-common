@@ -10,6 +10,22 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Stack;
+import java.util.TreeMap;
+
+import javax.xml.XMLConstants;
+
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -34,16 +50,18 @@ import org.eclipse.xsd.XSDSimpleTypeDefinition;
 import org.eclipse.xsd.XSDTypeDefinition;
 import org.eclipse.xsd.XSDXPathDefinition;
 import org.eclipse.xsd.util.XSDParser;
-import org.talend.mdm.commmon.metadata.annotation.*;
+import org.talend.mdm.commmon.metadata.annotation.ForeignKeyProcessor;
+import org.talend.mdm.commmon.metadata.annotation.LabelAnnotationProcessor;
+import org.talend.mdm.commmon.metadata.annotation.LookupFieldProcessor;
+import org.talend.mdm.commmon.metadata.annotation.PrimaryKeyInfoProcessor;
+import org.talend.mdm.commmon.metadata.annotation.SchematronProcessor;
+import org.talend.mdm.commmon.metadata.annotation.UserAccessProcessor;
+import org.talend.mdm.commmon.metadata.annotation.XmlSchemaAnnotationProcessor;
+import org.talend.mdm.commmon.metadata.annotation.XmlSchemaAnnotationProcessorState;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.xsd.XSDVisitor;
 import org.talend.mdm.commmon.metadata.xsd.XmlSchemaWalker;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
-
-import javax.xml.XMLConstants;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.util.*;
 
 /**
  *
@@ -636,6 +654,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
         boolean fkIntegrity = state.isFkIntegrity();
         boolean fkIntegrityOverride = state.isFkIntegrityOverride();
         List<FieldMetadata> foreignKeyInfo = state.getForeignKeyInfo();
+        String foreignKeyInfoFormat = state.getForeignKeyInfoFormat();
         TypeMetadata fieldType = state.getFieldType();
         FieldMetadata referencedField = state.getReferencedField();
         TypeMetadata referencedType = state.getReferencedType();
@@ -670,8 +689,8 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
             fieldType.setData(XSD_DOM_ELEMENT, element.getElement());
             if (isReference) {
                 ReferenceFieldMetadata referenceField = new ReferenceFieldMetadata(containingType, false, isMany, isMandatory,
-                        fieldName, (ComplexTypeMetadata) referencedType, referencedField, foreignKeyInfo, fkIntegrity,
-                        fkIntegrityOverride, fieldType, allowWriteUsers, hideUsers, workflowAccessRights,
+                        fieldName, (ComplexTypeMetadata) referencedType, referencedField, foreignKeyInfo, foreignKeyInfoFormat,
+                        fkIntegrity, fkIntegrityOverride, fieldType, allowWriteUsers, hideUsers, workflowAccessRights,
                         state.getForeignKeyFilter(), visibilityRule);
                 referenceField.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
                 referenceField.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));

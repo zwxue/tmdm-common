@@ -11,11 +11,16 @@
 
 package org.talend.mdm.commmon.metadata.annotation;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
-
-import java.util.*;
 
 /**
  * A simple bean that keeps track of information parsed by {@link XmlSchemaAnnotationProcessor} implementations.
@@ -33,6 +38,8 @@ public class XmlSchemaAnnotationProcessorState {
     private final List<String> denyLogicalDelete = new LinkedList<String>();
 
     private final List<FieldMetadata> foreignKeyInfo = new LinkedList<FieldMetadata>();
+
+    private String foreignKeyInfoFormat;
 
     private final Map<Locale, String> localeToLabel = new HashMap<Locale, String>();
 
@@ -72,6 +79,10 @@ public class XmlSchemaAnnotationProcessorState {
         this.foreignKeyInfo.add(foreignKeyInfo);
     }
 
+    public void setForeignKeyInfoFormat(String foreignKeyInfoFormat) {
+        this.foreignKeyInfoFormat = foreignKeyInfoFormat;
+    }
+
     public void setFieldType(TypeMetadata fieldType) {
         this.fieldType = fieldType;
     }
@@ -98,6 +109,10 @@ public class XmlSchemaAnnotationProcessorState {
 
     public List<FieldMetadata> getForeignKeyInfo() {
         return foreignKeyInfo;
+    }
+
+    public String getForeignKeyInfoFormat() {
+        return foreignKeyInfoFormat;
     }
 
     public TypeMetadata getFieldType() {

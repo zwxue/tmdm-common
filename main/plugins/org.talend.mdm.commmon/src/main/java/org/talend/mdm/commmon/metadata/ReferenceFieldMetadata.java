@@ -11,11 +11,16 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 import org.w3c.dom.Element;
-
-import java.util.*;
 
 public class ReferenceFieldMetadata extends MetadataExtensions implements FieldMetadata {
 
@@ -46,6 +51,8 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
 
     private List<FieldMetadata> foreignKeyInfoFields = Collections.emptyList();
 
+    private String foreignKeyInfoFormat;
+
     private final Map<Locale, String> localeToLabel = new HashMap<Locale, String>();
 
     private ComplexTypeMetadata referencedType;
@@ -66,6 +73,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                                   ComplexTypeMetadata referencedType,
                                   FieldMetadata referencedField,
                                   List<FieldMetadata> foreignKeyInfo,
+                                  String foreignKeyInfoFormat,
                                   boolean fkIntegrity,
                                   boolean allowFKIntegrityOverride,
                                   TypeMetadata fieldType,
@@ -78,6 +86,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         this.name = name;
         this.referencedField = referencedField;
         this.foreignKeyInfoFields = foreignKeyInfo;
+        this.foreignKeyInfoFormat = foreignKeyInfoFormat;
         this.containingType = containingType;
         this.declaringType = containingType;
         this.allowFKIntegrityOverride = allowFKIntegrityOverride;
@@ -106,6 +115,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         return referencedType;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -114,18 +124,25 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         return !foreignKeyInfoFields.isEmpty();
     }
 
+    public String getForeignKeyInfoFormat() {
+        return this.foreignKeyInfoFormat;
+    }
+
     public List<FieldMetadata> getForeignKeyInfoFields() {
         return foreignKeyInfoFields;
     }
 
+    @Override
     public ComplexTypeMetadata getContainingType() {
         return containingType;
     }
 
+    @Override
     public void setContainingType(ComplexTypeMetadata typeMetadata) {
         this.containingType = typeMetadata;
     }
 
+    @Override
     public FieldMetadata freeze() {
         if (isFrozen) {
             return this;
@@ -147,6 +164,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         return this;
     }
 
+    @Override
     public void promoteToKey() {
         isKey = true;
     }
@@ -202,6 +220,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         return visibilityRule;
     }
 
+    @Override
     public TypeMetadata getDeclaringType() {
         return declaringType;
     }
@@ -214,24 +233,29 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         return allowFKIntegrityOverride;
     }
 
+    @Override
     public void adopt(ComplexTypeMetadata metadata) {
         FieldMetadata copy = copy();
         copy.setContainingType(metadata);
         metadata.addField(copy);
     }
 
+    @Override
     public TypeMetadata getType() {
         return fieldType;
     }
 
+    @Override
     public boolean isKey() {
         return isKey;
     }
 
+    @Override
     public <T> T accept(MetadataVisitor<T> visitor) {
         return visitor.visit(this);
     }
 
+    @Override
     public FieldMetadata copy() {
         FieldMetadata referencedFieldCopy = referencedField.copy();
         List<FieldMetadata> foreignKeyInfoCopy;
@@ -251,6 +275,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                 referencedType,
                 referencedFieldCopy,
                 foreignKeyInfoCopy,
+                foreignKeyInfoFormat,
                 isFKIntegrity,
                 allowFKIntegrityOverride,
                 fieldType,
@@ -277,50 +302,75 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                 ", referenced type= " + referencedType + //$NON-NLS-1$
                 ", referenced field= " + referencedField + //$NON-NLS-1$
                 ", foreign key info='" + foreignKeyInfoFields + '\'' + //$NON-NLS-1$
+                ", foreign key info format= " + foreignKeyInfoFormat + //$NON-NLS-1$
                 ", allow FK integrity override= " + allowFKIntegrityOverride + //$NON-NLS-1$
                 ", check FK integrity= " + isFKIntegrity + //$NON-NLS-1$
                 '}';
     }
 
+    @Override
     public boolean isMany() {
         return isMany;
     }
 
+    @Override
     public boolean isMandatory() {
         return isMandatory;
     }
 
+    @Override
     public List<String> getHideUsers() {
         return hideUsers;
     }
 
+    @Override
     public List<String> getWriteUsers() {
         return writeUsers;
     }
     
+    @Override
     public List<String> getWorkflowAccessRights() {
         return this.workflowAccessRights;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ReferenceFieldMetadata)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ReferenceFieldMetadata)) {
+            return false;
+        }
 
         ReferenceFieldMetadata that = (ReferenceFieldMetadata) o;
 
-        if (allowFKIntegrityOverride != that.allowFKIntegrityOverride) return false;
-        if (isFKIntegrity != that.isFKIntegrity) return false;
-        if (isKey != that.isKey) return false;
-        if (isMandatory != that.isMandatory) return false;
-        if (isMany != that.isMany) return false;
-        if (containingType != null ? !containingType.equals(that.containingType) : that.containingType != null)
+        if (allowFKIntegrityOverride != that.allowFKIntegrityOverride) {
             return false;
-        if (declaringType != null ? !declaringType.equals(that.declaringType) : that.declaringType != null)
+        }
+        if (isFKIntegrity != that.isFKIntegrity) {
             return false;
-        if (foreignKeyInfoFields != null ? !foreignKeyInfoFields.equals(that.foreignKeyInfoFields) : that.foreignKeyInfoFields != null)
+        }
+        if (isKey != that.isKey) {
             return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        }
+        if (isMandatory != that.isMandatory) {
+            return false;
+        }
+        if (isMany != that.isMany) {
+            return false;
+        }
+        if (containingType != null ? !containingType.equals(that.containingType) : that.containingType != null) {
+            return false;
+        }
+        if (declaringType != null ? !declaringType.equals(that.declaringType) : that.declaringType != null) {
+            return false;
+        }
+        if (foreignKeyInfoFields != null ? !foreignKeyInfoFields.equals(that.foreignKeyInfoFields) : that.foreignKeyInfoFields != null) {
+            return false;
+        }
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
 
         return true;
     }
