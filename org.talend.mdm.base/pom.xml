@@ -38,6 +38,7 @@
         <mdm.build.version>${product.version}${product.qualifier}-${product.timestamp}</mdm.build.version>
         <mdm.build.web.dir>${mdm.build.dir}/${project.artifactId}-${project.version}</mdm.build.web.dir>
         <mdm.app.dir>${dev.tomcat.home}/webapps/talendmdm</mdm.app.dir>
+        <jacoco.exec.file>${project.parent.build.directory}/${project.artifactId}.exec</jacoco.exec.file>
     </properties>
 
     <repositories>
@@ -390,6 +391,11 @@
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.7.5.201505241946</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -1268,6 +1274,80 @@
                                 </configuration>
                                 <goals>
                                     <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>coverage</id>
+            <!-- Jenkins by default defines a property BUILD_NUMBER which is used to enable this profile. -->
+            <activation>
+                <property>
+                    <name>env.BUILD_NUMBER</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>   
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>jacoco-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <executions>
+                            <execution>
+		                        <id>jacoco-classes</id>
+		                        <configuration>
+		                            <classifier>jacoco</classifier>
+		                        </configuration>
+		                        <goals>
+		                            <goal>jar</goal>
+		                        </goals>
+		                    </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <argLine>-XX:-ReduceInitialCardMarks ${argLine}</argLine>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <configuration>
+                            <destFile>${jacoco.exec.file}</destFile>
+                            <dataFile>${jacoco.exec.file}</dataFile>
+                            <excludes>
+                                <exclude>org/talend/**/client/widget/*.class</exclude>
+                            </excludes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>prepare-agent</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>report</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>report</goal>
                                 </goals>
                             </execution>
                         </executions>
