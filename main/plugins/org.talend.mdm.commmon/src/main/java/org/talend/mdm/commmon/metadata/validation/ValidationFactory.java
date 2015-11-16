@@ -112,6 +112,7 @@ public class ValidationFactory {
 
     public static ValidationRule getRule(ComplexTypeMetadataImpl type) {
         List<ValidationRule> rules = new LinkedList<ValidationRule>();
+        rules.add(new TypeNamingValidationRule(type));
         rules.add(new SuperTypeValidationRule(type));
         rules.add(new KeyFieldsValidationRule(type));
         rules.add(new LookupFieldsValidationRule(type));
