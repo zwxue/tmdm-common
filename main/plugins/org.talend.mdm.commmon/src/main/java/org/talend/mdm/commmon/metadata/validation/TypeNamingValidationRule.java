@@ -36,7 +36,7 @@ class TypeNamingValidationRule implements ValidationRule {
     public boolean perform(ValidationHandler handler) {
         String name = type.getName();
         if(name.contains("-")) { //$NON-NLS-1$
-            handler.error(type, "Type '" + type.getName() + "' cannot contain '-'.",
+            handler.warning(type, "Type '" + type.getName() + "' should not contain '-'.",
                     type.<Element>getData(MetadataRepository.XSD_DOM_ELEMENT),
                     type.<Integer>getData(MetadataRepository.XSD_LINE_NUMBER),
                     type.<Integer>getData(MetadataRepository.XSD_COLUMN_NUMBER), ValidationError.TYPE_INVALID_NAME);
