@@ -11,9 +11,9 @@
 
 package org.talend.mdm.commmon.metadata;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Default visitor for data model classes in package org.talend.mdm.commmon.metadata.
@@ -51,14 +51,10 @@ public class DefaultMetadataVisitor<T> implements MetadataVisitor<T> {
      * @return Result typed as T.
      */
     public T visit(ComplexTypeMetadata complexType) {
-        List<FieldMetadata> copy = new ArrayList<FieldMetadata>(complexType.getFields());
-        Collection<FieldMetadata> keyFields = complexType.getKeyFields();
-        for (FieldMetadata keyField : keyFields) {
-            keyField.accept(this);
-            copy.remove(keyField);
-        }
-        for (FieldMetadata field : copy) {
-          field.accept(this);            
+        Set<FieldMetadata> fields = new LinkedHashSet<FieldMetadata>(complexType.getKeyFields());
+        fields.addAll(complexType.getFields());
+        for (FieldMetadata field : fields) {
+            field.accept(this);
         }
         return null;
     }
