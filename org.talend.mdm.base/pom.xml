@@ -1283,10 +1283,15 @@
         </profile>
         <profile>
             <id>coverage</id>
-            <!-- Jenkins by default defines a property BUILD_NUMBER which is used to enable this profile. -->
             <activation>
+                <!-- Jenkins by default defines a property BUILD_NUMBER which is used to enable this profile.
                 <property>
                     <name>env.BUILD_NUMBER</name>
+                </property>
+                 -->
+                <property>
+                    <name>mdm.build.coverage</name>
+                    <value>true</value>
                 </property>
             </activation>
             <build>
