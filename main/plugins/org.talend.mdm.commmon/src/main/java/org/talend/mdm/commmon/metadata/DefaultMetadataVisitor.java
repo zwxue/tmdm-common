@@ -11,7 +11,6 @@
 
 package org.talend.mdm.commmon.metadata;
 
-import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -26,12 +25,10 @@ public class DefaultMetadataVisitor<T> implements MetadataVisitor<T> {
      * @return Result typed as T.
      */
     public T visit(MetadataRepository repository) {
-        Collection<ComplexTypeMetadata> types = repository.getUserComplexTypes();
-        for (TypeMetadata type : types) {
+        for (TypeMetadata type : repository.getUserComplexTypes()) {
             type.accept(this);
         }
-        types = repository.getNonInstantiableTypes();
-        for (TypeMetadata type : types) {
+        for (TypeMetadata type : repository.getNonInstantiableTypes()) {
             type.accept(this);
         }
         return null;
@@ -65,11 +62,9 @@ public class DefaultMetadataVisitor<T> implements MetadataVisitor<T> {
      * @return Result typed as T.
      */
     public T visit(ContainedComplexTypeMetadata containedType) {
-        Collection<FieldMetadata> fields = containedType.getFields();
-        for (FieldMetadata field : fields) {
+        for (FieldMetadata field : containedType.getFields()) {
             field.accept(this);
         }
-
         return null;
     }
 
