@@ -560,8 +560,14 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
             fieldMetadata.put(value.getName(), frozenFieldDeclaration);
             if (keyFields.containsKey(value.getName()) && !frozenFieldDeclaration.isKey()) {
                 frozenFieldDeclaration.promoteToKey();
-                registerKey(frozenFieldDeclaration);
+                FieldMetadata keyField = keyFields.get(value.getName());
+                if (!keyField.equals(frozenFieldDeclaration)) {
+                    registerKey(frozenFieldDeclaration);
+                }
             }
+        }
+        for (Map.Entry<String, FieldMetadata> keyField : keyFields.entrySet()) {
+            keyField.setValue(keyField.getValue().freeze());
         }
         // Freeze primary info
         List<FieldMetadata> frozenPrimaryKeyInfo = new LinkedList<FieldMetadata>();
