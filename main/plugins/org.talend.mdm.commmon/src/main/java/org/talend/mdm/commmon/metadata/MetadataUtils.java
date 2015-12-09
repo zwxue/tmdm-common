@@ -251,6 +251,41 @@ public class MetadataUtils {
     public static List<ComplexTypeMetadata> sortTypes(MetadataRepository repository, List<ComplexTypeMetadata> types) {
         return _sortTypes(repository, types, SortType.STRICT);
     }
+    
+    /**
+     * <p>
+     * Sorts types (usually a sub set of types in a {@link MetadataRepository}) in inverse order of dependency
+     * (topological sort). A dependency to <i>type</i> might be:
+     * <ul>
+     * <li>FK reference to <i>type</i> (sub types of <i>type</i> are all included as a dependency).</li>
+     * <li>Use of <i>type</i> as a super type.</li>
+     * </ul>
+     * This method runs in linear time <i>O(n+p)</i> (<i>n</i> number of types and <i>p</i> number of dependencies
+     * between types). This method uses <i>n²</i> bytes in memory for processing.
+     * </p>
+     * <p>
+     * This method is thread safe.
+     * </p>
+     *
+     * @param repository This is used to display information in case of cycle.
+     * @param types The list of types to be sorted. About the list:   
+     * <ul>
+     * <li>
+     * This list should provide a transitive closure of types (all references to other types must be satisfied in this
+     * list), if it isn't the unresolved FK will be ignored.</li>
+     * <li>
+     * If one of the type is a {@link org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata contained type},
+     * please note sort will consider its containing (top-level) entity type.</li>
+     * </ul>
+     * @param sortType The type how to sort
+     * @return A sorted list of {@link ComplexTypeMetadata} types. First type of list is a type that has no dependency
+     * on any other type of the list.
+     * @throws org.talend.mdm.commmon.metadata.CircularDependencyException If repository contains types that creates a
+     * cyclic dependency. Error message contains information on where the cycle is.
+     */
+    public static List<ComplexTypeMetadata> sortTypes(MetadataRepository repository, List<ComplexTypeMetadata> types, SortType sortType) {
+        return _sortTypes(repository, types, sortType);
+    }
 
     // Internal method for type sort
     private static List<ComplexTypeMetadata> _sortTypes(MetadataRepository repository, List<ComplexTypeMetadata> typesSubSet,
@@ -290,7 +325,10 @@ public class MetadataUtils {
                         Collection<TypeMetadata> superTypes = complexType.getSuperTypes();
                         for (TypeMetadata superType : superTypes) {
                             if (superType instanceof ComplexTypeMetadata) {
-                                lineContent[getId(((ComplexTypeMetadata) superType), types)]++;
+                                int id = types.indexOf(superType);
+                                if (id >= 0) {
+                                    lineContent[id]++;
+                                }
                             }
                         }
                         super.visit(complexType);
