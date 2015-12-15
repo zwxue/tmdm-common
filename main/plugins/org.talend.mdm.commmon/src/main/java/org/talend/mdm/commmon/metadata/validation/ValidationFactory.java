@@ -120,6 +120,8 @@ public class ValidationFactory {
         rules.add(new XSDAttributeValidationRule(type));
         if (!type.isInstantiable()) {
             rules.add(new UnusedReusableTypeValidationRule(type));
+        } else {
+        	rules.add(new EntityUsesAbstractTypeValidationRule(type));
         }
         return new CompositeValidationRule(rules.toArray(new ValidationRule[rules.size()]));
     }
