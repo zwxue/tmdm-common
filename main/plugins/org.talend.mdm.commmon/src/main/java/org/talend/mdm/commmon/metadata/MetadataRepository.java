@@ -468,7 +468,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
             }
             // There's no current 'entity' type being parsed, this is a complex type not to be used for entity but
             // might be referenced by others entities (for fields, inheritance...).
-            ComplexTypeMetadata nonInstantiableType = new ComplexTypeMetadataImpl(targetNamespace, typeName, false);
+            ComplexTypeMetadata nonInstantiableType = new ComplexTypeMetadataImpl(targetNamespace, typeName, false, type.isAbstract());
             // Keep line and column of definition
             nonInstantiableType.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(type.getElement()));
             nonInstantiableType.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(type.getElement()));
@@ -538,6 +538,12 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
             if (getComplexType(typeName) != null) { // Don't process twice type
                 return;
             }
+            // If entity's type is abstract
+            boolean isAbstract = false;
+            XSDTypeDefinition typeDefinition = element.getTypeDefinition();
+            if(typeDefinition != null && typeDefinition instanceof XSDComplexTypeDefinition) {
+            	isAbstract = ((XSDComplexTypeDefinition)typeDefinition).isAbstract();
+            }
             // Id fields
             Map<String, XSDXPathDefinition> idFields = new LinkedHashMap<String, XSDXPathDefinition>();
             EList<XSDIdentityConstraintDefinition> constraints = element.getIdentityConstraintDefinitions();
@@ -563,7 +569,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
             }
             ComplexTypeMetadata type = new ComplexTypeMetadataImpl(targetNamespace, typeName, state.getAllowWrite(),
                     state.getDenyCreate(), state.getHide(), state.getDenyPhysicalDelete(), state.getDenyLogicalDelete(),
-                    state.getSchematron(), state.getPrimaryKeyInfo(), state.getLookupFields(), true,
+                    state.getSchematron(), state.getPrimaryKeyInfo(), state.getLookupFields(), true, isAbstract,
                     state.getWorkflowAccessRights());
             // Register parsed localized labels
             Map<Locale, String> localeToLabel = state.getLocaleToLabel();

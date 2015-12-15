@@ -15,6 +15,7 @@ package org.talend.mdm.commmon.metadata;
  */
 public enum ValidationError {
     XML_SCHEMA,
+    ENTITY_CANNOT_USE_ABSTRACT_REUSABLE_TYPE,
     ENTITY_CANNOT_INHERIT_FROM_REUSABLE_TYPE,
     FIELD_KEY_CANNOT_BE_REPEATABLE,
     FIELD_KEY_MUST_BE_MANDATORY,
