@@ -2,9 +2,14 @@ package org.talend.mdm.commmon.util.core;
 
 import java.io.UnsupportedEncodingException;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.ShortBufferException;
 import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.commons.lang.StringUtils;
+import org.talend.utils.security.AES;
 
 public class Crypt {
 
@@ -13,8 +18,9 @@ public class Crypt {
 	private byte[] key;
 
 	private String algorithm;
-	
-		
+
+    public static final String ENCRYPT = ",Encrypt"; //$NON-NLS-1$
+
 	public static Crypt getDESCryptInstance(String sharedSecret) throws ShortBufferException{
 		byte[] key = new byte[8];
 		byte[] bytes ;
@@ -105,5 +111,26 @@ public class Crypt {
 			e.printStackTrace();
 		}
 	}
+
+    public static String encrypt(String data) throws IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+        if (data == null || data.isEmpty()) {
+            return StringUtils.EMPTY;
+        }
+        String encryptedData = AES.getInstance().encrypt(data) + ENCRYPT;
+        return encryptedData;
+    }
+
+    public static String decrypt(String encryptedData) throws UnsupportedEncodingException, IllegalBlockSizeException,
+            BadPaddingException {
+        if (encryptedData == null || encryptedData.isEmpty()) {
+            return StringUtils.EMPTY;
+        }
+        if (!encryptedData.endsWith(ENCRYPT)) {
+            return encryptedData;
+        }
+        encryptedData = encryptedData.substring(0, encryptedData.length() - ENCRYPT.length());
+        String decryptedData = AES.getInstance().decrypt(encryptedData);
+        return decryptedData;
+    }
 
 }

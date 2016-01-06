@@ -50,6 +50,10 @@
             <groupId>org.eclipse.xsd</groupId>
             <artifactId>org.eclipse.xsd</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.talend</groupId>
+            <artifactId>org.talend.utils</artifactId>                
+        </dependency>
     </dependencies>
     
     <profiles>

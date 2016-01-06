@@ -91,8 +91,26 @@ public final class MDMConfiguration {
             logger.info("MDM Configuration: found in '" + file.getAbsolutePath() + "'."); //$NON-NLS-1$ //$NON-NLS-2$
             FileInputStream in = null;
             try {
-                in = new FileInputStream(file);
+                in = new FileInputStream(file);                
                 properties.load(in);
+                String adminPassword = properties.getProperty("admin.password"); //$NON-NLS-1$
+                String tPassword = properties.getProperty("technical.password"); //$NON-NLS-1$
+                boolean isUpdated = false;
+                if (adminPassword != null && !adminPassword.endsWith(Crypt.ENCRYPT)) {
+                    adminPassword = Crypt.encrypt(adminPassword);
+                    properties.setProperty("admin.password", adminPassword); //$NON-NLS-1$
+                    isUpdated = true;
+                }
+                if (tPassword != null && !tPassword.endsWith(Crypt.ENCRYPT)) {
+                    tPassword = Crypt.encrypt(tPassword);
+                    properties.setProperty("technical.password", tPassword); //$NON-NLS-1$
+                    isUpdated = true;
+                }
+                if (isUpdated) {
+                    save();
+                }
+                properties.setProperty("admin.password", Crypt.decrypt(adminPassword)); //$NON-NLS-1$
+                properties.setProperty("technical.password", Crypt.decrypt(tPassword)); //$NON-NLS-1$                
             } catch (Exception e) {
                 if (!ignoreIfNotFound) {
                     throw new IllegalStateException("Unable to load MDM configuration from '" //$NON-NLS-1$
@@ -116,7 +134,7 @@ public final class MDMConfiguration {
                         + "'"); //$NON-NLS-1$
             }
             logger.warn("Unable to load MDM configuration from '" + file.getAbsolutePath() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-        }
+        }        
         return properties;
     }
 

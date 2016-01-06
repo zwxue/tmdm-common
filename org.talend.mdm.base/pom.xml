@@ -571,6 +571,11 @@
                 <version>${project.version}</version>
                 <type>war</type>
             </dependency>
+			<dependency>
+                <groupId>org.talend</groupId>
+                <artifactId>org.talend.utils</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- 3rd party dependencies -->
             <dependency>
