@@ -571,10 +571,16 @@
                 <version>${project.version}</version>
                 <type>war</type>
             </dependency>
-			<dependency>
+            <dependency>
                 <groupId>org.talend</groupId>
                 <artifactId>org.talend.utils</artifactId>
                 <version>${project.version}</version>
+                <exclusions>
+	                <exclusion>
+	                    <groupId>log4j</groupId>
+	                    <artifactId>log4j</artifactId>
+	                </exclusion>
+	            </exclusions>
             </dependency>
 
             <!-- 3rd party dependencies -->
