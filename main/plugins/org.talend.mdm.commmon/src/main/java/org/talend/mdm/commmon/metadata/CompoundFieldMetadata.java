@@ -193,4 +193,13 @@ public class CompoundFieldMetadata extends MetadataExtensions implements FieldMe
     public List<String> getWorkflowAccessRights() {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public void registerDescription(Locale locale, String description) {
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+        throw new UnsupportedOperationException();
+    }
 }
