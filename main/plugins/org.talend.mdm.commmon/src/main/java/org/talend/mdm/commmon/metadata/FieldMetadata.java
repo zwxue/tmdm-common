@@ -147,5 +147,9 @@ public interface FieldMetadata extends MetadataVisitable, MetadataExtensible {
 
     String getName(Locale locale);
 
+    void registerDescription(Locale locale, String description);
+
+    String getDescription(Locale locale);
+
     String getVisibilityRule();
 }

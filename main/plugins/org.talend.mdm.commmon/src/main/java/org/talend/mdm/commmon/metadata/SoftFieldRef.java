@@ -11,6 +11,7 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 import org.w3c.dom.Element;
@@ -31,6 +32,8 @@ public class SoftFieldRef implements FieldMetadata {
     private final Map<String, Object> additionalData = new HashMap<String, Object>();
 
     private final Map<Locale, String> localeToLabel = new HashMap<Locale, String>();
+
+    private final Map<Locale, String> localeToDescription = new HashMap<Locale, String>();
 
     public SoftFieldRef(MetadataRepository metadataRepository, String fieldName, String containingTypeName) {
         this.repository = metadataRepository;
@@ -95,6 +98,9 @@ public class SoftFieldRef implements FieldMetadata {
         }
         for (Map.Entry<Locale, String> entry : localeToLabel.entrySet()) {
             frozenField.registerName(entry.getKey(), entry.getValue());
+        }
+        for (Map.Entry<Locale, String> entry : localeToDescription.entrySet()) {
+            frozenField.registerDescription(entry.getKey(), entry.getValue());
         }
         return frozenField;
     }
@@ -210,5 +216,19 @@ public class SoftFieldRef implements FieldMetadata {
     @Override
     public boolean equals(Object o) {
         return this == o || o instanceof FieldMetadata && getField().equals(o);
+    }
+
+    @Override
+    public void registerDescription(Locale locale, String description) {
+        localeToDescription.put(locale, description);
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+        String localizedDescription = localeToDescription.get(locale);
+        if (localizedDescription == null) {
+            return StringUtils.EMPTY;
+        }
+        return localizedDescription;
     }
 }

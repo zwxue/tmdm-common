@@ -29,6 +29,15 @@ public interface ComplexTypeMetadata extends TypeMetadata {
     String getName(Locale locale);
 
     /**
+     * Return the type Description in the <code>locale</code>. If no type Description was declared for
+     * <code>locale</code>, returns same as {@link TypeMetadata#getName()}.
+     * 
+     * @param locale A non null {@link java.util.Locale locale}.
+     * @return The type Description for <code>locale</code>.
+     */
+    String getDescription(Locale locale);
+
+    /**
      * @return The top level {@link org.talend.mdm.commmon.metadata.ComplexTypeMetadata entity}. If <code>this</code> is
      * already the top entity, returns <code>this</code>.
      */
@@ -158,6 +167,8 @@ public interface ComplexTypeMetadata extends TypeMetadata {
     void setSubTypes(List<ComplexTypeMetadata> subTypes);
 
     void registerName(Locale locale, String label);
+
+    void registerDescription(Locale locale, String description);
 
     enum DeleteType {
         /**

@@ -11,6 +11,7 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 
@@ -49,6 +50,8 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
     private int cachedHashCode;
 
     private final Map<Locale, String> localeToLabel = new HashMap<Locale, String>();
+
+    private final Map<Locale, String> localeToDescription = new HashMap<Locale, String>();
 
     private String visibilityRule;
 
@@ -183,6 +186,7 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
                 workflowAccessRights, visibilityRule);
         copy.setDeclaringType(declaringType);
         copy.localeToLabel.putAll(localeToLabel);
+        copy.localeToDescription.putAll(localeToDescription);
         if (dataMap != null) {
             copy.dataMap = new HashMap<String, Object>(dataMap);
         }
@@ -272,5 +276,19 @@ public class SimpleTypeFieldMetadata extends MetadataExtensions implements Field
         if (isFrozen) {
             throw new IllegalStateException("Field definition is frozen");
         }
+    }
+
+    @Override
+    public void registerDescription(Locale locale, String description) {
+        localeToDescription.put(locale, description);
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+        String localizedDescription = localeToDescription.get(locale);
+        if (localizedDescription == null) {
+            return StringUtils.EMPTY;
+        }
+        return localizedDescription;
     }
 }

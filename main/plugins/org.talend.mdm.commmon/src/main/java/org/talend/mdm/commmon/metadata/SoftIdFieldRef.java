@@ -11,6 +11,7 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 import org.w3c.dom.Element;
@@ -249,5 +250,14 @@ public class SoftIdFieldRef implements FieldMetadata {
     @Override
     public boolean equals(Object o) {
         return this == o || o instanceof FieldMetadata && getField().equals(o);
+    }
+
+    @Override
+    public void registerDescription(Locale locale, String description) {
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+        return StringUtils.EMPTY;
     }
 }

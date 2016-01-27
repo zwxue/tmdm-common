@@ -319,4 +319,14 @@ public class ContainedComplexTypeMetadata implements ComplexTypeMetadata {
     public ComplexTypeMetadata getContainedType() {
         return containedType;
     }
+
+    @Override
+    public String getDescription(Locale locale) {
+        return containedType.getDescription(locale);
+    }
+
+    @Override
+    public void registerDescription(Locale locale, String description) {
+        containedType.registerDescription(locale, description);
+    }
 }

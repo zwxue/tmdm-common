@@ -372,4 +372,14 @@ public class SoftTypeRef implements ComplexTypeMetadata {
 
         return true;
     }
+
+    @Override
+    public String getDescription(Locale locale) {
+        return getTypeAsComplex().getDescription(locale);
+    }
+
+    @Override
+    public void registerDescription(Locale locale, String description) {
+        getTypeAsComplex().registerDescription(locale, description);
+    }
 }

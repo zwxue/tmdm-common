@@ -216,4 +216,13 @@ public class UnresolvedTypeMetadata extends MetadataExtensions implements Comple
     @Override
     public void registerName(Locale locale, String label) {
     }
+
+    @Override
+    public String getDescription(Locale locale) {
+        return StringUtils.EMPTY;
+    }
+
+    @Override
+    public void registerDescription(Locale locale, String description) {
+    }
 }

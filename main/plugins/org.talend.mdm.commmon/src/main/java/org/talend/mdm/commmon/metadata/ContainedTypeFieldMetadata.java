@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.validation.CompositeValidationRule;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
@@ -40,6 +41,8 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
     private final boolean isMandatory;
 
     private final Map<Locale, String> localeToLabel = new HashMap<Locale, String>();
+
+    private final Map<Locale, String> localeToDescription = new HashMap<Locale, String>();
 
     private TypeMetadata declaringType;
 
@@ -205,6 +208,7 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
                     hideUsers, workflowAccessRights, visibilityRule);
         }
         copy.localeToLabel.putAll(localeToLabel);
+        copy.localeToDescription.putAll(localeToDescription);
         if (dataMap != null) {
             copy.dataMap = new HashMap<String, Object>(dataMap);
         }
@@ -303,5 +307,19 @@ public class ContainedTypeFieldMetadata extends MetadataExtensions implements Fi
         result = 31 * result + (isMandatory ? 1 : 0);
         cachedHashCode = result;
         return result;
+    }
+
+    @Override
+    public void registerDescription(Locale locale, String description) {
+        localeToDescription.put(locale, description);
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+        String localizedDescription = localeToDescription.get(locale);
+        if (localizedDescription == null) {
+            return StringUtils.EMPTY;
+        }
+        return localizedDescription;
     }
 }
