@@ -61,6 +61,8 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
 
     private final Map<Locale, String> localeToLabel = new HashMap<Locale, String>();
 
+    private final Map<Locale, String> localeToDescription = new HashMap<Locale, String>();
+
     private List<FieldMetadata> lookupFields;
 
     private boolean isInstantiable;
@@ -374,6 +376,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         }
         copy.isFrozen = false;
         copy.localeToLabel.putAll(localeToLabel);
+        copy.localeToDescription.putAll(localeToDescription);
         if (dataMap != null) {
             copy.dataMap = new HashMap<String, Object>(dataMap);
         }
@@ -609,5 +612,19 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         int result = nameSpace != null ? nameSpace.hashCode() : 0;
         result = 31 * result + name.hashCode();
         return result;
+    }
+
+    @Override
+    public void registerDescription(Locale locale, String description) {
+        localeToDescription.put(locale, description);
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+        String localizedDescription = localeToDescription.get(locale);
+        if (localizedDescription == null) {
+            return StringUtils.EMPTY;
+        }
+        return localizedDescription;
     }
 }

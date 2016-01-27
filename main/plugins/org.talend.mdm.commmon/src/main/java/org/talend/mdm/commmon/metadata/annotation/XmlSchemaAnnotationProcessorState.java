@@ -36,6 +36,8 @@ public class XmlSchemaAnnotationProcessorState {
 
     private final Map<Locale, String> localeToLabel = new HashMap<Locale, String>();
 
+    private final Map<Locale, String> localeToDescription = new HashMap<Locale, String>();
+
     private boolean fkIntegrity = true; // Default is to enforce FK integrity
 
     private boolean fkIntegrityOverride = false; // Default is to disable FK integrity check
@@ -170,6 +172,14 @@ public class XmlSchemaAnnotationProcessorState {
 
     public Map<Locale, String> getLocaleToLabel() {
         return localeToLabel;
+    }
+
+    public void registerTypeDescription(Locale locale, String description) {
+        localeToDescription.put(locale, description);
+    }
+
+    public Map<Locale, String> getLocaleToDescription() {
+        return localeToDescription;
     }
 
     public void setForeignKeyFilter(String foreignKeyFilter) {

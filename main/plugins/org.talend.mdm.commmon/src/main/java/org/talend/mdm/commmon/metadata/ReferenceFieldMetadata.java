@@ -11,6 +11,7 @@
 
 package org.talend.mdm.commmon.metadata;
 
+import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 import org.w3c.dom.Element;
@@ -47,6 +48,8 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
     private List<FieldMetadata> foreignKeyInfoFields = Collections.emptyList();
 
     private final Map<Locale, String> localeToLabel = new HashMap<Locale, String>();
+
+    private final Map<Locale, String> localeToDescription = new HashMap<Locale, String>();
 
     private ComplexTypeMetadata referencedType;
 
@@ -260,6 +263,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                 foreignKeyFilter,
                 visibilityRule);
         copy.localeToLabel.putAll(localeToLabel);
+        copy.localeToDescription.putAll(localeToDescription);
         if (dataMap != null) {
             copy.dataMap = new HashMap<String, Object>(dataMap);
         }
@@ -341,6 +345,20 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         result = 31 * result + (name != null ? name.hashCode() : 0);
         cachedHashCode = result;
         return result;
+    }
+
+    @Override
+    public void registerDescription(Locale locale, String description) {
+        localeToDescription.put(locale, description);
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+        String localizedDescription = localeToDescription.get(locale);
+        if (localizedDescription == null) {
+            return StringUtils.EMPTY;
+        }
+        return localizedDescription;
     }
 
 }

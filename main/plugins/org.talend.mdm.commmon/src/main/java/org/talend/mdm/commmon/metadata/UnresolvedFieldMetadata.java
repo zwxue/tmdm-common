@@ -164,4 +164,13 @@ public class UnresolvedFieldMetadata implements FieldMetadata {
     public <T> T accept(MetadataVisitor<T> visitor) {
         return visitor.visit(this);
     }
+
+    @Override
+    public void registerDescription(Locale locale, String description) {
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+        return StringUtils.EMPTY;
+    }
 }
