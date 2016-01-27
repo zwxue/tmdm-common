@@ -50,6 +50,7 @@ import org.eclipse.xsd.XSDSimpleTypeDefinition;
 import org.eclipse.xsd.XSDTypeDefinition;
 import org.eclipse.xsd.XSDXPathDefinition;
 import org.eclipse.xsd.util.XSDParser;
+import org.talend.mdm.commmon.metadata.annotation.DescriptionAnnotationProcessor;
 import org.talend.mdm.commmon.metadata.annotation.ForeignKeyProcessor;
 import org.talend.mdm.commmon.metadata.annotation.LabelAnnotationProcessor;
 import org.talend.mdm.commmon.metadata.annotation.LookupFieldProcessor;
@@ -62,7 +63,6 @@ import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.xsd.XSDVisitor;
 import org.talend.mdm.commmon.metadata.xsd.XmlSchemaWalker;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
-
 /**
  *
  */
@@ -101,7 +101,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
 
     private final static List<XmlSchemaAnnotationProcessor> XML_ANNOTATIONS_PROCESSORS = Arrays.asList(new ForeignKeyProcessor(),
             new UserAccessProcessor(), new SchematronProcessor(), new PrimaryKeyInfoProcessor(), new LookupFieldProcessor(),
-            new LabelAnnotationProcessor());
+            new LabelAnnotationProcessor(), new DescriptionAnnotationProcessor());
 
     private final static String USER_NAMESPACE = StringUtils.EMPTY;
 
@@ -576,6 +576,11 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
             for (Map.Entry<Locale, String> entry : localeToLabel.entrySet()) {
                 type.registerName(entry.getKey(), entry.getValue());
             }
+            // Register parsed localized descriptions
+            Map<Locale, String> localeToDescription = state.getLocaleToDescription();
+            for (Map.Entry<Locale, String> entry : localeToDescription.entrySet()) {
+                type.registerDescription(entry.getKey(), entry.getValue());
+            }
             // Keep line and column of definition
             type.setData(XSD_LINE_NUMBER, XSDParser.getStartLine(element.getElement()));
             type.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
@@ -702,6 +707,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
                 referenceField.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
                 referenceField.setData(XSD_DOM_ELEMENT, element.getElement());
                 setLocalizedNames(referenceField, state.getLocaleToLabel());
+                setLocalizedDescriptions(referenceField, state.getLocaleToDescription());
                 return referenceField;
             }
             if (content != null) {
@@ -721,6 +727,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
                         enumField.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
                         enumField.setData(XSD_DOM_ELEMENT, element.getElement());
                         setLocalizedNames(enumField, state.getLocaleToLabel());
+                        setLocalizedDescriptions(enumField, state.getLocaleToDescription());
                         return enumField;
                     } else {
                         FieldMetadata field = new SimpleTypeFieldMetadata(containingType, false, isMany, isMandatory, fieldName,
@@ -729,6 +736,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
                         field.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
                         field.setData(XSD_DOM_ELEMENT, element.getElement());
                         setLocalizedNames(field, state.getLocaleToLabel());
+                        setLocalizedDescriptions(field, state.getLocaleToDescription());
                         return field;
                     }
                 } else {
@@ -738,6 +746,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
                     field.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
                     field.setData(XSD_DOM_ELEMENT, element.getElement());
                     setLocalizedNames(field, state.getLocaleToLabel());
+                    setLocalizedDescriptions(field, state.getLocaleToDescription());
                     return field;
                 }
             }
@@ -786,6 +795,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
                 currentTypeStack.pop();
             }
             setLocalizedNames(containedField, state.getLocaleToLabel());
+            setLocalizedDescriptions(containedField, state.getLocaleToDescription());
             return containedField;
         } else {
             FieldMetadata field = new SimpleTypeFieldMetadata(containingType, false, isMany, isMandatory, fieldName, fieldType,
@@ -794,6 +804,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
             field.setData(XSD_COLUMN_NUMBER, XSDParser.getStartColumn(element.getElement()));
             field.setData(XSD_DOM_ELEMENT, element.getElement());
             setLocalizedNames(field, state.getLocaleToLabel());
+            setLocalizedDescriptions(field, state.getLocaleToDescription());
             return field;
         }
     }
@@ -801,6 +812,12 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
     private static void setLocalizedNames(FieldMetadata field, Map<Locale, String> labels) {
         for (Map.Entry<Locale, String> entry : labels.entrySet()) {
             field.registerName(entry.getKey(), entry.getValue());
+        }
+    }
+
+    private static void setLocalizedDescriptions(FieldMetadata field, Map<Locale, String> descriptions) {
+        for (Map.Entry<Locale, String> entry : descriptions.entrySet()) {
+            field.registerDescription(entry.getKey(), entry.getValue());
         }
     }
 
