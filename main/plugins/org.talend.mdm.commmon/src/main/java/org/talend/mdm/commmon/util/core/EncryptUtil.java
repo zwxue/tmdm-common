@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
 
 public class EncryptUtil {
 
-    private static final Logger logger = Logger.getLogger(EncryptUtil.class);
+    private static final Logger LOGGER = Logger.getLogger(EncryptUtil.class);
 
     public static String TDSC_DATABASE_PASSWORD = "tdsc.database.password"; //$NON-NLS-1$
 
@@ -37,6 +37,13 @@ public class EncryptUtil {
     private static boolean updated = false;
 
     private static String dataSourceName;
+
+    public static void main(String[] args) throws Exception {
+        if (args.length < 1) {
+            return;
+        }
+        encrypt(args[0]);
+    }
 
     public static boolean encrypt(String path) {
         Map<String, String[]> propertiesFileMap = new HashMap<String, String[]>();
@@ -71,7 +78,7 @@ public class EncryptUtil {
                 updated = false;
                 for (String property : properties) {
                     String password = config.getString(property);
-                    if (password != null && !password.endsWith(Crypt.ENCRYPT)) {
+                    if (StringUtils.isNotEmpty(password) && !password.endsWith(Crypt.ENCRYPT)) {
                         password = Crypt.encrypt(password);
                         config.setProperty(property, password);
                         updated = true;
@@ -82,7 +89,7 @@ public class EncryptUtil {
                 }
             }
         } catch (Exception e) {
-            logger.error("Encrypt password in '" + location + "' error."); //$NON-NLS-1$ //$NON-NLS-2$
+            LOGGER.error("Encrypt password in '" + location + "' error.", e); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
@@ -116,13 +123,13 @@ public class EncryptUtil {
                 }
             }
         } catch (Exception e) {
-            logger.error("Encrypt password in '" + location + "' error."); //$NON-NLS-1$ //$NON-NLS-2$
+            LOGGER.error("Encrypt password in '" + location + "' error."); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
     private static void encryptByXpath(HierarchicalConfiguration config, String xpath) throws Exception {
         String password = config.getString(xpath);
-        if (password != null && !password.isEmpty() && !password.endsWith(Crypt.ENCRYPT)) {
+        if (StringUtils.isNotEmpty(password) && !password.endsWith(Crypt.ENCRYPT)) {
             config.setProperty(xpath, Crypt.encrypt(password));
             updated = true;
         }
