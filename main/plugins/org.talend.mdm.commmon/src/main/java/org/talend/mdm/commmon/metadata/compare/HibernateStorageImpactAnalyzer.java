@@ -72,6 +72,13 @@ public class HibernateStorageImpactAnalyzer implements ImpactAnalyzer {
                 FieldMetadata current = (FieldMetadata) modifyAction.getCurrent();
                 Object previousLength = previous.getType().getData(MetadataRepository.DATA_MAX_LENGTH);
                 Object currentLength = current.getType().getData(MetadataRepository.DATA_MAX_LENGTH);
+                
+                // TMDM-8022: issues about custom decimal type totalDigits/fractionDigits.
+                Object previousTotalDigits = previous.getType().getData(MetadataRepository.DATA_TOTAL_DIGITS);
+                Object currentTotalDigits = current.getType().getData(MetadataRepository.DATA_TOTAL_DIGITS);
+
+                Object previousFractionDigits = previous.getType().getData(MetadataRepository.DATA_FRACTION_DIGITS);
+                Object currentFractionDigits = current.getType().getData(MetadataRepository.DATA_FRACTION_DIGITS);
                 /*
                  * HIGH IMPACT CHANGES
                  */
@@ -99,6 +106,12 @@ public class HibernateStorageImpactAnalyzer implements ImpactAnalyzer {
                     impactSort.get(Impact.HIGH).add(modifyAction);
                 } else if (previous.isMandatory() != current.isMandatory()) {
                     // Won't be able to change constraint
+                    impactSort.get(Impact.HIGH).add(modifyAction);
+                } else if (!ObjectUtils.equals(previousTotalDigits, currentTotalDigits)) {
+                    // TMDM-8022: issues about custom decimal type totalDigits/fractionDigits.
+                    impactSort.get(Impact.HIGH).add(modifyAction);
+                } else if (!ObjectUtils.equals(previousFractionDigits, currentFractionDigits)) {
+                    // TMDM-8022: issues about custom decimal type totalDigits/fractionDigits.
                     impactSort.get(Impact.HIGH).add(modifyAction);
                 }
             }
