@@ -39,6 +39,7 @@ import org.eclipse.xsd.XSDDiagnostic;
 import org.eclipse.xsd.XSDDiagnosticSeverity;
 import org.eclipse.xsd.XSDElementDeclaration;
 import org.eclipse.xsd.XSDEnumerationFacet;
+import org.eclipse.xsd.XSDFractionDigitsFacet;
 import org.eclipse.xsd.XSDIdentityConstraintDefinition;
 import org.eclipse.xsd.XSDLengthFacet;
 import org.eclipse.xsd.XSDMaxLengthFacet;
@@ -47,6 +48,7 @@ import org.eclipse.xsd.XSDParticle;
 import org.eclipse.xsd.XSDParticleContent;
 import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.XSDSimpleTypeDefinition;
+import org.eclipse.xsd.XSDTotalDigitsFacet;
 import org.eclipse.xsd.XSDTypeDefinition;
 import org.eclipse.xsd.XSDXPathDefinition;
 import org.eclipse.xsd.util.XSDParser;
@@ -74,6 +76,10 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
     public static final String COMPLEX_TYPE_NAME = "metadata.complex.type.name"; //$NON-NLS-1$
 
     public static final String DATA_MAX_LENGTH = "metadata.data.length"; //$NON-NLS-1$
+    
+    public static final String DATA_TOTAL_DIGITS = "metadata.data.totalDigits"; //$NON-NLS-1$
+    
+    public static final String DATA_FRACTION_DIGITS = "metadata.data.fractionDigits"; //$NON-NLS-1$
 
     public static final String DATA_ZIPPED = "metadata.zipped"; //$NON-NLS-1$
 
@@ -442,6 +448,12 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
                     } else if (currentFacet instanceof XSDLengthFacet) {
                         typeMetadata.setData(MetadataRepository.DATA_MAX_LENGTH,
                                 String.valueOf(((XSDLengthFacet) currentFacet).getValue()));
+                    } else if(currentFacet instanceof XSDTotalDigitsFacet){//this is the totalDigits
+                        typeMetadata.setData(MetadataRepository.DATA_TOTAL_DIGITS,
+                                String.valueOf(((XSDTotalDigitsFacet) currentFacet).getValue()));
+                    } else if(currentFacet instanceof XSDFractionDigitsFacet){ // this is the fractionDigits
+                        typeMetadata.setData(MetadataRepository.DATA_FRACTION_DIGITS,
+                                String.valueOf(((XSDFractionDigitsFacet) currentFacet).getValue()));
                     } else if (LOGGER.isTraceEnabled()) {
                         LOGGER.trace("Ignore simple type facet on type '" + typeName + "': " + currentFacet);
                     }
@@ -691,6 +703,12 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
                     if (currentFacet instanceof XSDMaxLengthFacet) {
                         fieldType.setData(MetadataRepository.DATA_MAX_LENGTH,
                                 String.valueOf(((XSDMaxLengthFacet) currentFacet).getValue()));
+                    } else if(currentFacet instanceof XSDTotalDigitsFacet){//this is the totalDigits
+                        fieldType.setData(MetadataRepository.DATA_TOTAL_DIGITS,
+                                String.valueOf(((XSDTotalDigitsFacet) currentFacet).getValue()));
+                    } else if(currentFacet instanceof XSDFractionDigitsFacet){ // this is the fractionDigits
+                        fieldType.setData(MetadataRepository.DATA_FRACTION_DIGITS,
+                                String.valueOf(((XSDFractionDigitsFacet) currentFacet).getValue()));
                     } else if (LOGGER.isTraceEnabled()) {
                         LOGGER.trace("Ignore simple type facet on type '" + fieldName + "': " + currentFacet);
                     }

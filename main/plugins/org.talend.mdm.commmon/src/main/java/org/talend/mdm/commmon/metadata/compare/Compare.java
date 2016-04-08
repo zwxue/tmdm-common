@@ -88,6 +88,18 @@ public class Compare {
                             if (!ObjectUtils.equals(leftLength, rightLength)) {
                                 diffResults.modifyChanges.add(new ModifyChange(leftVisitable, rightElement));
                             }
+                            
+                            // TMDM-8022: issues about custom decimal type totalDigits/fractionDigits.
+                            Object leftTotalDigits = leftVisitableType.getData(MetadataRepository.DATA_TOTAL_DIGITS);
+                            Object rightTotalDigits = rightVisitableType.getData(MetadataRepository.DATA_TOTAL_DIGITS);
+                            if (!ObjectUtils.equals(leftTotalDigits, rightTotalDigits)) {
+                                diffResults.modifyChanges.add(new ModifyChange(leftVisitable, rightElement));
+                            }
+                            Object leftFractionDigits = leftVisitableType.getData(MetadataRepository.DATA_FRACTION_DIGITS);
+                            Object rightFractionDigits = rightVisitableType.getData(MetadataRepository.DATA_FRACTION_DIGITS);
+                            if (!ObjectUtils.equals(leftFractionDigits, rightFractionDigits)) {
+                                diffResults.modifyChanges.add(new ModifyChange(leftVisitable, rightElement));
+                            }
                         }
                         rightContent.remove(index); // Same or already marked as diff, so remove from things to compare
                     }
