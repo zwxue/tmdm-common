@@ -12,7 +12,6 @@ public enum XSystemObjects {
     DC_MDMITEMSTRASH(XObjectType.DATA_CLUSTER, "MDMItemsTrash", false), //$NON-NLS-1$
     DC_SEARCHTEMPLATE(XObjectType.DATA_CLUSTER, "SearchTemplate", true), //$NON-NLS-1$
     DC_CROSSREFERENCING(XObjectType.DATA_CLUSTER, ICoreConstants.CrossReferencing_datacluster, true),
-    //$NON-NLS-1$
     DC_MDMItemImages(XObjectType.DATA_CLUSTER, "MDMItemImages", false), //$NON-NLS-1$
     DC_MDMMigration(XObjectType.DATA_CLUSTER, "MDMMigration", false), //$NON-NLS-1$
     // Role
@@ -26,7 +25,7 @@ public enum XSystemObjects {
     DM_PROVISIONING(XObjectType.DATA_MODEL, "PROVISIONING", true), //$NON-NLS-1$
     DM_UPDATEREPORT(XObjectType.DATA_MODEL, "UpdateReport", false), //$NON-NLS-1$
     DM_SEARCHTEMPLATE(XObjectType.DATA_MODEL, "SearchTemplate", true), //$NON-NLS-1$
-    Dm_CROSSREFERENCING(XObjectType.DATA_MODEL, ICoreConstants.CrossReferencing_datamodel, true),
+    DM_CROSSREFERENCING(XObjectType.DATA_MODEL, ICoreConstants.CrossReferencing_datamodel, true),
     M_BrowseRecords(XObjectType.MENU, "BrowseRecords", false), //$NON-NLS-1$
     M_Hierarchy(XObjectType.MENU, "Hierarchy", true), //$NON-NLS-1$
     M_WelcomePortal(XObjectType.MENU, "WelcomePortal", false), //$NON-NLS-1$
