@@ -85,6 +85,12 @@ public class HibernateStorageImpactAnalyzer implements ImpactAnalyzer {
                 if (!ObjectUtils.equals(previousLength, currentLength)) {
                     // Won't be able to change constraint for max length
                     impactSort.get(Impact.HIGH).add(modifyAction);
+                } else if (!ObjectUtils.equals(previousTotalDigits, currentTotalDigits)) {
+                    // TMDM-8022: issues about custom decimal type totalDigits/fractionDigits.
+                    impactSort.get(Impact.HIGH).add(modifyAction);
+                } else if (!ObjectUtils.equals(previousFractionDigits, currentFractionDigits)) {
+                    // TMDM-8022: issues about custom decimal type totalDigits/fractionDigits.
+                    impactSort.get(Impact.HIGH).add(modifyAction);
                 } else if (!previous.getType().equals(current.getType())) {
                     TypeMetadata superPreviousType = MetadataUtils.getSuperConcreteType(previous.getType());
                     TypeMetadata superCurrentType = MetadataUtils.getSuperConcreteType(current.getType());
@@ -106,12 +112,6 @@ public class HibernateStorageImpactAnalyzer implements ImpactAnalyzer {
                     impactSort.get(Impact.HIGH).add(modifyAction);
                 } else if (previous.isMandatory() != current.isMandatory()) {
                     // Won't be able to change constraint
-                    impactSort.get(Impact.HIGH).add(modifyAction);
-                } else if (!ObjectUtils.equals(previousTotalDigits, currentTotalDigits)) {
-                    // TMDM-8022: issues about custom decimal type totalDigits/fractionDigits.
-                    impactSort.get(Impact.HIGH).add(modifyAction);
-                } else if (!ObjectUtils.equals(previousFractionDigits, currentFractionDigits)) {
-                    // TMDM-8022: issues about custom decimal type totalDigits/fractionDigits.
                     impactSort.get(Impact.HIGH).add(modifyAction);
                 }
             }
