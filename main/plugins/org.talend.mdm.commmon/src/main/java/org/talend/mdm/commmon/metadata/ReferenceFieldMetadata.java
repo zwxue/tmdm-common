@@ -42,7 +42,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
 
     private final String name;
 
-    private final TypeMetadata declaringType;
+    private TypeMetadata declaringType;
 
     private TypeMetadata fieldType;
 
@@ -226,6 +226,10 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
     @Override
     public TypeMetadata getDeclaringType() {
         return declaringType;
+    }
+
+    public void setDeclaringType(TypeMetadata declaringType) {
+        this.declaringType = declaringType;
     }
 
     public boolean isFKIntegrity() {
