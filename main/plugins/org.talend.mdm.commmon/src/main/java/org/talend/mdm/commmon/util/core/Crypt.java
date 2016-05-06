@@ -1,3 +1,16 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+
 package org.talend.mdm.commmon.util.core;
 
 import java.io.UnsupportedEncodingException;
@@ -98,19 +111,17 @@ public class Crypt {
 		return result;
 	}
 	
-	public static void main(String[] args) {
-		String s = "hello world";
-		try {
-			System.out.println("Original: "+s);
-			Crypt c = Crypt.getDESCryptInstance("$£*µéàçè");
-			String hex = c.encryptHexString(s);
-			System.out.println("Encrypted hex: "+hex);
-			String decypted = c.decryptHexString(hex);
-			System.out.println("Decrypted: "+decypted);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    public static void main(String[] args) {
+        if (args.length < 1) {
+            System.out.println("Parameter of 'original password' is required."); //$NON-NLS-1$
+            return;
+        }
+        try {
+            System.out.println(encrypt(args[0]));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static String encrypt(String data) throws IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
         if (data == null || data.isEmpty()) {
