@@ -13,6 +13,8 @@ package org.talend.mdm.commmon.metadata;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -527,6 +529,19 @@ public class MetadataUtils {
                     throw new CircularDependencyException(cycleHints);
                 }
             case LENIENT:
+                Collections.sort(cycles, new Comparator<List<ComplexTypeMetadata>>() {
+
+                    @Override
+                    public int compare(List<ComplexTypeMetadata> o1, List<ComplexTypeMetadata> o2) {
+                        if (o1.size() > o2.size()) {
+                            return -1;
+                        } else if (o1.size() < o2.size()) {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    }
+                });
                 for (List<ComplexTypeMetadata> cycle : cycles) {
                     cycle.remove(cycle.size() - 1);
                     for (ComplexTypeMetadata cycleElement : cycle) {
