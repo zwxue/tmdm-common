@@ -470,6 +470,9 @@ public class MetadataUtils {
                     int currentLineNumber = lineNumber;
                     do {
                         ComplexTypeMetadata type = getType(types, currentLineNumber);
+                        if (dependencyPath.contains(type)) {
+                            break;
+                        }
                         dependencyPath.add(type);
                         InboundReferences incomingReferences = new InboundReferences(type);
                         Set<ReferenceFieldMetadata> incomingFields = repository.accept(incomingReferences);
