@@ -83,12 +83,14 @@ public class Compare {
                         if (leftVisitable instanceof FieldMetadata) {
                             TypeMetadata leftVisitableType = ((FieldMetadata) leftVisitable).getType();
                             TypeMetadata rightVisitableType = ((FieldMetadata) rightElement).getType();
+                            if(leftVisitable instanceof ReferenceFieldMetadata){
+                                compareReferenceFieldMetadata(diffResults.modifyChanges, (ReferenceFieldMetadata) leftVisitable, (ReferenceFieldMetadata) rightElement);
+                            }
                             Object leftLength = leftVisitableType.getData(MetadataRepository.DATA_MAX_LENGTH);
                             Object rightLength = rightVisitableType.getData(MetadataRepository.DATA_MAX_LENGTH);
                             if (!ObjectUtils.equals(leftLength, rightLength)) {
                                 diffResults.modifyChanges.add(new ModifyChange(leftVisitable, rightElement));
                             }
-                            
                             // TMDM-8022: issues about custom decimal type totalDigits/fractionDigits.
                             Object leftTotalDigits = leftVisitableType.getData(MetadataRepository.DATA_TOTAL_DIGITS);
                             Object rightTotalDigits = rightVisitableType.getData(MetadataRepository.DATA_TOTAL_DIGITS);
@@ -345,6 +347,12 @@ public class Compare {
                     LOGGER.debug("[ADDED] " + tm + " was added.");  //$NON-NLS-1$//$NON-NLS-2$
                 }
             }
+        }
+    }
+    
+    private static void compareReferenceFieldMetadata(List<ModifyChange> modifyChanges, ReferenceFieldMetadata leftField, ReferenceFieldMetadata rightField) {
+        if(!leftField.getReferencedType().getName().equals(rightField.getReferencedType().getName())) {
+            modifyChanges.add(new ModifyChange(leftField, rightField));
         }
     }
 

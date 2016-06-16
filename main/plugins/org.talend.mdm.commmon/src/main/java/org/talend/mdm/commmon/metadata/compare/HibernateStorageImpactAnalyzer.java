@@ -114,6 +114,18 @@ public class HibernateStorageImpactAnalyzer implements ImpactAnalyzer {
                     // Won't be able to change constraint
                     impactSort.get(Impact.HIGH).add(modifyAction);
                 }
+                
+                if(previous instanceof ReferenceFieldMetadata){
+                    if(current instanceof ReferenceFieldMetadata){
+                        ReferenceFieldMetadata previousFieldMetadata = (ReferenceFieldMetadata)previous;
+                        ReferenceFieldMetadata currentFieldMetadata = (ReferenceFieldMetadata)current;
+                        if(!previousFieldMetadata.getReferencedType().getName().equals(currentFieldMetadata.getReferencedType().getName())){
+                            impactSort.get(Impact.HIGH).add(modifyAction);
+                        }
+                    } else {
+                        impactSort.get(Impact.HIGH).add(modifyAction);
+                    }
+                }
             }
         }
         return impactSort;
