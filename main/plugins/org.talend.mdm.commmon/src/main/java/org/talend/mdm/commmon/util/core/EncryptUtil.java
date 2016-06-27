@@ -48,7 +48,8 @@ public class EncryptUtil {
     public static boolean encrypt(String path) {
         Map<String, String[]> propertiesFileMap = new HashMap<String, String[]>();
 
-        String[] mdmProperties = { MDMConfiguration.ADMIN_PASSWORD, MDMConfiguration.TECHNICAL_PASSWORD };
+        String[] mdmProperties = { MDMConfiguration.ADMIN_PASSWORD, MDMConfiguration.TECHNICAL_PASSWORD,
+                MDMConfiguration.ACTIVEMP_PASSWORD };
         propertiesFileMap.put("mdm.conf", mdmProperties); //$NON-NLS-1$
 
         String[] tdscProperties = { TDSC_DATABASE_PASSWORD };
