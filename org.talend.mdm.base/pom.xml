@@ -969,6 +969,12 @@
 	            <artifactId>commons-configuration</artifactId>
 	            <version>1.10</version>
         	</dependency>
+        	<dependency>
+            	<groupId>org.apache.httpcomponents</groupId>
+            	<artifactId>httpclient</artifactId>
+            	<scope>provided</scope>
+            	<version>4.2.5</version>
+        	</dependency>
             <dependency>
                 <groupId>org.directwebremoting</groupId>
                 <artifactId>dwr</artifactId>
