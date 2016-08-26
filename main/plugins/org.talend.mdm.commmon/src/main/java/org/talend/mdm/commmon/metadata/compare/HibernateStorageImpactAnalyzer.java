@@ -17,9 +17,12 @@ import java.util.Map;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.talend.mdm.commmon.metadata.*;
 
 public class HibernateStorageImpactAnalyzer implements ImpactAnalyzer {
+
+    protected final String STRING_DEFAULT_LENGTH = "255"; //$NON-NLS-1$
 
     public Map<Impact, List<Change>> analyzeImpacts(Compare.DiffResults diffResult) {
         Map<Impact, List<Change>> impactSort = new EnumMap<Impact, List<Change>>(Impact.class);
@@ -71,8 +74,8 @@ public class HibernateStorageImpactAnalyzer implements ImpactAnalyzer {
                 FieldMetadata previous = (FieldMetadata) modifyAction.getPrevious();
                 FieldMetadata current = (FieldMetadata) modifyAction.getCurrent();
                 Object previousLength = previous.getType().getData(MetadataRepository.DATA_MAX_LENGTH);
-                Object currentLength = current.getType().getData(MetadataRepository.DATA_MAX_LENGTH);
-                
+                Object currentLength = getSuperTypeMaxLength(current.getType(), current.getType()) ;
+
                 // TMDM-8022: issues about custom decimal type totalDigits/fractionDigits.
                 Object previousTotalDigits = previous.getType().getData(MetadataRepository.DATA_TOTAL_DIGITS);
                 Object currentTotalDigits = current.getType().getData(MetadataRepository.DATA_TOTAL_DIGITS);
@@ -82,7 +85,12 @@ public class HibernateStorageImpactAnalyzer implements ImpactAnalyzer {
                 /*
                  * HIGH IMPACT CHANGES
                  */
-                if (!ObjectUtils.equals(previousLength, currentLength)) {
+                if (element instanceof SimpleTypeFieldMetadata
+                        && MetadataUtils.getSuperConcreteType(((FieldMetadata) element).getType()).getName().equals("string")
+                        && Integer.valueOf((String) (currentLength == null ? STRING_DEFAULT_LENGTH : currentLength)).compareTo(
+                                Integer.valueOf((String) (previousLength == null ? STRING_DEFAULT_LENGTH : previousLength))) > 0) {
+                    impactSort.get(Impact.LOW).add(modifyAction);
+                } else if (!ObjectUtils.equals(previousLength, currentLength)) {
                     // Won't be able to change constraint for max length
                     impactSort.get(Impact.HIGH).add(modifyAction);
                 } else if (!ObjectUtils.equals(previousTotalDigits, currentTotalDigits)) {
@@ -129,6 +137,18 @@ public class HibernateStorageImpactAnalyzer implements ImpactAnalyzer {
             }
         }
         return impactSort;
+    }
+
+    private Object getSuperTypeMaxLength(TypeMetadata originalTypeMetadata, TypeMetadata typeMetadata){
+        Object currentLength = typeMetadata.getData(MetadataRepository.DATA_MAX_LENGTH);
+        if(currentLength == null){
+            for(TypeMetadata type: typeMetadata.getSuperTypes()){
+                if(MetadataUtils.getSuperConcreteType(originalTypeMetadata).getName().equals(MetadataUtils.getSuperConcreteType(type).getName())){
+                    currentLength = getSuperTypeMaxLength(originalTypeMetadata, type);
+                }
+            }
+        }
+        return currentLength;
     }
 
 }
