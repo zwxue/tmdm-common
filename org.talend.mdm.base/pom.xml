@@ -14,7 +14,8 @@
     </organization>
 
     <properties>
-        <!-- GWT and other dependent libraries must be aligned in term of version -->
+        <!-- GWT and other dependent libraries must be aligned in term of 
+            version -->
         <gwt.version>2.4.0</gwt.version>
         <gwt.localWorkers>4</gwt.localWorkers>
         <gwt.restlet.version>2.2.1</gwt.restlet.version>
@@ -38,6 +39,7 @@
         <mdm.build.web.dir>${mdm.build.dir}/${project.artifactId}-${project.version}</mdm.build.web.dir>
         <mdm.app.dir>${dev.tomcat.home}/webapps/talendmdm</mdm.app.dir>
         <jacoco.exec.file>${project.parent.build.directory}/${project.artifactId}.exec</jacoco.exec.file>
+        <xalan.version>2.7.1</xalan.version>
     </properties>
 
     <repositories>
@@ -139,7 +141,8 @@
                                 <goal>compile</goal>
                             </goals>
                             <configuration>
-                                <extraJvmArgs>-Xmx512m -XX:-ReduceInitialCardMarks</extraJvmArgs>
+                                <extraJvmArgs>-Xmx512m
+                                    -XX:-ReduceInitialCardMarks</extraJvmArgs>
                                 <localWorkers>${gwt.localWorkers}</localWorkers>
                                 <deploy>${project.build.directory}/gwt-deploy</deploy>
                                 <logLevel>INFO</logLevel>
@@ -172,7 +175,8 @@
                         <argLine>-XX:-ReduceInitialCardMarks</argLine>
                         <useManifestOnlyJar>false</useManifestOnlyJar>
                         <systemPropertyVariables>
-                            <gwt.args>-out ${project.build.directory} -logLevel ERROR</gwt.args>
+                            <gwt.args>-out ${project.build.directory}
+                                -logLevel ERROR</gwt.args>
                             <gwt.persistentunitcachedir>${project.build.directory}</gwt.persistentunitcachedir>
                             <file.encoding>utf-8</file.encoding>
                         </systemPropertyVariables>
@@ -310,8 +314,8 @@
                     </dependencies>
                 </plugin>
 
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build 
-                    itself. -->
+                <!--This plugin's configuration is used to store Eclipse 
+                    m2e settings only. It has no influence on the Maven build itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
@@ -841,9 +845,9 @@
                 <scope>runtime</scope>
             </dependency>
             <dependency>
-				<groupId>org.postgresql</groupId>
-				<artifactId>postgresql</artifactId>
-				<version>9.4-1201-jdbc4</version>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>9.4-1201-jdbc4</version>
                 <scope>runtime</scope>
             </dependency>
             <!-- TODO 2 restlet libraries in same project? -->
@@ -884,10 +888,10 @@
                 <scope>runtime</scope>
             </dependency>
             <dependency>
-			    <groupId>com.allen-sauer.gwt.dnd</groupId>
-			    <artifactId>gwt-dnd</artifactId>
-			    <version>${gwt.dnd.version}</version>
-			</dependency>
+                <groupId>com.allen-sauer.gwt.dnd</groupId>
+                <artifactId>gwt-dnd</artifactId>
+                <version>${gwt.dnd.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.allen-sauer.gwt.log</groupId>
                 <artifactId>gwt-log</artifactId>
@@ -1086,6 +1090,11 @@
                 <artifactId>dom4j</artifactId>
                 <version>1.6.1</version>
             </dependency>
+            <dependency>
+                <groupId>xalan</groupId>
+                <artifactId>xalan</artifactId>
+                <version>${xalan.version}</version>
+            </dependency>
             <!-- container dependencies -->
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -1108,11 +1117,11 @@
                 <artifactId>jstl</artifactId>
                 <version>1.2</version>
             </dependency>
-	    <dependency>
-      		<groupId>com.wordnik</groupId>
-      		<artifactId>swagger-jaxrs</artifactId>
-      		<version>1.5.3-M1</version>
-    	    </dependency>
+            <dependency>
+                <groupId>com.wordnik</groupId>
+                <artifactId>swagger-jaxrs</artifactId>
+                <version>1.5.3-M1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
