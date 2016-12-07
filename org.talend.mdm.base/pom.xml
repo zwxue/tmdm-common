@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.talend.mdm</groupId>
     <artifactId>mdm-base</artifactId>
-    <version>6.3.1-SNAPSHOT</version>
+    <version>6.3.1</version>
     <packaging>pom</packaging>
     <name>org.talend.mdm.base</name>
     <url>http://www.talend.com</url>
@@ -1325,19 +1324,10 @@
                                 <configuration>
                                     <exportAntProperties>true</exportAntProperties>
                                     <target>
-                                        <taskdef
-                                            resource="net/sf/antcontrib/antcontrib.properties"
-                                            classpathref="maven.plugin.classpath" />
-                                        <propertyregex
-                                            property="product.version.short"
-                                            input="${product.version}"
-                                            regexp="\." replace=""
-                                            global="true" casesensitive="false"
-                                            override="true" />
-                                        <property name="mdm.deploy.dir"
-                                            value="${storage}/${product.build.id}/${storage.dir}/V${product.version}${revision.filename}/${storage.dir}_${product.version.short}" />
-                                        <property name="tdsc.deploy.dir"
-                                            value="${storage}/${product.build.id}/datastewardship" />
+                                        <taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="maven.plugin.classpath" />
+                                        <propertyregex property="product.version.short" input="${product.version}" regexp="\." replace="" global="true" casesensitive="false" override="true" />
+                                        <property name="mdm.deploy.dir" value="${storage}/${product.build.id}/${storage.dir}/V${product.version}${revision.filename}/${storage.dir}_${product.version.short}" />
+                                        <property name="tdsc.deploy.dir" value="${storage}/${product.build.id}/datastewardship" />
                                         <echo>mdm.deploy.dir
                                             ${mdm.deploy.dir}</echo>
                                     </target>
