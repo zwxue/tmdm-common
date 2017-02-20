@@ -78,14 +78,14 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <!-- <repository>
+        <repository>
             <id>Sonatype OSS Public Repositories</id>
             <name>Sonatype OSS Public Repositories</name>
             <url>https://oss.sonatype.org/content/groups/public/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-        </repository> -->
+        </repository>
         <repository>
             <id>maven-restlet</id>
             <name>Public online Restlet repository</name>
