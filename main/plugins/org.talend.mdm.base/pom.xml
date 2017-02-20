@@ -54,19 +54,18 @@
 
     <repositories>
         <repository>
-            <!--See http://community.jboss.org/wiki/MavenRepository -->
-            <id>JBoss Public Repositories</id>
-            <name>JBoss Public Repositories</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+            <id>thirdparty-releases</id>
+            <name>Talend 3rd party releases</name>
+            <url>http://newbuild.talend.com:8081/nexus/content/repositories/thirdparty-releases</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
         </repository>
         <repository>
             <!--See http://community.jboss.org/wiki/MavenRepository -->
-            <id>JBoss Group Repository</id>
-            <name>JBoss Group Repository</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+            <id>JBoss Public Repositories</id>
+            <name>JBoss Public Repositories</name>
+            <url>http://newbuild.talend.com:8081/nexus/content/repositories/jboss_developer/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
