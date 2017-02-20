@@ -45,43 +45,11 @@
     </properties>
     <repositories>
         <repository>
-            <!--See http://community.jboss.org/wiki/MavenRepository -->
-            <id>JBoss Public Repositories</id>
-            <name>JBoss Public Repositories</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <!--See http://community.jboss.org/wiki/MavenRepository -->
-            <id>JBoss Group Repository</id>
-            <name>JBoss Group Repository</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>Sonatype OSS Public Repositories</id>
-            <name>Sonatype OSS Public Repositories</name>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>maven-restlet</id>
-            <name>Public online Restlet repository</name>
-            <url>http://maven.restlet.org</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>talend-3rdparty</id>
-            <name>Talend 3rd party releases</name>
-            <url>http://newbuild.talend.com:8081/nexus/content/repositories/thirdparty-releases</url>
+            <id>TalendOpenSourceRelease</id>
+            <url>http://newbuild.talend.com:8081/nexus/content/repositories/TalendOpenSourceRelease</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -94,11 +62,34 @@
             <url>http://newbuild.talend.com:8081/nexus/content/repositories/releases</url>
         </repository>
         <repository>
-            <id>TalendOpenSourceRelease</id>
-            <url>http://newbuild.talend.com:8081/nexus/content/repositories/TalendOpenSourceRelease</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
+            <id>thirdparty-releases</id>
+            <name>Talend 3rd party releases</name>
+            <url>http://newbuild.talend.com:8081/nexus/content/repositories/thirdparty-releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <!--See http://community.jboss.org/wiki/MavenRepository -->
+            <id>JBoss Public Repositories</id>
+            <name>JBoss Public Repositories</name>
+            <url>http://newbuild.talend.com:8081/nexus/content/repositories/jboss_developer/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <!-- <repository>
+            <id>Sonatype OSS Public Repositories</id>
+            <name>Sonatype OSS Public Repositories</name>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository> -->
+        <repository>
+            <id>maven-restlet</id>
+            <name>Public online Restlet repository</name>
+            <url>http://maven.restlet.org</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
