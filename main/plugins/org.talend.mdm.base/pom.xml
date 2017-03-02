@@ -96,7 +96,7 @@
         <repository>
             <id>talend-3rdparty</id>
             <name>Talend 3rd party releases</name>
-            <url>http://newbuild.talend.com:8081/nexus/content/repositories/thirdparty-releases</url>
+            <url>https://artifacts-zl.talend.com/nexus/content/repositories/thirdparty-releases</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
