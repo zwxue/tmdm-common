@@ -57,6 +57,13 @@ public class HibernateStorageImpactAnalyzer implements ImpactAnalyzer {
             MetadataVisitable element = removeAction.getElement();
             if (element instanceof ComplexTypeMetadata) {
                 impactSort.get(Impact.MEDIUM).add(removeAction);
+            } else if (element instanceof SimpleTypeFieldMetadata && !(((FieldMetadata)element).getContainingType() instanceof ContainedComplexTypeMetadata)) {
+                impactSort.get(Impact.MEDIUM).add(removeAction);
+            } else if (element instanceof SimpleTypeFieldMetadata && ((FieldMetadata)element).getContainingType().getContainer() != null && 
+                    ((FieldMetadata)element).getContainingType().getContainer() instanceof ContainedTypeFieldMetadata) {
+                impactSort.get(Impact.HIGH).add(removeAction);
+            } else if (element instanceof ContainedTypeFieldMetadata) {
+                impactSort.get(Impact.HIGH).add(removeAction);
             } else if (element instanceof FieldMetadata) {
                 impactSort.get(Impact.MEDIUM).add(removeAction);
             } else {
@@ -73,8 +80,8 @@ public class HibernateStorageImpactAnalyzer implements ImpactAnalyzer {
                 FieldMetadata previous = (FieldMetadata) modifyAction.getPrevious();
                 FieldMetadata current = (FieldMetadata) modifyAction.getCurrent();
                 // TMDM-9909: Increase the length of a string element should be low impact
-                Object previousLength = CommonUtil.getSuperTypeMaxLength(previous.getType(), previous.getType()) ;
-                Object currentLength = CommonUtil.getSuperTypeMaxLength(current.getType(), current.getType()) ;
+                Object previousLength = CommonUtil.getSuperTypeMaxLength(previous.getType(), previous.getType());
+                Object currentLength = CommonUtil.getSuperTypeMaxLength(current.getType(), current.getType());
 
                 // TMDM-8022: issues about custom decimal type totalDigits/fractionDigits.
                 Object previousTotalDigits = previous.getType().getData(MetadataRepository.DATA_TOTAL_DIGITS);
@@ -119,18 +126,42 @@ public class HibernateStorageImpactAnalyzer implements ImpactAnalyzer {
                     // Key creation might have high impact (in case of duplicated values).
                     impactSort.get(Impact.HIGH).add(modifyAction);
                 } else if (previous.isMandatory() != current.isMandatory()) {
-                    if (!previous.isMandatory() && current.isMandatory()) {
-                        // Won't be able to change constraint
-                        String defaultValueRule = ((FieldMetadata) current).getData(MetadataRepository.DEFAULT_VALUE_RULE);
-                        if (!modifyAction.isHasNullValue()) {
-                            impactSort.get(Impact.LOW).add(modifyAction);
-                        } else if (modifyAction.isHasNullValue() && StringUtils.isBlank(defaultValueRule)) {
+                    if (element instanceof SimpleTypeFieldMetadata) {
+                        if (((FieldMetadata) element).getContainingType() instanceof ContainedComplexTypeMetadata
+                                && !((FieldMetadata) element).getContainingType().getName().startsWith(MetadataRepository.ANONYMOUS_PREFIX)) {
                             impactSort.get(Impact.HIGH).add(modifyAction);
-                        } else if (modifyAction.isHasNullValue() && StringUtils.isNotBlank(defaultValueRule)) {
-                            impactSort.get(Impact.MEDIUM).add(modifyAction);
+                        } else {
+                            if (!previous.isMandatory() && current.isMandatory()) {
+                                // Won't be able to change constraint
+                                String defaultValueRule = ((FieldMetadata) current)
+                                        .getData(MetadataRepository.DEFAULT_VALUE_RULE);
+                                if (!modifyAction.isHasNullValue()) {
+                                    impactSort.get(Impact.LOW).add(modifyAction);
+                                } else if (modifyAction.isHasNullValue() && StringUtils.isBlank(defaultValueRule)) {
+                                    impactSort.get(Impact.HIGH).add(modifyAction);
+                                } else if (modifyAction.isHasNullValue() && StringUtils.isNotBlank(defaultValueRule)) {
+                                    impactSort.get(Impact.MEDIUM).add(modifyAction);
+                                }
+                            } else if (previous.isMandatory() && !current.isMandatory()) {
+                                impactSort.get(Impact.LOW).add(modifyAction);
+                            }
                         }
-                    } else if(previous.isMandatory() && !current.isMandatory()){
-                        impactSort.get(Impact.LOW).add(modifyAction);
+                    } else if (element instanceof ContainedTypeFieldMetadata) {
+                        if (!previous.isMany() && !previous.isMandatory()) {
+                            impactSort.get(Impact.HIGH).add(modifyAction);
+                        } else if (previous.isMandatory() && !previous.isMany()) {
+                            if (!current.isMandatory() && !current.isMany()) {
+                                impactSort.get(Impact.LOW).add(modifyAction);
+                            } else if (current.isMany()) {
+                                impactSort.get(Impact.LOW).add(modifyAction);
+                            }
+                        } else if (previous.isMany()) {
+                            if (!current.isMany()) {
+                                impactSort.get(Impact.HIGH).add(modifyAction);
+                            } else {
+                                impactSort.get(Impact.LOW).add(modifyAction);
+                            }
+                        }
                     }
                 }
                 
