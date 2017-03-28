@@ -55,6 +55,16 @@
             </snapshots>
         </repository>
         <repository>
+            <id>TalendOpenSourceSnapshot</id>
+            <url>https://artifacts-oss.talend.com/nexus/content/repositories/TalendOpenSourceSnapshot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>releases</id>
             <snapshots>
                 <enabled>false</enabled>
