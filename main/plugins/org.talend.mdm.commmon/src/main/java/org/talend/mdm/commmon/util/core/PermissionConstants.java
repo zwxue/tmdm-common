@@ -26,7 +26,4 @@ public interface PermissionConstants {
     String PERMISSIONTYPE_WORKFLOW_ACCESS = "Workflow Access";
     //
     String VALIDATION_PERMISSION_MARKER = "validation.permission.validated";
-    //
-    String PERMISSION_ROLE_SYSTEM_PREFIX = "system_";
-    String PERMISSION_ROLE_ADMINISTRATION = "administration";
 }

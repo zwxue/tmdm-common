@@ -28,6 +28,7 @@ import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.SoftFieldRef;
 import org.talend.mdm.commmon.metadata.ValidationError;
 import org.talend.mdm.commmon.metadata.ValidationHandler;
+import org.talend.mdm.commmon.util.core.ICoreConstants;
 import org.talend.mdm.commmon.util.core.PermissionConstants;
 import org.w3c.dom.Element;
 
@@ -174,7 +175,7 @@ public class PermissionValidationRule implements ValidationRule {
         boolean valid = true;
         for (FieldMetadata roleMetadata : roles) {
             String lowerCaseRoleName = roleMetadata.getName().toLowerCase();
-            if (lowerCaseRoleName.startsWith(PermissionConstants.PERMISSION_ROLE_SYSTEM_PREFIX) || lowerCaseRoleName.equals(PermissionConstants.PERMISSION_ROLE_ADMINISTRATION)) {
+            if (lowerCaseRoleName.startsWith(ICoreConstants.SYSTEM_ROLE_PREFIX.toLowerCase()) || lowerCaseRoleName.equals(ICoreConstants.ADMIN_PERMISSION)) {
                 String message = "System role \"" + roleMetadata.getName() + "\" shouldn't be used to set \"" + permissionType //$NON-NLS-1$ //$NON-NLS-2$
                         + "\" permission on " + elementType + " \"" + elementName + "\" ."; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 
