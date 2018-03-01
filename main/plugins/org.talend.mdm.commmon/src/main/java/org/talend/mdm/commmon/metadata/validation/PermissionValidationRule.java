@@ -38,8 +38,8 @@ import org.w3c.dom.Element;
  */
 public class PermissionValidationRule implements ValidationRule {
     
-    private final String ELEMENT_TYPE_ENTITY = "entity"; //$NON-NLS-1$
-    private final String ELEMENT_TYPE_FIELD = "field"; //$NON-NLS-1$
+    private static final String ELEMENT_TYPE_ENTITY = "entity"; //$NON-NLS-1$
+    private static final String ELEMENT_TYPE_FIELD = "field"; //$NON-NLS-1$
     
     private FieldMetadata field;
     private ComplexTypeMetadata complexTypeMetadata;
