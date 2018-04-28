@@ -57,7 +57,7 @@ public class Compare {
         Collection<ComplexTypeMetadata> leftEntityTypes = left.getUserComplexTypes();
         DiffResults diffResults = new DiffResults();
         compareEntitiesChange(left, right, diffResults);
-        
+
         DumpContent dumpContent = new DumpContent();
         for (ComplexTypeMetadata leftType : leftEntityTypes) {
             ComplexTypeMetadata rightType = right.getComplexType(leftType.getName());
