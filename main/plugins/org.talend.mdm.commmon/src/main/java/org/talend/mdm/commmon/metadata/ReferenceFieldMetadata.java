@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -72,23 +72,25 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
 
     private final List<String> noRemoveRoles;
 
+    private boolean isFKMainRender;
+
     public ReferenceFieldMetadata(ComplexTypeMetadata containingType,
-            boolean isKey,
-            boolean isMany,
-            boolean isMandatory,
-            String name,
-            ComplexTypeMetadata referencedType,
-            FieldMetadata referencedField,
-            List<FieldMetadata> foreignKeyInfo,
-            String foreignKeyInfoFormat,
-            boolean fkIntegrity,
-            boolean allowFKIntegrityOverride,
-            TypeMetadata fieldType,
-            List<String> allowWriteUsers,
-            List<String> hideUsers,
-            List<String> workflowAccessRights,
-            String foreignKeyFilter,
-            String visibilityRule) {
+                                  boolean isKey,
+                                  boolean isMany,
+                                  boolean isMandatory,
+                                  String name,
+                                  ComplexTypeMetadata referencedType,
+                                  FieldMetadata referencedField,
+                                  List<FieldMetadata> foreignKeyInfo,
+                                  String foreignKeyInfoFormat,
+                                  boolean fkIntegrity,
+                                  boolean allowFKIntegrityOverride,
+                                  TypeMetadata fieldType,
+                                  List<String> allowWriteUsers,
+                                  List<String> hideUsers,
+                                  List<String> workflowAccessRights,
+                                  String foreignKeyFilter,
+                                  String visibilityRule) {
         this(containingType,
                 isKey,
                 isMany,
@@ -129,6 +131,48 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
                                   String visibilityRule,
                                   List<String> noAddRoles,
                                   List<String> noRemoveRoles) {
+        this(containingType,
+                isKey,
+                isMany,
+                isMandatory,
+                name,
+                referencedType,
+                referencedField,
+                foreignKeyInfo,
+                foreignKeyInfoFormat,
+                fkIntegrity,
+                allowFKIntegrityOverride,
+                fieldType,
+                allowWriteUsers,
+                hideUsers,
+                workflowAccessRights,
+                foreignKeyFilter,
+                visibilityRule,
+                noAddRoles,
+                noRemoveRoles,
+                false);
+    }
+
+    public ReferenceFieldMetadata(ComplexTypeMetadata containingType,
+                                  boolean isKey,
+                                  boolean isMany,
+                                  boolean isMandatory,
+                                  String name,
+                                  ComplexTypeMetadata referencedType,
+                                  FieldMetadata referencedField,
+                                  List<FieldMetadata> foreignKeyInfo,
+                                  String foreignKeyInfoFormat,
+                                  boolean fkIntegrity,
+                                  boolean allowFKIntegrityOverride,
+                                  TypeMetadata fieldType,
+                                  List<String> allowWriteUsers,
+                                  List<String> hideUsers,
+                                  List<String> workflowAccessRights,
+                                  String foreignKeyFilter,
+                                  String visibilityRule,
+                                  List<String> noAddRoles,
+                                  List<String> noRemoveRoles,
+                                  boolean isFKMainRender) {
         this.isMandatory = isMandatory;
         this.name = name;
         this.referencedField = referencedField;
@@ -150,6 +194,7 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
         this.visibilityRule = visibilityRule;
         this.noAddRoles = noAddRoles;
         this.noRemoveRoles = noRemoveRoles;
+        this.isFKMainRender = isFKMainRender;
     }
 
     public String getForeignKeyFilter() {
@@ -475,5 +520,9 @@ public class ReferenceFieldMetadata extends MetadataExtensions implements FieldM
     @Override
     public List<String> getNoRemoveRoles() {
         return noRemoveRoles;
+    }
+
+    public boolean isFKMainRender() {
+        return isFKMainRender;
     }
 }
