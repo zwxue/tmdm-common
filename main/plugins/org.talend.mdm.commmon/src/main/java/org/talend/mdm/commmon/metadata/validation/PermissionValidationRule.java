@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2019 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -37,13 +37,13 @@ import org.w3c.dom.Element;
  *
  */
 public class PermissionValidationRule implements ValidationRule {
-    
+
     private static final String ELEMENT_TYPE_ENTITY = "entity"; //$NON-NLS-1$
     private static final String ELEMENT_TYPE_FIELD = "field"; //$NON-NLS-1$
-    
+
     private FieldMetadata field;
     private ComplexTypeMetadata complexTypeMetadata;
-    
+
     public PermissionValidationRule(FieldMetadata field) {
         this.field = field;
     }
@@ -74,11 +74,11 @@ public class PermissionValidationRule implements ValidationRule {
         fieldMetadata.setData(PermissionConstants.VALIDATION_PERMISSION_MARKER, true);
         String name = fieldMetadata.getName();
         XSDElementDeclaration element = fieldMetadata.getData(MetadataRepository.XSD_ELEMENT);
-        
+
         if (element == null) {
             return true;
         }
-        
+
         boolean valid = true;
 
         XSDAnnotation annotation = element.getAnnotation();
@@ -109,7 +109,7 @@ public class PermissionValidationRule implements ValidationRule {
             valid &= doValidation(handler, ELEMENT_TYPE_FIELD, name, PermissionConstants.PERMISSIONTYPE_DENY_CREATE, denyCreate);
             valid &= doValidation(handler, ELEMENT_TYPE_FIELD, name, PermissionConstants.PERMISSIONTYPE_WORKFLOW_ACCESS, workflowAccessRights);
         }
-        
+
 
         if(fieldMetadata instanceof ContainedTypeFieldMetadata) {
             ContainedTypeFieldMetadata containedField = (ContainedTypeFieldMetadata) fieldMetadata;
@@ -132,10 +132,10 @@ public class PermissionValidationRule implements ValidationRule {
         if (element == null || element.getAnnotation() == null) {
             return true;
         }
-        
+
         XSDAnnotation annotation = element.getAnnotation();
         EList<Element> appInfoElements = annotation.getApplicationInformation();
-        
+
         List<FieldMetadata> writeUsers = new ArrayList<FieldMetadata>();
         List<FieldMetadata> hideUsers = new ArrayList<FieldMetadata>();
         List<FieldMetadata> denyCreate = new ArrayList<FieldMetadata>();
@@ -178,11 +178,11 @@ public class PermissionValidationRule implements ValidationRule {
             if (lowerCaseRoleName.startsWith(ICoreConstants.SYSTEM_ROLE_PREFIX.toLowerCase()) || lowerCaseRoleName.equals(ICoreConstants.ADMIN_PERMISSION)) {
                 String message = "System role \"" + roleMetadata.getName() + "\" shouldn't be used to set \"" + permissionType //$NON-NLS-1$ //$NON-NLS-2$
                         + "\" permission on " + elementType + " \"" + elementName + "\" ."; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                
+
                 Element data = roleMetadata.<Element> getData(MetadataRepository.XSD_DOM_ELEMENT);
                 Integer lineNum = roleMetadata.<Integer> getData(MetadataRepository.XSD_LINE_NUMBER);
                 Integer colNum = roleMetadata.<Integer> getData(MetadataRepository.XSD_COLUMN_NUMBER);
-                
+
                 if(complexTypeMetadata != null) {
                     handler.error(complexTypeMetadata, message, data,lineNum, colNum, ValidationError.PERMISSION_SYSTEM_ROLE_NOT_SETTABLE);
                 } else {
@@ -191,12 +191,12 @@ public class PermissionValidationRule implements ValidationRule {
                 valid &= false;
             }
         }
-        
+
         return valid;
     }
-    
+
     private FieldMetadata getFieldMetadata(Element appInfo, String fieldName) {
-        
+
         FieldMetadata fieldMetadata = new SoftFieldRef(null, fieldName, "");
         fieldMetadata.setData(MetadataRepository.XSD_LINE_NUMBER, XSDParser.getStartLine(appInfo));
         fieldMetadata.setData(MetadataRepository.XSD_COLUMN_NUMBER, XSDParser.getStartColumn(appInfo));

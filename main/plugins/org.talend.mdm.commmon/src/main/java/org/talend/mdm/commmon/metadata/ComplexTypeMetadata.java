@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -31,7 +31,7 @@ public interface ComplexTypeMetadata extends TypeMetadata {
     /**
      * Return the type Description in the <code>locale</code>. If no type Description was declared for
      * <code>locale</code>, returns same as {@link TypeMetadata#getName()}.
-     * 
+     *
      * @param locale A non null {@link java.util.Locale locale}.
      * @return The type Description for <code>locale</code>.
      */
@@ -119,7 +119,7 @@ public interface ComplexTypeMetadata extends TypeMetadata {
      * @return The {@link List} of users that can't delete an instance of this type.
      */
     List<String> getDenyDelete(DeleteType type);
-    
+
     /**
      * @return The {@link List} of workflow roles (including writable, read-only and hidden roles. format: role
      * name#processId+processVersion#access rights).

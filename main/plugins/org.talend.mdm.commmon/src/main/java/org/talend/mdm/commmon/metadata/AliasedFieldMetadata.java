@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -41,7 +41,7 @@ public class AliasedFieldMetadata extends SimpleTypeFieldMetadata {
         this.realFieldName = aliasedField.getName();
         this.aliasedField = aliasedField;
     }
-    
+
     public FieldMetadata getAliasedField() {
         return this.aliasedField;
     }

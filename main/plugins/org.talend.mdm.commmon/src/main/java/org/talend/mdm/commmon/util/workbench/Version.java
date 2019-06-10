@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
- * 
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
+ *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
- * 
+ *
  * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
  * 92150 Suresnes, France
  */
@@ -15,7 +15,7 @@ public class Version {
 	private int minor;
 	private int rev;
 	private String build;
-	
+
 	public Version(int major, int minor, int rev, String build) {
 		super();
 		this.major = major;
@@ -23,7 +23,7 @@ public class Version {
 		this.rev = rev;
 		this.build = build;
 	}
-	
+
 	public String getBuild() {
 		return build;
 	}
@@ -48,6 +48,6 @@ public class Version {
 	public void setRev(int rev) {
 		this.rev = rev;
 	}
-	
-	
+
+
 }

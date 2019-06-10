@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
- * 
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
+ *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
- * 
+ *
  * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
  * 92150 Suresnes, France
  */
@@ -46,7 +46,7 @@ public interface FieldMetadata extends MetadataVisitable, MetadataExtensible {
 
     /**
      * Changes containing type for this field. Use this method with extra caution.
-     * 
+     *
      * @param typeMetadata The new containing type for this field.
      * @see #getContainingType()
      */
@@ -96,14 +96,14 @@ public interface FieldMetadata extends MetadataVisitable, MetadataExtensible {
 
     /**
      * Copy the field and all depending information in <code>repository</code>.
-     * 
+     *
      * @return A copy of this field.
      */
     FieldMetadata copy();
 
     /**
      * Freezes all modifications that can be done to a field. Similar to {@link TypeMetadata#freeze()}.
-     * 
+     *
      * @return A frozen field metadata.
      * @see TypeMetadata#freeze()
      */
@@ -117,7 +117,7 @@ public interface FieldMetadata extends MetadataVisitable, MetadataExtensible {
     /**
      * Validates the field: performs assertions on content specific to MDM (this method should not raise XSD compliance
      * issues).
-     * 
+     *
      * @param handler A {@link ValidationHandler} to be used for error / warning reporting.
      * @see ValidationHandler#error(FieldMetadata, String, org.w3c.dom.Element, Integer, Integer, ValidationError)
      */
@@ -154,7 +154,7 @@ public interface FieldMetadata extends MetadataVisitable, MetadataExtensible {
     String getVisibilityRule();
 
     /**
-     * @return The Permission Operation Role List, the return list is a collection class that is used for storing No_Add right Role list, 
+     * @return The Permission Operation Role List, the return list is a collection class that is used for storing No_Add right Role list,
      * the method is related with {@link #getWriteUsers()} and {@link #getNoRemoveRoles()}. now just support for ReferenceFieldMetadata type.
      * The Value is denoted as <b>existing Role information</b>, like Demo_Manager/Demo_User.<p>
      * <pre>
@@ -165,7 +165,7 @@ public interface FieldMetadata extends MetadataVisitable, MetadataExtensible {
     List<String> getNoAddRoles();
 
     /**
-     * @return The Permission Operation Role List, the return list is a collection class that is used for storing No_Remove right Role list, 
+     * @return The Permission Operation Role List, the return list is a collection class that is used for storing No_Remove right Role list,
      * the method is related with {@link #getWriteUsers()} and {@link #getNoAddRoles()}. now just support for ReferenceFieldMetadata type.
      * The Value is denoted as <b>existing Role information</b>, like Demo_Manager/Demo_User.<p>
      * <pre>

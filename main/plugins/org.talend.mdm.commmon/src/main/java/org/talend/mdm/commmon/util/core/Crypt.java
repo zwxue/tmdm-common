@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
- * 
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
+ *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
- * 
+ *
  * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
  * 92150 Suresnes, France
  */
@@ -64,7 +64,7 @@ public class Crypt {
 	public String decryptHexString(String text) {
 		return decryptString(toByteArray(text));
 	}
-	
+
 	/** Encrypts the give String to an array of bytes */
 	private byte[] encryptString(String text) {
 		try {
@@ -107,7 +107,7 @@ public class Crypt {
 		}
 		return result;
 	}
-	
+
     public static void main(String[] args) {
         if (args.length < 1) {
             System.out.println("Parameter of 'original password' is required."); //$NON-NLS-1$

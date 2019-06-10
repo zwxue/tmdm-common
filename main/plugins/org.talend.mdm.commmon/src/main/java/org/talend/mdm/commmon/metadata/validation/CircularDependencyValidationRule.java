@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
- * 
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
+ *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
- * 
+ *
  * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
  * 92150 Suresnes, France
  */
@@ -20,7 +20,7 @@ import org.w3c.dom.Element;
  * Check for circular dependencies within the data model. A circular dependency is found when when there's a path from
  * an entity back to itself following <b>mandatory</b> foreign keys. A recursive dependency may be a cycle if it's
  * mandatory (this would lead to "chicken-egg" situations otherwise).
- * 
+ *
  * @see org.talend.mdm.commmon.metadata.MetadataUtils#sortTypes(org.talend.mdm.commmon.metadata.MetadataRepository)
  */
 class CircularDependencyValidationRule implements ValidationRule {

@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
- * 
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
+ *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
- * 
+ *
  * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
  * 92150 Suresnes, France
  */
@@ -46,7 +46,7 @@ public class Compare {
     /**
      * Compare two {@link org.talend.mdm.commmon.metadata.MetadataRepository repositories} and return the differences
      * between them.
-     * 
+     *
      * @param left The original {@link org.talend.mdm.commmon.metadata.MetadataRepository repository}.
      * @param right The new {@link org.talend.mdm.commmon.metadata.MetadataRepository repository}.
      * @return The {@link org.talend.mdm.commmon.metadata.compare.Compare.DiffResults differences} between the two
@@ -171,7 +171,7 @@ public class Compare {
                 }
             }
         }
-        
+
         List<ComplexTypeMetadata> instantiableTypes = left.getNonInstantiableTypes();
         compareTypesChange(left, right, diffResults);
         for (ComplexTypeMetadata leftType : instantiableTypes) {
@@ -267,7 +267,7 @@ public class Compare {
 
     /**
      * Groups and sorts all differences between 2 repositories.
-     * 
+     *
      * @see #getAddChanges()
      * @see #getModifyChanges()
      * @see #getRemoveChanges()
@@ -301,15 +301,15 @@ public class Compare {
             return allChanges;
         }
     }
-    
+
     @SuppressWarnings("unused")
     private static void compareEntitiesChange(MetadataRepository left, MetadataRepository right, DiffResults diffResults){
-        List<ComplexTypeMetadata> unusedLeftEntityTypes = new ArrayList<ComplexTypeMetadata>(); 
-        List<ComplexTypeMetadata> unusedRightEntityTypes = new ArrayList<ComplexTypeMetadata>(); 
+        List<ComplexTypeMetadata> unusedLeftEntityTypes = new ArrayList<ComplexTypeMetadata>();
+        List<ComplexTypeMetadata> unusedRightEntityTypes = new ArrayList<ComplexTypeMetadata>();
         Set<ComplexTypeMetadata> complexTypeSet = new HashSet<ComplexTypeMetadata>();
         complexTypeSet.addAll(left.getUserComplexTypes());
         complexTypeSet.addAll(right.getUserComplexTypes());
-        
+
         for(ComplexTypeMetadata ctm : complexTypeSet){
             if (left.getComplexType(ctm.getName()) != null && right.getComplexType(ctm.getName()) == null) {
                 unusedLeftEntityTypes.add(ctm);
@@ -317,7 +317,7 @@ public class Compare {
                 unusedRightEntityTypes.add(ctm);
             }
         }
-        
+
         if(unusedLeftEntityTypes != null && unusedLeftEntityTypes.size() > 0){
             for(ComplexTypeMetadata leftType : unusedLeftEntityTypes){
                 // Right type does not exist
@@ -327,7 +327,7 @@ public class Compare {
                 }
             }
         }
-        
+
         if(unusedRightEntityTypes != null && unusedRightEntityTypes.size() > 0){
             for(ComplexTypeMetadata rightType : unusedRightEntityTypes){
                 // Added Right type element (only exist in right, not in left).
@@ -338,15 +338,15 @@ public class Compare {
             }
         }
     }
-    
+
     @SuppressWarnings("unused")
     private static void compareTypesChange(MetadataRepository left, MetadataRepository right, DiffResults diffResults){
-        List<TypeMetadata> unusedLeftTypes = new ArrayList<TypeMetadata>(); 
+        List<TypeMetadata> unusedLeftTypes = new ArrayList<TypeMetadata>();
         List<TypeMetadata> unusedRightTypes = new ArrayList<TypeMetadata>();
         Set<TypeMetadata> complexTypeSet = new HashSet<TypeMetadata>();
         complexTypeSet.addAll(left.getNonInstantiableTypes());
         complexTypeSet.addAll(right.getNonInstantiableTypes());
-        
+
         for(TypeMetadata ctm : complexTypeSet){
             if (left.getNonInstantiableType(ctm.getNamespace(), ctm.getName()) != null && right.getNonInstantiableType(ctm.getNamespace(), ctm.getName()) == null) {
                 if(left.getNonInstantiableType(ctm.getNamespace(), ctm.getName()) instanceof ComplexTypeMetadata && MetadataUtils.countEntityUsageCount((ComplexTypeMetadata)left.getNonInstantiableType(ctm.getNamespace(), ctm.getName())) > 0){
@@ -358,7 +358,7 @@ public class Compare {
                 }
             }
         }
-        
+
         if(unusedLeftTypes != null && unusedLeftTypes.size() > 0){
             for(TypeMetadata tm : unusedLeftTypes){
                 // Right type does not exist
@@ -368,7 +368,7 @@ public class Compare {
                 }
             }
         }
-        
+
         if(unusedRightTypes != null && unusedRightTypes.size() > 0){
             for(TypeMetadata tm : unusedRightTypes){
                 // Added Right type element (only exist in right, not in left).
@@ -379,7 +379,7 @@ public class Compare {
             }
         }
     }
-    
+
     private static void compareReferenceFieldMetadata(List<ModifyChange> modifyChanges, ReferenceFieldMetadata leftField, ReferenceFieldMetadata rightField) {
         if(!leftField.getReferencedType().getName().equals(rightField.getReferencedType().getName())) {
             modifyChanges.add(new ModifyChange(leftField, rightField));

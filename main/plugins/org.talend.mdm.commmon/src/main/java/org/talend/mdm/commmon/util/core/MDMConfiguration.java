@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
- * 
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
+ *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
- * 
+ *
  * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
  * 92150 Suresnes, France
  */
@@ -23,12 +23,12 @@ import org.apache.log4j.Logger;
  */
 @SuppressWarnings("nls")
 public final class MDMConfiguration {
-    
+
     /**
      * This is the MDM (mdm.conf) configuration property to indicate current server is running in a clustered
      * environment. Setting this property to <code>true</code> may have impacts on the choice of implementation for
      * internal components.
-     * 
+     *
      * @see com.amalto.core.save.generator.AutoIncrementGenerator
      */
     public static final String SYSTEM_CLUSTER = "system.cluster";
@@ -104,7 +104,7 @@ public final class MDMConfiguration {
         }
         instance.saveProperties();
     }
-    
+
     public static boolean isClusterEnabled(){
         Properties properties = MDMConfiguration.getConfiguration();
         return Boolean.parseBoolean(properties.getProperty(SYSTEM_CLUSTER, Boolean.FALSE.toString()));
@@ -174,7 +174,7 @@ public final class MDMConfiguration {
                 throw new IllegalStateException("Unable to load MDM configuration from '" + file.getAbsolutePath() + "'");
             }
             LOGGER.warn("Unable to load MDM configuration from '" + file.getAbsolutePath() + "'");
-        }        
+        }
         return properties;
     }
 

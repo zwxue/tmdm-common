@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -43,10 +43,10 @@ public interface Types {
             Types.SHORT,
             Types.UNSIGNED_SHORT,
             Types.FLOAT };
-    
+
     /**
      * Convenience constants for all integers type.
-     */    
+     */
     Set<String> INTEGERS = new HashSet<String>(Arrays.asList(
         Types.INT,
         Types.UNSIGNED_INT,
@@ -55,17 +55,17 @@ public interface Types {
         Types.POSITIVE_INTEGER,
         Types.NON_NEGATIVE_INTEGER,
         Types.NON_POSITIVE_INTEGER));
-    
+
     /**
      * Convenience constants for all long type.
-     */    
+     */
     Set<String> LONGS = new HashSet<String>(Arrays.asList(
         Types.LONG,
         Types.UNSIGNED_LONG));
-    
+
     /**
      * Convenience constants for all short type.
-     */    
+     */
     Set<String> SHORTS = new HashSet<String>(Arrays.asList(
         Types.SHORT,
         Types.UNSIGNED_SHORT));

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -183,7 +183,7 @@ public class MetadataUtils {
      * <p>
      * This method is thread safe.
      * </p>
-     * 
+     *
      * @param repository The repository that contains entity types to sort.
      * @return A sorted list of {@link ComplexTypeMetadata} types. First type of list is a type that has no dependency
      * on any other type of the list.
@@ -193,7 +193,7 @@ public class MetadataUtils {
     public static List<ComplexTypeMetadata> sortTypes(MetadataRepository repository) {
         return sortTypes(repository, SortType.STRICT);
     }
-    
+
     /**
      * <p>
      * Sorts type in inverse order of dependency (topological sort) using <code>sortType</code> order. A dependency to
@@ -208,7 +208,7 @@ public class MetadataUtils {
      * <p>
      * This method is thread safe.
      * </p>
-     * 
+     *
      * @param repository The repository that contains entity types to sort.
      * @return A sorted list of {@link ComplexTypeMetadata} types. First type of list is a type that has no dependency
      * on any other type of the list.
@@ -253,7 +253,7 @@ public class MetadataUtils {
     public static List<ComplexTypeMetadata> sortTypes(MetadataRepository repository, List<ComplexTypeMetadata> types) {
         return _sortTypes(repository, types, SortType.STRICT);
     }
-    
+
     /**
      * <p>
      * Sorts types (usually a sub set of types in a {@link MetadataRepository}) in inverse order of dependency
@@ -270,7 +270,7 @@ public class MetadataUtils {
      * </p>
      *
      * @param repository This is used to display information in case of cycle.
-     * @param types The list of types to be sorted. About the list:   
+     * @param types The list of types to be sorted. About the list:
      * <ul>
      * <li>
      * This list should provide a transitive closure of types (all references to other types must be satisfied in this
@@ -410,7 +410,7 @@ public class MetadataUtils {
                         throw new NotImplementedException("Sort '" + sortType + "' is not implemented.");
                     }
                 }
-                
+
                 private boolean isReferencedBySelf(ReferenceFieldMetadata referenceField) {
                     ComplexTypeMetadata containingType = referenceField.getContainingType();
                     if (containingType instanceof ContainedComplexTypeMetadata) {
@@ -630,7 +630,7 @@ public class MetadataUtils {
 
     /**
      * Counts how many times a type (usually a reusable type) is used throughout the data model.
-     * 
+     *
      * @param type A data model type.
      * @return For entity types, this method returns 0. For reusable types, return a number greater or equals to 0.
      */
@@ -663,7 +663,7 @@ public class MetadataUtils {
         TypeMetadata fieldType = getSuperConcreteType(field.getType());
         return XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(fieldType.getNamespace());
     }
-    
+
     /**
      * Check where provided <code>type</code> is an Anonymous type or not
      * @param type

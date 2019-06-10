@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -66,7 +66,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
     private List<FieldMetadata> lookupFields;
 
     private boolean isInstantiable;
-    
+
     private boolean isAbstract;
 
     private List<FieldMetadata> primaryKeyInfo;
@@ -84,7 +84,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
     public ComplexTypeMetadataImpl(String nameSpace, String name, boolean isInstantiable) {
     	this(nameSpace, name, isInstantiable, false);
     }
-    
+
     public ComplexTypeMetadataImpl(String nameSpace, String name, boolean isInstantiable, boolean isAbstract) {
         this(nameSpace,
                 name,
@@ -194,7 +194,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         }
         return foundField;
     }
-    
+
     private static FieldMetadata _getField(ComplexTypeMetadata type, String path) {
         String fieldName = StringUtils.substringBefore(StringUtils.substringBefore(path, "/"), "["); //$NON-NLS-1$
         String remainingPath = StringUtils.substringAfter(path, "/"); //$NON-NLS-1$
@@ -248,7 +248,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
     public boolean isAbstract() {
         return isAbstract;
     }
-    
+
     public boolean isInstantiable() {
         return isInstantiable;
     }
@@ -278,7 +278,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         }
         this.isAbstract = isAbstract;
     }
-    
+
     public void setInstantiable(boolean isInstantiable) {
         if (isFrozen) {
             throw new IllegalStateException("Type '" + name + "' is frozen and can not be modified.");
@@ -431,9 +431,9 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
                 logicalDelete,
                 schematron,
                 primaryKeyInfo,
-                Collections.<FieldMetadata>emptyList(), 
-                isInstantiable, 
-                isAbstract, 
+                Collections.<FieldMetadata>emptyList(),
+                isInstantiable,
+                isAbstract,
                 workflowAccessRights);
         copy.localeToLabel.putAll(localeToLabel);
         return copy;
@@ -450,7 +450,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
     public List<String> getHideUsers() {
         return Collections.unmodifiableList(hideUsers);
     }
-    
+
     public List<String> getWorkflowAccessRights() {
         return Collections.unmodifiableList(workflowAccessRights);
     }

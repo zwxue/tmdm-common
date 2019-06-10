@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
- * 
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
+ *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
- * 
+ *
  * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
  * 92150 Suresnes, France
  */
@@ -50,11 +50,11 @@ public interface ICoreConstants {
     String ADMIN_PERMISSION = "administration";
 
     String SUPER_ADMIN = "Super_Admin";
-    
+
     List<String> SYSTEM_ROLE_LIST = Arrays.asList(SYSTEM_ADMIN_ROLE, SYSTEM_INTERACTIVE_ROLE, SYSTEM_WEB_ROLE, ADMIN_PERMISSION);
 
-    String AUTHENTICATED_PERMISSION = "authenticated"; 
-    
+    String AUTHENTICATED_PERMISSION = "authenticated";
+
     String UI_AUTHENTICATED_PERMISSION = "UIAuthenticated";
 
     String TALEND_NAMESPACE = "http://www.talend.com/mdm";
