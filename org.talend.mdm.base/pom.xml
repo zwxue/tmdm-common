@@ -25,7 +25,7 @@
         <gwt.dnd.version>3.1.2</gwt.dnd.version>
 
         <apache.httpcomponents.version>4.3.6</apache.httpcomponents.version>
-        <spring.version>4.3.23.RELEASE</spring.version>
+        <spring.version>4.3.7.RELEASE</spring.version>
         <spring.security.version>4.2.2.RELEASE</spring.security.version>
         <cxf.version>3.2.9</cxf.version>
         <powermock.version>1.4.12</powermock.version>
