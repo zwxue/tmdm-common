@@ -26,7 +26,7 @@
 
         <apache.httpcomponents.version>4.3.6</apache.httpcomponents.version>
         <spring.version>4.3.7.RELEASE</spring.version>
-        <spring.security.version>4.2.2.RELEASE</spring.security.version>
+        <spring.security.version>4.2.13.RELEASE</spring.security.version>
         <cxf.version>3.2.9</cxf.version>
         <powermock.version>1.4.12</powermock.version>
         <hibernate.search.version>5.0.1.Final</hibernate.search.version>
@@ -1142,12 +1142,12 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
-                <version>${spring.version}</version>
+                <version>4.3.23.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
-                <version>${spring.version}</version>
+                <version>4.3.23.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -1162,7 +1162,7 @@
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-core</artifactId>
-                <version>4.2.13.RELEASE</version>
+                <version>${spring.security.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
