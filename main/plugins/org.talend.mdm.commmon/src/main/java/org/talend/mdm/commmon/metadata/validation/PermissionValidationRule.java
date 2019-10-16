@@ -71,7 +71,7 @@ public class PermissionValidationRule implements ValidationRule {
     }
 
     private boolean validateFieldRefPermission(FieldMetadata fieldMetadata, ValidationHandler handler) {
-        fieldMetadata.setData(PermissionConstants.VALIDATION_PERMISSION_MARKER, true);
+        fieldMetadata.setData(MetadataRepository.VALIDATION_PERMISSION_MARKER, true);
         String name = fieldMetadata.getName();
         XSDElementDeclaration element = fieldMetadata.getData(MetadataRepository.XSD_ELEMENT);
 
@@ -116,7 +116,8 @@ public class PermissionValidationRule implements ValidationRule {
             ComplexTypeMetadata cTypeMetadata = containedField.getContainedType();
             Collection<FieldMetadata>  fieldMetadatas = cTypeMetadata.getFields();
             for(FieldMetadata fMetadata: fieldMetadatas) {
-                boolean validateMarked = BooleanUtils.isTrue(fMetadata.<Boolean> getData(PermissionConstants.VALIDATION_PERMISSION_MARKER));
+                boolean validateMarked = BooleanUtils
+                        .isTrue(fMetadata.<Boolean> getData(MetadataRepository.VALIDATION_PERMISSION_MARKER));
                 if(!validateMarked) {
                     valid &= validateFieldRefPermission(fMetadata, handler);
                 }
