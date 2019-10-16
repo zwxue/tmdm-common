@@ -93,8 +93,6 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
 
     public static final String DATA_FRACTION_DIGITS = "metadata.data.fractionDigits"; //$NON-NLS-1$
 
-    public static final String DATA_ZIPPED = "metadata.zipped"; //$NON-NLS-1$
-
     public static final String XSD_LINE_NUMBER = "metadata.xsd.line"; //$NON-NLS-1$
 
     public static final String XSD_COLUMN_NUMBER = "metadata.xsd.column"; //$NON-NLS-1$
@@ -103,15 +101,9 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
     
     public static final String XSD_ELEMENT = "metadata.xsd.element"; //$NON-NLS-1$
 
-    public static final String ANONYMOUS_PREFIX = "X_ANONYMOUS"; //$NON-NLS-1$
-
     public static final String DEFAULT_VALUE = "default.value"; //$NON-NLS-1$
 
     public static final String DEFAULT_VALUE_RULE = "default.value.rule"; //$NON-NLS-1$
-
-    public static final String FN_TRUE = "fn:true()"; //$NON-NLS-1$
-
-    public static final String FN_FALSE = "fn:false()"; //$NON-NLS-1$
 
     public static final String MIN_OCCURS = "metadata.min_occurs";
 
@@ -128,6 +120,23 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
     public static final String MAX_INCLUSIVE = "metadata.data.maxInclusive";
 
     public static final String MIN_INCLUSIVE = "metadata.data.minInclusive";
+
+    public static final String VALIDATION_MARKER = "validation.validated";
+
+    public static final String VALIDATION_PERMISSION_MARKER = "validation.permission.validated";
+
+    public static final String DATA_ZIPPED = "metadata.zipped"; //$NON-NLS-1$
+
+    public static final String ANONYMOUS_PREFIX = "X_ANONYMOUS"; //$NON-NLS-1$
+
+    public static final String FN_TRUE = "fn:true()"; //$NON-NLS-1$
+
+    public static final String FN_FALSE = "fn:false()"; //$NON-NLS-1$
+
+    public static final String[] MODEL_METADATA_VALIDATION_MARKERS = { COMPLEX_TYPE_NAME, DATA_MAX_LENGTH, DATA_MIN_LENGTH, DATA_LENGTH,
+            DATA_TOTAL_DIGITS, DATA_FRACTION_DIGITS, XSD_LINE_NUMBER, XSD_COLUMN_NUMBER, XSD_DOM_ELEMENT, XSD_ELEMENT,
+            DEFAULT_VALUE, DEFAULT_VALUE_RULE, MIN_OCCURS, MAX_OCCURS, ENUMERATION_LIST, MAX_EXCLUSIVE, MIN_EXCLUSIVE, PATTERN,
+            MAX_INCLUSIVE, MIN_INCLUSIVE, VALIDATION_MARKER, VALIDATION_PERMISSION_MARKER };
 
     private static final Logger LOGGER = Logger.getLogger(MetadataRepository.class);
 
