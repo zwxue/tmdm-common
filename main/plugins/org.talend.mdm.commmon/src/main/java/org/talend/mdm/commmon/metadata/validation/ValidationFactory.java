@@ -32,10 +32,8 @@ import org.talend.mdm.commmon.metadata.UnresolvedTypeMetadata;
 
 public class ValidationFactory {
 
-    private static final String VALIDATION_MARKER = "validation.validated"; //$NON-NLS-1$
-
     private static boolean isValidated(MetadataExtensible metadataElement) {
-        return BooleanUtils.isTrue(metadataElement.<Boolean> getData(VALIDATION_MARKER));
+        return BooleanUtils.isTrue(metadataElement.<Boolean> getData(MetadataRepository.VALIDATION_MARKER));
     }
 
     public static ValidationRule getRule(FieldMetadata field) {
@@ -46,7 +44,7 @@ public class ValidationFactory {
                 return NoOpValidationRule.SUCCESS;
             }
         }
-        field.setData(VALIDATION_MARKER, true);
+        field.setData(MetadataRepository.VALIDATION_MARKER, true);
         return field.createValidationRule();
     }
 
@@ -125,7 +123,7 @@ public class ValidationFactory {
                 return NoOpValidationRule.SUCCESS;
             }
         }
-        type.setData(VALIDATION_MARKER, true);
+        type.setData(MetadataRepository.VALIDATION_MARKER, true);
         return type.createValidationRule();
     }
 

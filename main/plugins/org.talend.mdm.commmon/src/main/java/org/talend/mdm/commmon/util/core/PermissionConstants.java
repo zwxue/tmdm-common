@@ -24,6 +24,4 @@ public interface PermissionConstants {
     String PERMISSIONTYPE_DENY_DELETE_PHYSICAL = "No Physic Delete";
     String PERMISSIONTYPE_DENY_DELETE_LOGICAL = "No Logical Delete";
     String PERMISSIONTYPE_WORKFLOW_ACCESS = "Workflow Access";
-    //
-    String VALIDATION_PERMISSION_MARKER = "validation.permission.validated";
 }
