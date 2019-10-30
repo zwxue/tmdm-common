@@ -11,9 +11,13 @@
 
 package org.talend.mdm.commmon.metadata;
 
-import org.talend.mdm.commmon.metadata.validation.ValidationRule;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
 
-import java.util.*;
+import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 
 public class ContainedComplexTypeMetadata implements ComplexTypeMetadata {
 
@@ -288,14 +292,24 @@ public class ContainedComplexTypeMetadata implements ComplexTypeMetadata {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ContainedComplexTypeMetadata)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ContainedComplexTypeMetadata)) {
+            return false;
+        }
 
         ContainedComplexTypeMetadata that = (ContainedComplexTypeMetadata) o;
 
-        if (!container.getContainingType().equals(that.container.getContainingType())) return false;
-        if (!container.getName().equals(that.container.getName())) return false;
-        if (!containedType.getName().equals(that.containedType.getName())) return false;
+        if (!container.getContainingType().equals(that.container.getContainingType())) {
+            return false;
+        }
+        if (!container.getName().equals(that.container.getName())) {
+            return false;
+        }
+        if (!containedType.getName().equals(that.containedType.getName())) {
+            return false;
+        }
 
         return true;
     }
@@ -333,5 +347,10 @@ public class ContainedComplexTypeMetadata implements ComplexTypeMetadata {
     @Override
     public void registerDescription(Locale locale, String description) {
         containedType.registerDescription(locale, description);
+    }
+
+    @Override
+    public List<Category> getCategories() {
+        return Collections.<Category> emptyList();
     }
 }

@@ -11,7 +11,14 @@
 
 package org.talend.mdm.commmon.metadata;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
 import org.talend.mdm.commmon.metadata.validation.ValidationRule;
@@ -366,14 +373,24 @@ public class SoftTypeRef implements ComplexTypeMetadata {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof SoftTypeRef)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SoftTypeRef)) {
+            return false;
+        }
 
         SoftTypeRef that = (SoftTypeRef) o;
 
-        if (instantiable != that.instantiable) return false;
-        if (namespace != null ? !namespace.equals(that.namespace) : that.namespace != null) return false;
-        if (!typeName.equals(that.typeName)) return false;
+        if (instantiable != that.instantiable) {
+            return false;
+        }
+        if (namespace != null ? !namespace.equals(that.namespace) : that.namespace != null) {
+            return false;
+        }
+        if (!typeName.equals(that.typeName)) {
+            return false;
+        }
 
         return true;
     }
@@ -386,5 +403,10 @@ public class SoftTypeRef implements ComplexTypeMetadata {
     @Override
     public void registerDescription(Locale locale, String description) {
         getTypeAsComplex().registerDescription(locale, description);
+    }
+
+    @Override
+    public List<Category> getCategories() {
+        return Collections.<Category> emptyList();
     }
 }

@@ -11,14 +11,14 @@
 
 package org.talend.mdm.commmon.metadata;
 
-import org.apache.commons.lang.StringUtils;
-import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
-import org.talend.mdm.commmon.metadata.validation.ValidationRule;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+
+import org.apache.commons.lang.StringUtils;
+import org.talend.mdm.commmon.metadata.validation.ValidationFactory;
+import org.talend.mdm.commmon.metadata.validation.ValidationRule;
 
 public class UnresolvedTypeMetadata extends MetadataExtensions implements ComplexTypeMetadata {
 
@@ -229,5 +229,10 @@ public class UnresolvedTypeMetadata extends MetadataExtensions implements Comple
 
     @Override
     public void registerDescription(Locale locale, String description) {
+    }
+
+    @Override
+    public List<Category> getCategories() {
+        return Collections.<Category> emptyList();
     }
 }

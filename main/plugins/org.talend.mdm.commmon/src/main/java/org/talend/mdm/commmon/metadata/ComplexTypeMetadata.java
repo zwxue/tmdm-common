@@ -182,4 +182,9 @@ public interface ComplexTypeMetadata extends TypeMetadata {
          */
         PHYSICAL
     }
+
+    /**
+     * @return Returns the category definitions, or empty list if undefined.
+     */
+    List<Category> getCategories();
 }

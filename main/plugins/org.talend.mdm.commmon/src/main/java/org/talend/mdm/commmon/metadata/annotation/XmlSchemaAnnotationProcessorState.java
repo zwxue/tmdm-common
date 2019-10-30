@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.talend.mdm.commmon.metadata.Category;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
 
@@ -78,6 +79,8 @@ public class XmlSchemaAnnotationProcessorState {
     private String defaultValue;
 
     private String defaultValueRule;
+
+    private List<Category> categories = Collections.emptyList();
 
     public void setFkIntegrity(boolean fkIntegrity) {
         this.fkIntegrity = fkIntegrity;
@@ -254,4 +257,13 @@ public class XmlSchemaAnnotationProcessorState {
     public void setFKMainRender(boolean isFKMainRender) {
         this.isFKMainRender = isFKMainRender;
     }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
+
 }

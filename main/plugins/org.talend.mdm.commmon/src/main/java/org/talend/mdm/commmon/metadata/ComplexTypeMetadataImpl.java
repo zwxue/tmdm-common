@@ -4,9 +4,8 @@
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
  *
- * You should have received a copy of the agreement
- * along with this program; if not, write to Talend SA
- * 9 rue Pages 92150 Suresnes, France
+ * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
+ * 92150 Suresnes, France
  */
 
 package org.talend.mdm.commmon.metadata;
@@ -81,55 +80,39 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
 
     private final Set<ComplexTypeMetadata> usages = new HashSet<ComplexTypeMetadata>();
 
+    private final List<Category> categories;
+
     public ComplexTypeMetadataImpl(String nameSpace, String name, boolean isInstantiable) {
-    	this(nameSpace, name, isInstantiable, false);
+        this(nameSpace, name, isInstantiable, false);
     }
 
     public ComplexTypeMetadataImpl(String nameSpace, String name, boolean isInstantiable, boolean isAbstract) {
-        this(nameSpace,
-                name,
-                Collections.<String>emptyList(),
-                Collections.<String>emptyList(),
-                Collections.<String>emptyList(),
-                Collections.<String>emptyList(),
-                Collections.<String>emptyList(),
-                StringUtils.EMPTY,
-                Collections.<FieldMetadata>emptyList(),
-                Collections.<FieldMetadata>emptyList(),
-                isInstantiable,
-                isAbstract,
-                Collections.<String>emptyList());
+        this(nameSpace, name, Collections.<String> emptyList(), Collections.<String> emptyList(),
+                Collections.<String> emptyList(), Collections.<String> emptyList(), Collections.<String> emptyList(),
+                StringUtils.EMPTY, Collections.<FieldMetadata> emptyList(), Collections.<FieldMetadata> emptyList(),
+                isInstantiable, isAbstract, Collections.<String> emptyList());
     }
 
-    public ComplexTypeMetadataImpl(String nameSpace,
-            String name,
-            List<String> allowWrite,
-            List<String> denyCreate,
-            List<String> hideUsers,
-            List<String> physicalDelete,
-            List<String> logicalDelete,
-            String schematron,
-            List<FieldMetadata> primaryKeyInfo,
-            List<FieldMetadata> lookupFields,
-            boolean isInstantiable,
+    public ComplexTypeMetadataImpl(String nameSpace, String name, List<String> allowWrite, List<String> denyCreate,
+            List<String> hideUsers, List<String> physicalDelete, List<String> logicalDelete, String schematron,
+            List<FieldMetadata> primaryKeyInfo, List<FieldMetadata> lookupFields, boolean isInstantiable,
             List<String> workflowAccessRights) {
         this(nameSpace, name, allowWrite, denyCreate, hideUsers, physicalDelete, logicalDelete, schematron, primaryKeyInfo,
                 lookupFields, isInstantiable, false, workflowAccessRights);
     }
 
-    public ComplexTypeMetadataImpl(String nameSpace,
-            String name,
-            List<String> allowWrite,
-            List<String> denyCreate,
-            List<String> hideUsers,
-            List<String> physicalDelete,
-            List<String> logicalDelete,
-            String schematron,
-            List<FieldMetadata> primaryKeyInfo,
-            List<FieldMetadata> lookupFields,
-            boolean isInstantiable,
-            boolean isAbstract,
+    public ComplexTypeMetadataImpl(String nameSpace, String name, List<String> allowWrite, List<String> denyCreate,
+            List<String> hideUsers, List<String> physicalDelete, List<String> logicalDelete, String schematron,
+            List<FieldMetadata> primaryKeyInfo, List<FieldMetadata> lookupFields, boolean isInstantiable, boolean isAbstract,
             List<String> workflowAccessRights) {
+        this(nameSpace, name, allowWrite, denyCreate, hideUsers, physicalDelete, logicalDelete, schematron, primaryKeyInfo,
+                lookupFields, isInstantiable, false, workflowAccessRights, Collections.<Category> emptyList());
+    }
+
+    public ComplexTypeMetadataImpl(String nameSpace, String name, List<String> allowWrite, List<String> denyCreate,
+            List<String> hideUsers, List<String> physicalDelete, List<String> logicalDelete, String schematron,
+            List<FieldMetadata> primaryKeyInfo, List<FieldMetadata> lookupFields, boolean isInstantiable, boolean isAbstract,
+            List<String> workflowAccessRights, List<Category> categories) {
         this.name = name;
         this.nameSpace = nameSpace;
         this.allowWrite = allowWrite;
@@ -143,8 +126,10 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         this.isInstantiable = isInstantiable;
         this.isAbstract = isAbstract;
         this.workflowAccessRights = workflowAccessRights;
+        this.categories = categories;
     }
 
+    @Override
     public void addSuperType(TypeMetadata superType) {
         if (isFrozen) {
             throw new IllegalStateException("Type '" + name + "' is frozen and can not be modified.");
@@ -152,14 +137,17 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         superTypes.add(superType);
     }
 
+    @Override
     public Collection<TypeMetadata> getSuperTypes() {
         return Collections.unmodifiableCollection(superTypes);
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         if (isFrozen) {
             throw new IllegalStateException("Cannot change name after type was frozen.");
@@ -167,10 +155,12 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         this.name = name;
     }
 
+    @Override
     public String getNamespace() {
         return nameSpace;
     }
 
+    @Override
     public FieldMetadata getField(String path) {
         if (path == null || path.isEmpty()) {
             throw new IllegalArgumentException("Field name can not be null nor empty.");
@@ -213,7 +203,8 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         } else {
             // Handle xsi:type in XPath query
             if (fieldName.contains("xsi:type")) { //$NON-NLS-1$
-                String reusableTypeName = StringUtils.substringAfter(fieldName, "@xsi:type").replace('=', ' ').replace(']', ' ').trim(); //$NON-NLS-1$
+                String reusableTypeName = StringUtils.substringAfter(fieldName, "@xsi:type").replace('=', ' ').replace(']', ' ') //$NON-NLS-1$
+                        .trim();
                 if (reusableTypeName.isEmpty()) {
                     throw new IllegalArgumentException("Reusable type could not be null for fieldName '" + fieldName + "'"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
@@ -249,6 +240,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         return isAbstract;
     }
 
+    @Override
     public boolean isInstantiable() {
         return isInstantiable;
     }
@@ -279,6 +271,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         this.isAbstract = isAbstract;
     }
 
+    @Override
     public void setInstantiable(boolean isInstantiable) {
         if (isFrozen) {
             throw new IllegalStateException("Type '" + name + "' is frozen and can not be modified.");
@@ -317,14 +310,17 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         }
     }
 
+    @Override
     public Collection<FieldMetadata> getKeyFields() {
         return Collections.unmodifiableCollection(keyFields.values());
     }
 
+    @Override
     public Collection<FieldMetadata> getFields() {
         return Collections.unmodifiableCollection(fieldMetadata.values());
     }
 
+    @Override
     public boolean isAssignableFrom(TypeMetadata type) {
         // Check one level of inheritance
         Collection<TypeMetadata> superTypes = getSuperTypes();
@@ -342,6 +338,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         return getName().equals(type.getName());
     }
 
+    @Override
     public <T> T accept(MetadataVisitor<T> visitor) {
         return visitor.visit(this);
     }
@@ -354,6 +351,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         return '[' + nameSpace + ':' + name + ']';
     }
 
+    @Override
     public void addField(FieldMetadata fieldMetadata) {
         if (isFrozen) {
             throw new IllegalStateException("Type '" + name + "' is frozen and can not be modified.");
@@ -367,6 +365,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         }
     }
 
+    @Override
     public void registerKey(FieldMetadata keyField) {
         if (keyField == null) {
             throw new IllegalArgumentException("Key field can not be null.");
@@ -374,20 +373,11 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         keyFields.put(keyField.getName(), keyField);
     }
 
+    @Override
     public ComplexTypeMetadata copy() {
-        ComplexTypeMetadataImpl copy = new ComplexTypeMetadataImpl(getNamespace(),
-                getName(),
-                allowWrite,
-                denyCreate,
-                hideUsers,
-                physicalDelete,
-                logicalDelete,
-                schematron,
-                primaryKeyInfo,
-                Collections.<FieldMetadata>emptyList(),
-                isInstantiable,
-                isAbstract,
-                workflowAccessRights);
+        ComplexTypeMetadataImpl copy = new ComplexTypeMetadataImpl(getNamespace(), getName(), allowWrite, denyCreate, hideUsers,
+                physicalDelete, logicalDelete, schematron, primaryKeyInfo, Collections.<FieldMetadata> emptyList(),
+                isInstantiable, isAbstract, workflowAccessRights, categories);
         Collection<FieldMetadata> fields = getFields();
         for (FieldMetadata field : fields) {
             FieldMetadata fieldCopy = field.copy();
@@ -421,51 +411,48 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         return copy;
     }
 
+    @Override
     public TypeMetadata copyShallow() {
-        ComplexTypeMetadataImpl copy = new ComplexTypeMetadataImpl(getNamespace(),
-                getName(),
-                allowWrite,
-                denyCreate,
-                hideUsers,
-                physicalDelete,
-                logicalDelete,
-                schematron,
-                primaryKeyInfo,
-                Collections.<FieldMetadata>emptyList(),
-                isInstantiable,
-                isAbstract,
-                workflowAccessRights);
+        ComplexTypeMetadataImpl copy = new ComplexTypeMetadataImpl(getNamespace(), getName(), allowWrite, denyCreate, hideUsers,
+                physicalDelete, logicalDelete, schematron, primaryKeyInfo, Collections.<FieldMetadata> emptyList(),
+                isInstantiable, isAbstract, workflowAccessRights, categories);
         copy.localeToLabel.putAll(localeToLabel);
         return copy;
     }
 
+    @Override
     public List<String> getWriteUsers() {
         return Collections.unmodifiableList(allowWrite);
     }
 
+    @Override
     public List<String> getDenyCreate() {
         return Collections.unmodifiableList(denyCreate);
     }
 
+    @Override
     public List<String> getHideUsers() {
         return Collections.unmodifiableList(hideUsers);
     }
 
+    @Override
     public List<String> getWorkflowAccessRights() {
         return Collections.unmodifiableList(workflowAccessRights);
     }
 
+    @Override
     public List<String> getDenyDelete(DeleteType type) {
         switch (type) {
-            case LOGICAL:
-                return Collections.unmodifiableList(logicalDelete);
-            case PHYSICAL:
-                return Collections.unmodifiableList(physicalDelete);
-            default:
-                throw new NotImplementedException("Security information parsing for delete type '" + type + "'");
+        case LOGICAL:
+            return Collections.unmodifiableList(logicalDelete);
+        case PHYSICAL:
+            return Collections.unmodifiableList(physicalDelete);
+        default:
+            throw new NotImplementedException("Security information parsing for delete type '" + type + "'");
         }
     }
 
+    @Override
     public String getSchematron() {
         return schematron;
     }
@@ -478,6 +465,11 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
     @Override
     public List<FieldMetadata> getLookupFields() {
         return Collections.unmodifiableList(lookupFields);
+    }
+
+    @Override
+    public List<Category> getCategories() {
+        return Collections.unmodifiableList(categories);
     }
 
     @Override
@@ -501,6 +493,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         localeToLabel.put(locale, label);
     }
 
+    @Override
     public boolean hasField(String fieldName) {
         if (fieldName == null || fieldName.isEmpty()) {
             return false;
@@ -539,6 +532,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         return true;
     }
 
+    @Override
     public Collection<ComplexTypeMetadata> getSubTypes() {
         List<ComplexTypeMetadata> subTypes = new LinkedList<ComplexTypeMetadata>();
         for (ComplexTypeMetadata subType : this.subTypes) {
@@ -548,6 +542,7 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         return subTypes;
     }
 
+    @Override
     public Collection<ComplexTypeMetadata> getDirectSubTypes() {
         List<ComplexTypeMetadata> subTypes = new LinkedList<ComplexTypeMetadata>();
         for (ComplexTypeMetadata subType : this.subTypes) {
@@ -556,10 +551,12 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
         return subTypes;
     }
 
+    @Override
     public void registerSubType(ComplexTypeMetadata type) {
         subTypes.add(type);
     }
 
+    @Override
     public TypeMetadata freeze() {
         if (isFrozen) {
             return this;
@@ -650,8 +647,12 @@ public class ComplexTypeMetadataImpl extends MetadataExtensions implements Compl
             return false;
         }
         ComplexTypeMetadata that = (ComplexTypeMetadata) o;
-        if (!name.equals(that.getName())) return false;
-        if (nameSpace != null ? !nameSpace.equals(that.getNamespace()) : that.getNamespace() != null) return false;
+        if (!name.equals(that.getName())) {
+            return false;
+        }
+        if (nameSpace != null ? !nameSpace.equals(that.getNamespace()) : that.getNamespace() != null) {
+            return false;
+        }
         return true;
     }
 
