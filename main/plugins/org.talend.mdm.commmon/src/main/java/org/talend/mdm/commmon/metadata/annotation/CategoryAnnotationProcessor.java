@@ -46,17 +46,18 @@ public class CategoryAnnotationProcessor implements XmlSchemaAnnotationProcessor
                         Node node = childNodes.item(i);
                         String localName = node.getLocalName();
                         if (localName != null) {
+                            localName = localName.toLowerCase();
                             Node subChild = node.getFirstChild();
                             if (subChild != null) {
                                 String nodeValue = subChild.getNodeValue();
                                 if (nodeValue != null) {
-                                    if (localName.equalsIgnoreCase("name")) {
+                                    if (localName.equals("name")) {
                                         categoryName = nodeValue;
                                     } else if (localName.startsWith("label_")) {
                                         String lang = localName.substring(6);
-                                        Locale locale = new Locale(lang.toLowerCase());
+                                        Locale locale = new Locale(lang);
                                         labels.put(locale, nodeValue);
-                                    } else if (localName.equalsIgnoreCase("field") && nodeValue != null) {
+                                    } else if (localName.equals("field") && nodeValue != null) {
                                         fields.add(nodeValue);
                                     }
                                 }
@@ -64,10 +65,7 @@ public class CategoryAnnotationProcessor implements XmlSchemaAnnotationProcessor
                         }
                     }
                     if (categoryName != null) {
-                        Category category = new Category();
-                        category.setName(categoryName);
-                        category.setLabels(labels);
-                        category.setFields(fields);
+                        Category category = new Category(categoryName, fields, labels);
                         categories.add(category);
                         state.setCategories(categories);
                     }

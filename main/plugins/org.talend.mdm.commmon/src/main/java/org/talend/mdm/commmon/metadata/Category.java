@@ -18,9 +18,19 @@ public class Category {
 
     private String name;
 
+
     private List<String> fields;
 
     private Map<Locale, String> labels;
+
+    public Category() {
+    }
+
+    public Category(String name, List<String> fields, Map<Locale, String> labels) {
+        this.name = name;
+        this.fields = fields;
+        this.labels = labels;
+    }
 
     public String getName() {
         return name;
