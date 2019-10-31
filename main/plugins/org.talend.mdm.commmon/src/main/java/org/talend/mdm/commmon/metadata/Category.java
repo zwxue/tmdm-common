@@ -18,7 +18,6 @@ public class Category {
 
     private String name;
 
-
     private List<String> fields;
 
     private Map<Locale, String> labels;
