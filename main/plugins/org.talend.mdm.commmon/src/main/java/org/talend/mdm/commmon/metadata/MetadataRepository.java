@@ -59,6 +59,7 @@ import org.eclipse.xsd.XSDTotalDigitsFacet;
 import org.eclipse.xsd.XSDTypeDefinition;
 import org.eclipse.xsd.XSDXPathDefinition;
 import org.eclipse.xsd.util.XSDParser;
+import org.talend.mdm.commmon.metadata.annotation.CategoryAnnotationProcessor;
 import org.talend.mdm.commmon.metadata.annotation.DefaultValueRuleProcessor;
 import org.talend.mdm.commmon.metadata.annotation.DescriptionAnnotationProcessor;
 import org.talend.mdm.commmon.metadata.annotation.ForeignKeyProcessor;
@@ -155,7 +156,8 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
 
     private final static List<XmlSchemaAnnotationProcessor> XML_ANNOTATIONS_PROCESSORS = Arrays.asList(new ForeignKeyProcessor(),
             new UserAccessProcessor(), new SchematronProcessor(), new PrimaryKeyInfoProcessor(), new LookupFieldProcessor(),
-            new LabelAnnotationProcessor(), new DescriptionAnnotationProcessor(), new DefaultValueRuleProcessor());
+            new LabelAnnotationProcessor(), new DescriptionAnnotationProcessor(), new DefaultValueRuleProcessor(),
+            new CategoryAnnotationProcessor());
 
     private final static String USER_NAMESPACE = StringUtils.EMPTY;
 
@@ -652,7 +654,7 @@ public class MetadataRepository implements MetadataVisitable, XSDVisitor, Serial
             ComplexTypeMetadata type = new ComplexTypeMetadataImpl(targetNamespace, typeName, state.getAllowWrite(),
                     state.getDenyCreate(), state.getHide(), state.getDenyPhysicalDelete(), state.getDenyLogicalDelete(),
                     state.getSchematron(), state.getPrimaryKeyInfo(), state.getLookupFields(), true, isAbstract,
-                    state.getWorkflowAccessRights());
+                    state.getWorkflowAccessRights(), state.getCategories());
             // Register parsed localized labels
             Map<Locale, String> localeToLabel = state.getLocaleToLabel();
             for (Map.Entry<Locale, String> entry : localeToLabel.entrySet()) {
